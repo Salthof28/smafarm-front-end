@@ -1,23 +1,17 @@
+import SlideImagesHome from "@/components/home/Slide-images-home";
 import Navbar from "@/components/navbar";
+import { mockCategory } from "@/services/api";
+import { Category } from "@/types/interfaces";
 
-export default function Home() {
+const revalidate = 10
+export default async function Home() {
+  const category: Category[] = await mockCategory; 
+  const imageCategory: string[] = category.map(cat => cat.image)
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex flex-col items-center min-h-screen overflow-x-hidden">
       <Navbar/>
-      <main className="items-center justify-items-center min-h-screen p-[2rem] gap-[2rem] sm:p-20 font-[family-name:var(--font-geist-sans)] mt-[2rem] w-full">
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
-          <h2>test</h2>
+      <main className="flex items-center flex-col" >
+        <SlideImagesHome imageCategory={imageCategory} />
       </main>
     </div>
   );

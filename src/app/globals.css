@@ -30,23 +30,20 @@ body {
 }
 
 h1, h2, p {
-    margin: 0;
+    margin: 0rem;
 }
 h1 {
     font-size: 6rem;
 }
 h2 {
     font-size: 4rem;
-    font-family: 'dynapuff';
 }
 h3 {
     font-size: 3rem;
-    font-family: 'dynapuff';
 }
 p, ul {
     font-size: 2rem;
-    margin: 0.4rem;
-    font-family: 'dynapuff';
+    margin: 0rem;
 }
 a {
     text-decoration: none;
@@ -55,7 +52,7 @@ a {
     width: 10rem;
     height: 3rem;
     border-radius: 1rem;
-    background: rgba(72, 97, 90, 0.418);
+    /* background: rgb(70, 110, 99); */
 }
 
 @media only screen and (max-width: 2304px) {
@@ -76,9 +73,20 @@ a {
     }
     p, ul {
         font-size: 1rem;
-        margin: 0.4rem;
     }
 }
 @media only screen and (max-width: 712px) {
-
+    h1 {
+        font-size: 2rem;
+    }
+    h2 {
+        font-size: 1rem;
+    }
+    p, ul {
+        font-size: 0.8rem;
+    } 
+    .btn {
+        width: 6rem;
+        height: 2.5rem;
+    }
 }
