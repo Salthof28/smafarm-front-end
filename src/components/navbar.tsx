@@ -32,7 +32,7 @@ export default function Navbar() {
                     <Link href='/cart' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Cart</Link>
                 </nav>
                 <nav className={`flex  gap-[2rem] flex-col lg:flex-row lg:flex`}>
-                    <Link href='/user' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Guest</Link>
+                    <Link href='/login' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Guest</Link>
                 </nav>
             </header>
         </div>
