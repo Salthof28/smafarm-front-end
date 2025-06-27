@@ -20,7 +20,7 @@ export default function Navbar() {
     }, [])
     return(
         <div className="flex justify-center">
-            <header className={`w-[98vw] lg:h-fit flex flex-col lg:flex-row justify-between bg-gray-400 mt-[1rem] p-[0.5rem] items-center rounded-[1rem] duration-500 fixed lg:gap-[2rem] gap-[1rem] overflow-hidden ${show ? "translate-y-0" : "-translate-y-full"} transition-all duration-300 ease-in-out ${menu ? 'h-[23rem]' : 'h-[3.3rem]'}`}>
+            <header className={`w-[98vw] lg:h-fit flex flex-col lg:flex-row justify-between bg-black/80 text-white mt-[1rem] p-[0.5rem] items-center rounded-[1rem] duration-500 fixed lg:gap-[2rem] gap-[1rem] overflow-hidden ${show ? "translate-y-0" : "-translate-y-full"} transition-all duration-300 ease-in-out ${menu ? 'h-[23rem]' : 'h-[3.3rem]'}`}>
                 <div className="w-full flex justify-between items-center lg:w-auto">
                     <p>SmaFarm</p>
                     <button onClick={() => setMenu(!menu)} className="lg:hidden w-auto">{menu ? <X /> : <AlignJustify />}</button>
