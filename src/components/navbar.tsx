@@ -27,12 +27,12 @@ export default function Navbar() {
                 </div>
                 <nav className={`lg:gap-[3rem] gap-[1rem] flex-col lg:flex-row flex`}>
                     <Link href='/' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Home className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Home</Link>
-                    <Link href='/' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Rabbit className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Animals</Link>
-                    <Link href='/' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Warehouse className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Shelter</Link>
-                    <Link href='/' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Cart</Link>
+                    <Link href='/animal' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Rabbit className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Animals</Link>
+                    <Link href='/shelter' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Warehouse className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Shelter</Link>
+                    <Link href='/cart' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Cart</Link>
                 </nav>
                 <nav className={`flex  gap-[2rem] flex-col lg:flex-row lg:flex`}>
-                    <Link href='/' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Guest</Link>
+                    <Link href='/user' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Guest</Link>
                 </nav>
             </header>
         </div>
