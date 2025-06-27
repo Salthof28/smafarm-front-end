@@ -1,6 +1,6 @@
-import { Animal } from "@/types/interfaces";
+import { Animal, Category } from "@/types/interfaces";
 
-export let animals: Animal[] = [
+export let mockAnimals: Animal[] = [
     {
         id: 1,
         type: 'Kuroge Washu',
@@ -30,3 +30,18 @@ export let animals: Animal[] = [
         userId: 1
     },
 ]
+
+export const mockCategory: Category[] = [
+    {
+        id: 1,
+        name: 'Cow',
+        slug: 'cow',
+        image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkvy5wCD2kMlWbP7f-wdMVYVgB8L45FerDsSJfrnc9m_dFGLRbGg6324U2MgyaqNeCaho&usqp=CAU'
+    },
+    {
+        id: 2,
+        name: 'Sheep',
+        slug: 'sheep',
+        image: 'https://a-z-animals.com/media/2021/12/sheep.jpg'
+    }
+];
