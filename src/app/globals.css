@@ -23,4 +23,62 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1, h2, p {
+    margin: 0;
+}
+h1 {
+    font-size: 6rem;
+}
+h2 {
+    font-size: 4rem;
+    font-family: 'dynapuff';
+}
+h3 {
+    font-size: 3rem;
+    font-family: 'dynapuff';
+}
+p, ul {
+    font-size: 2rem;
+    margin: 0.4rem;
+    font-family: 'dynapuff';
+}
+a {
+    text-decoration: none;
+}
+.btn {
+    width: 10rem;
+    height: 3rem;
+    border-radius: 1rem;
+    background: rgba(72, 97, 90, 0.418);
+}
+
+@media only screen and (max-width: 2304px) {
+
+}
+@media only screen and (max-width: 1228px) {
+
+}
+@media only screen and (max-width: 980px) {
+    h1, h2, p {
+        margin: 0;
+    }
+    h1 {
+        font-size: 3rem;
+    }
+    h2 {
+        font-size: 2rem;
+    }
+    p, ul {
+        font-size: 1rem;
+        margin: 0.4rem;
+    }
+}
+@media only screen and (max-width: 712px) {
+
 }
