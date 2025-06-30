@@ -11,6 +11,7 @@ export interface Animal {
     description: string,
     images: string[],
     age: number,
+    price: number,
     category: Category,
     userId: number
 }

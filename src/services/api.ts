@@ -7,6 +7,7 @@ export let mockAnimals: Animal[] = [
         description: 'Elevate your wardrobe with this stylish black t-shirt featuring a striking monochrome mountain range graphic. Perfect for those who love the outdoors or want to add a touch of nature-inspired design to their look, this tee is crafted from soft, breathable fabric ensuring all-day comfort. Ideal for casual outings or as a unique gift, this t-shirt is a versatile addition to any collection.',
         images: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ5Re5iyDi9WAQfSAixdztS268YFnxg_r6ig&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRUzDTwjHwZmYevQetIygoP31rfU53WxAkmg&s", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWBJ9efNWjuhv2lJC75iiKkiqAXRDIcOHiRA&s"],
         age: 2,
+        price: 130000000,
         category: {
             id: 1,
             name: 'Cow',
@@ -21,6 +22,7 @@ export let mockAnimals: Animal[] = [
         description: 'Elevate your wardrobe with this stylish black t-shirt featuring a striking monochrome mountain range graphic. Perfect for those who love the outdoors or want to add a touch of nature-inspired design to their look, this tee is crafted from soft, breathable fabric ensuring all-day comfort. Ideal for casual outings or as a unique gift, this t-shirt is a versatile addition to any collection.',
         images: ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiYfSXu6zpf6uaB7x0BVIKBVFSROVmk7xbng&s", "https://image.idntimes.com/post/20230924/screenshot-2023-09-24-181753-578a60e9ae7f99757965d57e96cc46d2.png", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-wKC1_nLUy9aFzEIaIYdjDwv5BoVeCCeY5g&s"],
         age: 2,
+        price: 80000000,
         category: {
             id: 1,
             name: 'Cow',
