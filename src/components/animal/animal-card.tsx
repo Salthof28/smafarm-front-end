@@ -1,10 +1,19 @@
+'use client'
 import { Animal } from "@/types/interfaces";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
 
 
 interface AnimalCardListProp {
     animal: Animal;
 }
 export default function AnimalCardList ({ animal }: AnimalCardListProp) {
+    const router: AppRouterInstance = useRouter();
+
+    const handleRouter = (animalId: number) => {
+        router.push(`/animal/${animalId}`);
+    }
+
     return (
         <div className="flex flex-col bg-emerald-300 rounded-[1rem] w-[20rem]">
             <img src={animal?.images?.[0]} className="object-cover w-full rounded-t-[1rem] h-[15rem]" alt={animal?.type} />
@@ -16,7 +25,7 @@ export default function AnimalCardList ({ animal }: AnimalCardListProp) {
             <div className="flex flex-col items-center gap-[1rem] px-[2rem] py-[1rem]">
                 <p>Rp {animal?.price}</p>
                 <div className="flex flex-row gap-[2rem] justify-between w-[100%]">
-                    <button className="btn bg-emerald-400 shadow-lg/30">See Detail</button>
+                    <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-400 shadow-lg/30">See Detail</button>
                     <button className="btn bg-emerald-400 shadow-lg/30">Buy</button>
                 </div>
             </div>
