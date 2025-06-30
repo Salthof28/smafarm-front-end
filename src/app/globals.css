@@ -41,8 +41,14 @@ h2 {
 h3 {
     font-size: 3rem;
 }
-p, ul {
+h4 {
     font-size: 2rem;
+}
+h5 {
+    font-size: 1.5rem;
+}
+p, ul {
+    font-size: 1rem;
     margin: 0rem;
 }
 a {
@@ -69,17 +75,44 @@ a {
         font-size: 3rem;
     }
     h2 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
-    p, ul {
+    h3 {
+    font-size: 1.5rem;
+    }
+    h4 {
+        font-size: 1.2rem;
+    }
+    h5 {
         font-size: 1rem;
+    }   
+    p, ul {
+        font-size: 0.8rem;
     }
+/* h4 {
+    font-size: 2rem;
+}
+
+p, ul {
+    font-size: 1rem;
+    margin: 0rem;
+} */
+    
 }
 @media only screen and (max-width: 712px) {
     h1 {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
     h2 {
+        font-size: 2rem;
+    }
+    h3 {
+        font-size: 1.5rem;
+    }
+    h4 {
+        font-size: 1.2rem;
+    }
+    h5 {
         font-size: 1rem;
     }
     p, ul {
