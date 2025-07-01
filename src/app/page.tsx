@@ -3,7 +3,7 @@ import Navbar from "@/components/navbar";
 import { mockCategory } from "@/services/api";
 import { Category } from "@/types/interfaces";
 
-const revalidate = 10
+export const revalidate = 10
 export default async function Home() {
   const category: Category[] = await mockCategory; 
   const imageCategory: string[] = category.map(cat => cat.image)
