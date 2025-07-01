@@ -65,9 +65,11 @@ a {
 
 }
 @media only screen and (max-width: 1228px) {
-
-}
-@media only screen and (max-width: 980px) {
+    .btn {
+        width: 8rem;
+        height: 2.2rem;
+        font-size: 0.8rem;
+    }
     h1, h2, p {
         margin: 0;
     }
@@ -89,6 +91,31 @@ a {
     p, ul {
         font-size: 0.8rem;
     }
+
+}
+@media only screen and (max-width: 980px) {
+    /* h1, h2, p {
+        margin: 0;
+    }
+    h1 {
+        font-size: 3rem;
+    }
+    h2 {
+        font-size: 2.5rem;
+    }
+    h3 {
+    font-size: 1.5rem;
+    }
+    h4 {
+        font-size: 1.2rem;
+    }
+    h5 {
+        font-size: 1rem;
+    }   
+    p, ul {
+        font-size: 0.8rem;
+    } */
+
 /* h4 {
     font-size: 2rem;
 }
@@ -110,16 +137,17 @@ p, ul {
         font-size: 1.5rem;
     }
     h4 {
-        font-size: 1.2rem;
-    }
-    h5 {
         font-size: 1rem;
     }
-    p, ul {
+    h5 {
         font-size: 0.8rem;
+    }
+    p, ul {
+        font-size: 0.6rem;
     } 
     .btn {
-        width: 6rem;
-        height: 2.5rem;
+        width: 8rem;
+        height: 1.8rem;
+        font-size: 0.7rem;
     }
 }
