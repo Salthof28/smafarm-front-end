@@ -13,7 +13,7 @@ export default function AnimalPage() {
             <Navbar/>
             <main className="flex items-center flex-col mt-[6rem] lg:mt-[12rem]" >
                 {/* <h1 className="p-[8rem]">Hello Animal</h1> */}
-                <section className="flex flex-row px-[0.5rem] md:px-[1rem] 2xl:px-[10vw] justify-center w-full">
+                <section className="flex flex-row px-[0.5rem] md:px-[2vw] xl:px-[3vw] 2xl:px-[10vw] justify-center w-full">
                     <section className="hidden lg:block bg-amber-50 p-[2rem] shadow-lg/30 ring-[0.1rem] ring-black/5 min-w-[15rem] w-fit h-fit rounded-[0.5rem]">
                         <h4>Filter</h4>
                         <hr></hr>
