@@ -3,7 +3,10 @@ import { AlignJustify, CircleUserRound, Home, Rabbit, ShoppingCart, Warehouse, X
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export default function Navbar() {
+interface NavbarProp {
+    activeIconNav: string;
+}
+export default function Navbar({ activeIconNav }: NavbarProp) {
     const [show, setShow] = useState<boolean>(true);
     const lastPosition = useRef<number>(0);
     const [menu, setMenu] = useState<boolean>(false);
@@ -18,6 +21,7 @@ export default function Navbar() {
             window.removeEventListener('scroll', handleScroll);
         }
     }, [])
+    console.log(activeIconNav)
     return(
         <div className="flex justify-center">
             <header className={`w-[98vw] lg:h-fit flex flex-col lg:flex-row justify-between bg-black/80 text-white mt-[1rem] p-[0.5rem] items-center rounded-[1rem] duration-500 fixed lg:gap-[2rem] gap-[1rem] overflow-hidden ${show ? "translate-y-0" : "-translate-y-full"} transition-all duration-300 ease-in-out ${menu ? 'h-[23rem]' : 'h-[2.5rem]'}`}>
@@ -26,13 +30,13 @@ export default function Navbar() {
                     <button onClick={() => setMenu(!menu)} className="lg:hidden w-auto">{menu ? <X /> : <AlignJustify />}</button>
                 </div>
                 <nav className={`lg:gap-[3rem] gap-[1rem] flex-col lg:flex-row flex`}>
-                    <Link href='/' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Home className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Home</Link>
-                    <Link href='/animal' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Rabbit className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Animals</Link>
-                    <Link href='/shelter' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><Warehouse className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Shelter</Link>
-                    <Link href='/cart' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Cart</Link>
+                    <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-green-400' : 'text-white'}`}><Home className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Home</Link>
+                    <Link href='/animal' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'animal' ? 'text-green-400' : 'text-white'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Animals</Link>
+                    <Link href='/shelter' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'shelter' ? 'text-green-400' : 'text-white'}`}><Warehouse className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Shelter</Link>
+                    <Link href='/cart' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-green-400' : 'text-white'}`}><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Cart</Link>
                 </nav>
                 <nav className={`flex  gap-[2rem] flex-col lg:flex-row lg:flex`}>
-                    <Link href='/login' className="flex flex-col items-center text-[0.6rem] lg:text-[0.8rem]"><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Guest</Link>
+                    <Link href='/login' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'login' ? 'text-green-400' : 'text-white'}`}><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Guest</Link>
                 </nav>
             </header>
         </div>

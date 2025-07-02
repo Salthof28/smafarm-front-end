@@ -9,10 +9,11 @@ export const revalidate = 10;
 export default function AnimalPage() {
     const category: Category[] = mockCategory;
     const animals: Animal[] = mockAnimals;
+    const activeIconNav: string = 'animal'; 
     // const filterAnimals: Animal[] = animals;
     return(
         <div className="bg-amber-100 w-full flex flex-col items-center min-h-screen overflow-x-hidden">
-            <Navbar/>
+            <Navbar activeIconNav={activeIconNav}/>
             <main className="flex items-center flex-col mt-[6rem] lg:mt-[12rem]" >
                 {/* <h1 className="p-[8rem]">Hello Animal</h1> */}
                 <section className="flex flex-row px-[0.5rem] md:px-[2vw] xl:px-[3vw] 2xl:px-[10vw] justify-center w-full gap-[1rem]">
@@ -25,23 +26,6 @@ export default function AnimalPage() {
                         )}
                     </section>
                     <AnimalCardList animals={animals} />
-                    {/* <section className="flex flex-row gap-[0.6rem] md:gap-[1rem] xl:gap-[2rem] flex-wrap w-fit justify-center">
-                        {animals.map((animal) => (
-                            <AnimalCardList key={animal.id} animal={animal} />
-                        ))}
-                        {animals.map((animal) => (
-                            <AnimalCardList key={animal.id} animal={animal} />
-                        ))}
-                        {animals.map((animal) => (
-                            <AnimalCardList key={animal.id} animal={animal} />
-                        ))}
-                        {animals.map((animal) => (
-                            <AnimalCardList key={animal.id} animal={animal} />
-                        ))}
-                        {animals.map((animal) => (
-                            <AnimalCardList key={animal.id} animal={animal} />
-                        ))}
-                    </section> */}
                 </section>
             </main>
         </div>

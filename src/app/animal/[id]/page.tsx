@@ -11,9 +11,10 @@ export default async function AnimalDetailPage ({ params }: AnimalDetailParam) {
     const resolvedParams = await params;
     const id: number = parseInt(resolvedParams.id);
     const animal = await mockAnimals.find(anim => anim.id === id);
+    const activeIconNav: string = 'animal'; 
     return (
         <div className="w-full flex flex-col items-center min-h-screen overflow-x-hidden bg-amber-100">
-            <Navbar />
+            <Navbar activeIconNav={activeIconNav}/>
             <main className="flex flex-col items-center mt-[6rem] lg:mt-[12rem] gap-[2rem] text-black">
                 {/* description section */}
                 <section className="flex flex-col max-lg:items-center lg:flex-row gap-[2rem] xl:gap-[4rem] 2xl:gap-[6rem] w-[95vw] 2xl:w-[75vw] bg-amber-50 shadow-lg/30 ring-[0.1rem] ring-black/5 p-[2rem] rounded-[1rem]">
