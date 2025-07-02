@@ -47,7 +47,7 @@ h4 {
 h5 {
     font-size: 1.5rem;
 }
-p, ul {
+p, ul, .tds {
     font-size: 1rem;
     margin: 0rem;
 }
@@ -88,7 +88,7 @@ a {
     h5 {
         font-size: 1rem;
     }   
-    p, ul {
+    p, ul, .tds {
         font-size: 0.8rem;
     }
 
@@ -142,7 +142,7 @@ p, ul {
     h5 {
         font-size: 0.8rem;
     }
-    p, ul {
+    p, ul, .tds {
         font-size: 0.6rem;
     } 
     .btn {
