@@ -53,8 +53,8 @@ export default function AnimalCardList ({ animals }: AnimalCardListProp) {
                 <div className="flex flex-col items-center gap-[1rem] px-[0.5rem] md:px-[1rem] xl:px-[2rem] py-[0.5rem] md:py-[1rem]">
                     <p className="font-bold">Rp {animal?.price}</p>
                     <div className="flex flex-row gap-[0.3rem] md:gap-[2rem] md:justify-between w-[100%]">
-                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem">See Detail</button>
-                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white">Buy</button>
+                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem transition-opacity delay-200 active:scale-90">See Detail</button>
+                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white transition-opacity delay-200 active:scale-90">Buy</button>
                     </div>
                 </div>
             </div>

@@ -23,8 +23,8 @@ export default function SlideImagesHome({ imageCategory }: SlideImagesHomeProp) 
         <p className="text-white leading-none font-medium">You need</p>
         <h1 className="leading-none text-amber-600 font-bold">Livestock <span className="text-[0.8rem] md:text-[1.5rem] lg:text-[3rem] text-emerald-500 font-medium">or care service?</span></h1>
             <div className="flex gap-[2rem]">
-                <button onClick={() => router.push('/animal')} className="btn bg-emerald-500 text-black shadow-lg font-bold hover:bg-emerald-700 hover:text-white duration-200">Livestock</button>
-                <button onClick={() => router.push('/shelter')} className="btn bg-emerald-500 text-black shadow-lg font-bold hover:bg-emerald-700 hover:text-white duration-200">Shelter</button>
+                <button onClick={() => router.push('/animal')} className="btn bg-emerald-500 text-black shadow-lg font-bold hover:bg-emerald-700 hover:text-white duration-200 transition-opacity delay-200 active:scale-90">Livestock</button>
+                <button onClick={() => router.push('/shelter')} className="btn bg-emerald-500 text-black shadow-lg font-bold hover:bg-emerald-700 hover:text-white duration-200 transition-opacity delay-200 active:scale-90">Shelter</button>
             </div>
         </section>
     )
