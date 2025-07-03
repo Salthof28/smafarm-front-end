@@ -10,13 +10,19 @@ interface AnimalCardListProp {
 }
 export default function AnimalCardList ({ animals }: AnimalCardListProp) {
     const router: AppRouterInstance = useRouter();
-    const searchParams: ReadonlyURLSearchParams = useSearchParams();
-    const categoryParams = searchParams.getAll('category') || [];
+    const findParams: ReadonlyURLSearchParams = useSearchParams();
+    const categoryParams = findParams.getAll('category') || [];
+    const searchParams = findParams.get('search') || "";
     const [currentAnimal, setCurrentAnimal] = useState<Animal[]>(animals);
     useEffect(() => {
-        setCurrentAnimal(categoryParams.length > 0 ? animals.filter(anim => categoryParams.includes(anim.category.name)) : animals);
-        console.log(categoryParams)
-    }, [searchParams]);
+        const filtered = animals.filter(anim => {
+            const categoryMatch = categoryParams.length === 0 || categoryParams.includes(anim?.category?.name);
+            // Filter pencarian: hanya lulus jika searchParams kosong atau anim.type mengandung searchParams
+            const searchMatch = searchParams === '' || anim.type.toLowerCase().includes(searchParams.toLowerCase());
+            return categoryMatch && searchMatch
+        })
+        setCurrentAnimal(filtered)
+    }, [findParams]);
     // console.log(animal)
     const handleRouter = (animalId: number) => {
         router.push(`/animal/${animalId}`);
@@ -35,8 +41,8 @@ export default function AnimalCardList ({ animals }: AnimalCardListProp) {
                 <div className="flex flex-col items-center gap-[1rem] px-[0.5rem] md:px-[1rem] xl:px-[2rem] py-[0.5rem] md:py-[1rem]">
                     <p className="font-bold">Rp {animal?.price}</p>
                     <div className="flex flex-row gap-[0.3rem] md:gap-[2rem] md:justify-between w-[100%]">
-                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem">See Detail</button>
-                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white">Buy</button>
+                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem transition-opacity delay-200 active:scale-90">See Detail</button>
+                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white transition-opacity delay-200 active:scale-90">Buy</button>
                     </div>
                 </div>
             </div>
@@ -70,8 +76,8 @@ export default function AnimalCardList ({ animals }: AnimalCardListProp) {
                 <div className="flex flex-col items-center gap-[1rem] px-[0.5rem] md:px-[1rem] xl:px-[2rem] py-[0.5rem] md:py-[1rem]">
                     <p className="font-bold">Rp {animal?.price}</p>
                     <div className="flex flex-row gap-[0.3rem] md:gap-[2rem] md:justify-between w-[100%]">
-                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem">See Detail</button>
-                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white">Buy</button>
+                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem transition-opacity delay-200 active:scale-90">See Detail</button>
+                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white transition-opacity delay-200 active:scale-90">Buy</button>
                     </div>
                 </div>
             </div>
@@ -87,8 +93,8 @@ export default function AnimalCardList ({ animals }: AnimalCardListProp) {
                 <div className="flex flex-col items-center gap-[1rem] px-[0.5rem] md:px-[1rem] xl:px-[2rem] py-[0.5rem] md:py-[1rem]">
                     <p className="font-bold">Rp {animal?.price}</p>
                     <div className="flex flex-row gap-[0.3rem] md:gap-[2rem] md:justify-between w-[100%]">
-                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem">See Detail</button>
-                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white">Buy</button>
+                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem transition-opacity delay-200 active:scale-90">See Detail</button>
+                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white transition-opacity delay-200 active:scale-90">Buy</button>
                     </div>
                 </div>
             </div>
@@ -104,8 +110,8 @@ export default function AnimalCardList ({ animals }: AnimalCardListProp) {
                 <div className="flex flex-col items-center gap-[1rem] px-[0.5rem] md:px-[1rem] xl:px-[2rem] py-[0.5rem] md:py-[1rem]">
                     <p className="font-bold">Rp {animal?.price}</p>
                     <div className="flex flex-row gap-[0.3rem] md:gap-[2rem] md:justify-between w-[100%]">
-                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem">See Detail</button>
-                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white">Buy</button>
+                        <button onClick={() => handleRouter(animal?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem transition-opacity delay-200 active:scale-90">See Detail</button>
+                        <button className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white transition-opacity delay-200 active:scale-90">Buy</button>
                     </div>
                 </div>
             </div>
