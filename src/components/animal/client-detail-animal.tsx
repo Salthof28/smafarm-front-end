@@ -3,6 +3,7 @@ import { Animal } from "@/types/interfaces";
 import { MessageSquareText } from "lucide-react";
 import { useState } from "react";
 import FormBuyAnimal from "./form-buy";
+import SlideImageAnimal from "./slideImage-detail-animal";
 
 interface DescriptionAnimalProp {
     animal: Animal | undefined;
@@ -18,13 +19,7 @@ export default function ClientDescriptionAnimal ({ animal }: DescriptionAnimalPr
             {/* description section */}
             <section className="flex flex-col max-lg:items-center lg:flex-row gap-[2rem] xl:gap-[4rem] 2xl:gap-[6rem] w-[95vw] 2xl:w-[75vw] bg-amber-50 shadow-lg/30 ring-[0.1rem] ring-black/5 p-[2rem] rounded-[1rem]">
                 {/* image */}
-                <div className="flex flex-col lg:w-[40%] items-center">
-                    <img src={animal?.images?.[0]} className="w-[80rem] lg:h-[25rem] xl:h-[37rem] 2xl:h-[30rem] object-cover rounded-[1rem] border-[0.15rem] border-gray-800" />
-                    
-                    <div>
-                    </div>
-                </div>
-
+                <SlideImageAnimal animal={animal} />
                 {/* description */}
                 <div className="lg:w-[60%]">
                     <h3 className="font-bold max-lg:text-center">{animal?.type}</h3>

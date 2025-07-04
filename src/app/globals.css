@@ -28,6 +28,10 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE dan Edge */
+  scrollbar-width: none;     /* Firefox */
+}
 
 h1, h2, p {
     margin: 0rem;
