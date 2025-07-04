@@ -1,8 +1,12 @@
+'use client'
 import Navbar from "@/components/navbar";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
 
 
 export default function Login() {
     const activeIconNav: string = 'login'; 
+    const router: AppRouterInstance = useRouter();
     return(
         <div className="bg-amber-100 w-full flex flex-col items-center min-h-screen overflow-x-hidden">
             <Navbar activeIconNav={activeIconNav}/>
@@ -12,7 +16,7 @@ export default function Login() {
                     <input data-testid="inptEmail" type="email" placeholder="email@mail.com" className="border p-[0.2rem] lg:p-[0.5rem] rounded-[0.6rem] text-[1rem] lg:text-[1.5rem]" />
                     <input data-testid="inptPassword" type="password" placeholder="Passsword" className="border p-[0.2rem] lg:p-[0.5rem] rounded-[0.6rem] text-[1rem] lg:text-[1.5rem]" />
                     <button data-testid="btnSignIn" type="submit" className="bg-emerald-500 rounded-[0.6rem] hover:bg-emerald-700 hover:text-white active:scale-95 duration-200 text-[1rem] lg:text-[1.5rem] p-[0.2rem] lg:p-[0.5rem]">Sign In</button>
-                    <button data-testid="btnCreate" type="button" className="bg-emerald-500 rounded-[0.6rem] hover:bg-emerald-700 hover:text-white active:scale-95 duration-200 text-[1rem] lg:text-[1.5rem] p-[0.2rem] lg:p-[0.5rem]" >Create Account</button>
+                    <button onClick={() => router.push('/register')} data-testid="btnCreate" type="button" className="bg-emerald-500 rounded-[0.6rem] hover:bg-emerald-700 hover:text-white active:scale-95 duration-200 text-[1rem] lg:text-[1.5rem] p-[0.2rem] lg:p-[0.5rem]" >Create Account</button>
                 </form>
             </main>
         </div>
