@@ -31,7 +31,13 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
         e.preventDefault();
         const currentCatParam: string[] = categoryParams;
         console.log(`cat: ${currentCatParam}`);
-        console.log(`search: ${search}`)
+        if(activeIconNav === 'animal') {
+            console.log(`search Animal: ${search}`);
+        }
+        else {
+            console.log(`search Shelter: ${search}`);
+        }
+        
         updateParams(currentCatParam);
     }
     const updateParams = useCallback((catParams: string[]) => {
@@ -44,7 +50,13 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
             if(search !== "" && !/[=&]/.test(search)) {
                 params.append('search', search)
             }
-            router.push(`/animal?${params.toString()}`);
+            if(activeIconNav === 'animal') {
+                router.push(`/animal?${params.toString()}`);
+            }
+            else {
+                router.push(`/shelter?${params.toString()}`);
+            }
+            
     }, [search])
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
@@ -67,19 +79,19 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
                         <button onClick={() => setMenu(!menu)} className="lg:hidden w-auto">{menu ? <X /> : <AlignJustify />}</button>
                     </div>
                     <nav className={`lg:gap-[3rem] gap-[1rem] flex-col lg:flex-row flex`}>
-                        <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-green-400' : 'text-white'}`}><Home className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Home</Link>
-                        <Link href='/animal' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'animal' || activeIconNav === 'animaldetail') ? 'text-green-400' : 'text-white'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Animals</Link>
-                        <Link href='/shelter' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'shelter' || activeIconNav === 'shelterdetail') ? 'text-green-400' : 'text-white'}`}><Warehouse className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Shelter</Link>
-                        <Link href='/cart' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-green-400' : 'text-white'}`}><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Cart</Link>
+                        <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-green-400' : 'text-white'}`}><Home className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Home</Link>
+                        <Link href='/animal' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'animal' || activeIconNav === 'animaldetail') ? 'text-green-400' : 'text-white'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Animals</Link>
+                        <Link href='/shelter' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'shelter' || activeIconNav === 'shelterdetail') ? 'text-green-400' : 'text-white'}`}><Warehouse className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Shelter</Link>
+                        <Link href='/cart' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-green-400' : 'text-white'}`}><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Cart</Link>
                     </nav>
                     <nav className={`flex  gap-[2rem] flex-col lg:flex-row lg:flex`}>
-                        <Link href='/login' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'login' ? 'text-green-400' : 'text-white'}`}><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[3rem] lg:h-[3rem]"/> Guest</Link>
+                        <Link href='/login' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'login' ? 'text-green-400' : 'text-white'}`}><CircleUserRound className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Guest</Link>
                     </nav>
                 </div>
                 {(activeIconNav === 'animal' || activeIconNav === 'shelter') && (
                     <form className="max-lg:hidden" onSubmit={handleInptSearch}>
-                        <input data-testid='inptSearch' onChange={getInputSearch} className="mt-[1rem] text-center bg-white/40 rounded-md hover:bg-emerald-500 p-1 text-[0.8rem] xl:text-[1rem] text-white" placeholder="Search" ></input>
-                        <button type="submit" data-testid="btnSearch" className="font-bold ml-2 bg-emerald-500 p-1 rounded-md hover:bg-emerald-700 hover:text-amber-50 transition-opacity active:scale-90 duration-200 text-[0.8rem] xl:text-[1rem]">Search</button>   
+                        <input data-testid='inptSearch' onChange={getInputSearch} className="mt-[1rem] text-center bg-white/40 rounded-md hover:bg-emerald-500 p-1 text-[0.8rem] 2xl:text-[1rem] text-white" placeholder="Search" ></input>
+                        <button type="submit" data-testid="btnSearch" className="font-bold ml-2 bg-emerald-500 p-1 rounded-md hover:bg-emerald-700 hover:text-amber-50 transition-opacity active:scale-90 duration-200 text-[0.8rem] 2xl:text-[1rem]">Search</button>   
                     </form>
                 )}
 
