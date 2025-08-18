@@ -3,7 +3,7 @@ import { Animal } from "@/types/interfaces";
 import { MessageSquareText } from "lucide-react";
 import { useState } from "react";
 import FormBuyAnimal from "./form-buy";
-import SlideImageAnimal from "./slideImage-detail-animal";
+import SlideImageAnimal from "./slideImage-detail-livestock";
 
 interface DescriptionAnimalProp {
     animal: Animal | undefined;

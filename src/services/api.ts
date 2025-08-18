@@ -1,4 +1,42 @@
-import { Animal, Category, Farm } from "@/types/interfaces";
+import { Animal, Category, CustomApiError, Farm, LivestockAllResponse } from "@/types/interfaces";
+
+
+const API_SMAFARM = 'https://localhost:4000';
+
+export async function fetchLivestock (): Promise<LivestockAllResponse[] | CustomApiError> {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/livestocks`);
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return {
+            message: (error as Error).message,
+            error: "NetworkError",  
+            statusCode: 500,
+        };
+    }
+}
+
+export async function fetchDetailLivestock(id: number): Promise<LivestockAllResponse | CustomApiError> {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/livestocks/${id}`);
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return {
+            message: (error as Error).message,
+            error: "NetworkError",  
+            statusCode: 500,
+        };
+    }
+}
+
 export const mockCategory: Category[] = [
     {
         id: 1,

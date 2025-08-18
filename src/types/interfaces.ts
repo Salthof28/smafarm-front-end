@@ -17,7 +17,6 @@ export interface Farm {
     createdAt: string,
     updatedAt: string
 }
-
 export interface Animal {
     id: number,
     userId: number,
@@ -32,3 +31,36 @@ export interface Animal {
     createdAt: string,
     updatedAt: string
 }
+
+export interface LivestockImage {
+  url: string;
+}
+export interface Livestock {
+    id: number;
+    category_id: number;
+    farm_id: number;
+    age: number;
+    price: number;
+    stock: number;
+    description: string;
+    location: string;
+    created_at: string; 
+    updated_at: string;
+    img_livestock: LivestockImage[];
+}
+export interface LivestockAllResponse {
+    message: string;
+    data: Livestock[];
+}
+
+export interface LivestockDetailResponse {
+    message: string;
+    data: Livestock;
+}
+
+export interface CustomApiError {
+  message: string;
+  error: string;   
+  statusCode: number;
+}
+
