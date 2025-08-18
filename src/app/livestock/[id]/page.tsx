@@ -1,5 +1,5 @@
-import ClientDescriptionAnimal from "@/components/animal/client-detail-animal";
-import FormBuyAnimal from "@/components/animal/form-buy";
+import ClientDescriptionAnimal from "@/components/livestock/client-detail-livestock";
+import FormBuyAnimal from "@/components/livestock/form-buy";
 import Navbar from "@/components/navbar";
 import { mockAnimals } from "@/services/api";
 import { MessageSquareText } from "lucide-react";

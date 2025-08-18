@@ -51,7 +51,7 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
                 params.append('search', search)
             }
             if(activeIconNav === 'animal') {
-                router.push(`/animal?${params.toString()}`);
+                router.push(`/livestock?${params.toString()}`);
             }
             else {
                 router.push(`/shelter?${params.toString()}`);
@@ -80,7 +80,7 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
                     </div>
                     <nav className={`lg:gap-[3rem] gap-[1rem] flex-col lg:flex-row flex`}>
                         <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-green-400' : 'text-white'}`}><Home className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Home</Link>
-                        <Link href='/animal' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'animal' || activeIconNav === 'animaldetail') ? 'text-green-400' : 'text-white'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Animals</Link>
+                        <Link href='/livestock' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'animal' || activeIconNav === 'animaldetail') ? 'text-green-400' : 'text-white'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Animals</Link>
                         <Link href='/shelter' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'shelter' || activeIconNav === 'shelterdetail') ? 'text-green-400' : 'text-white'}`}><Warehouse className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Shelter</Link>
                         <Link href='/cart' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-green-400' : 'text-white'}`}><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Cart</Link>
                     </nav>

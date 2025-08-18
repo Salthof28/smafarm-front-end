@@ -1,12 +1,12 @@
-import AnimalCardList from "@/components/animal/animal-card";
-import FilterCard from "@/components/animal/filter-card";
+import AnimalCardList from "@/components/livestock/livestock-card";
+import FilterCard from "@/components/livestock/filter-card";
 import Navbar from "@/components/navbar";
 import { mockAnimals, mockCategory } from "@/services/api";
 import { Animal, Category } from "@/types/interfaces";
 import { Square, SquareCheckBig } from "lucide-react";
 export const revalidate = 10;
 
-export default function AnimalPage() {
+export default function LivestockPage() {
     const category: Category[] = mockCategory;
     const animals: Animal[] = mockAnimals;
     const activeIconNav: string = 'animal'; 
