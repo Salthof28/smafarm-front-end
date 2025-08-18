@@ -1,10 +1,10 @@
 'use client'
-import { Animal } from "@/types/interfaces";
+import { Animal, Livestock } from "@/types/interfaces";
 import { ArrowLeft, CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface FormBuyAnimalProp {
-    animal: Animal | undefined;
+    animal: Livestock;
     hiddenForm: () => void;
 }
 interface Treatment {
@@ -60,7 +60,7 @@ export default function FormBuyAnimal ({ animal, hiddenForm }: FormBuyAnimalProp
     return(
         <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {e.preventDefault(); handleSubmit(formData)}} className="flex flex-col w-[95vw] 2xl:w-[75vw] bg-amber-50 shadow-lg/30 ring-[0.1rem] ring-black/5 rounded-[1rem] p-[1rem] fixed">
             <button onClick={hiddenForm}><ArrowLeft /></button>
-            <h3 className="text-center font-bold mb-[1rem]">Buy {animal?.type}</h3>
+            <h3 className="text-center font-bold mb-[1rem]">Buy {animal?.name}</h3>
             <label className="tds">Do you want care animal:</label>
             <select name="wantCare" onChange={handleChange} className="bg-amber-100 rounded-[0.5rem] border border-gray-300/20 p-[0.3rem] tds">
                 <option value ='0'>Select yes or no</option>

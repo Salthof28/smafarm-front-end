@@ -6,7 +6,7 @@ import { Category } from "@/types/interfaces";
 export const revalidate = 10
 export default async function Home() {
   const category: Category[] = await mockCategory; 
-  const imageCategory: string[] = category.map(cat => cat.image);
+  const imageCategory: string[] = category.map(cat => cat.img_category);
   const activeIconNav: string = 'home'; 
   return (
     <div className="w-full flex flex-col items-center min-h-screen overflow-x-hidden">

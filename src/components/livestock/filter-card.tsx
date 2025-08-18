@@ -1,5 +1,5 @@
 'use client'
-import { Animal, Category } from "@/types/interfaces";
+import { Animal, Category, CustomApiError } from "@/types/interfaces";
 import { Square, SquareCheckBig } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { ReadonlyURLSearchParams, useRouter, useSearchParams } from "next/navigation";
@@ -26,9 +26,10 @@ export default function FilterCard ({ category }: FilterCardProp) {
         params.delete('category');
         // add new params
         catParams.forEach((cat) => params.append('category', cat));
-        router.push(`/animal?${params.toString()}`);
+        router.push(`/livestock?${params.toString()}`);
         router.refresh();
     }, [searchParams])
+    
 
     return (
         <button onClick={handleChecklist} className="flex flex-row gap-[0.2rem] items-center">

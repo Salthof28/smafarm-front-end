@@ -1,14 +1,13 @@
 import AnimalCardList from "@/components/livestock/livestock-card";
 import FilterCard from "@/components/livestock/filter-card";
 import Navbar from "@/components/navbar";
-import { mockAnimals, mockCategory } from "@/services/api";
-import { Animal, Category } from "@/types/interfaces";
-import { Square, SquareCheckBig } from "lucide-react";
+import { CategoryDetailResponse, CustomApiError, LivestockAllResponse } from "@/types/interfaces";
+import { fetchAllCategory, fetchAllLivestock } from "@/services/api";
 export const revalidate = 10;
 
-export default function LivestockPage() {
-    const category: Category[] = mockCategory;
-    const animals: Animal[] = mockAnimals;
+export default async function LivestockPage() {
+    const category: CategoryDetailResponse | CustomApiError = await fetchAllCategory();
+    const livestocks: LivestockAllResponse | CustomApiError = await fetchAllLivestock();
     const activeIconNav: string = 'animal'; 
     // const filterAnimals: Animal[] = animals;
     return(
@@ -21,11 +20,23 @@ export default function LivestockPage() {
                         <h4>Filter</h4>
                         <hr></hr>
                         <p className="font-bold">Category</p>
-                        {category.map((cat) => 
-                            <FilterCard category={cat} />
+                        { "data" in category ? (
+                            category.data.length > 0 ? (
+                            category.data.map((cat) => (
+                                <FilterCard key={cat.id} category={cat} />
+                            ))
+                            ) : (
+                            <p className="text-gray-500">No categories available</p>
+                            )
+                        ) : (
+                            <p className="text-red-500">Failed to load categories {category.statusCode}</p>
                         )}
                     </section>
-                    <AnimalCardList animals={animals} />
+                    { "data" in livestocks ? (
+                        <AnimalCardList livestocks={livestocks.data} />
+                    ) : (
+                        <p className="text-red-500">Failed to load livestocks {livestocks.error}</p>
+                    )}
                 </section>
             </main>
         </div>
