@@ -40,6 +40,34 @@ export async function fetchDetailLivestock(id: number): Promise<LivestockDetailR
     }
 }
 
+export async function fetchAllShelter(category_id?: number[], name?: string) {
+    try {
+        const params: string[] = []
+        if (category_id && category_id.length > 0) {
+            category_id.forEach(id => params.push(`category_id=${encodeURIComponent(id)}`));
+        }
+        if(name) params.push(`name=${encodeURIComponent(name)}`);
+        const queryString = params.length > 0 ? `?${params.join("&")}` : "";
+        const response: Response = await fetch(`${API_SMAFARM}/shelters${queryString}`);
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchDetailShelter(id: number) {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/shelters/${id}`);
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
 function errorNetworking(error: unknown): CustomApiError {
     return {
         message: (error as Error).message,

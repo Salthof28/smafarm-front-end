@@ -41,7 +41,7 @@ export type Farm = {
   created_at: string; // bisa Date kalau kamu parse
   updated_at: string; // bisa Date juga
 };
-export interface LivestockImage {
+export interface ImageUrl {
   url: string;
 }
 
@@ -65,20 +65,52 @@ export interface Livestock {
     updated_at: string;
     farm: Farm;
     category: Category;
-    img_livestock: LivestockImage[];
+    img_livestock: ImageUrl[];
 }
+export interface CareGive {
+    id: number;
+    shelter_id: number;
+    name: string;
+    price: number;
+    unit: string;
+    required: boolean;
+}
+export interface Shelter {
+    id: number;
+    name: string;
+    location: string;
+    accomodate: number;
+    description: string;
+    price_daily: number;
+    created_at: string;
+    updated_at: string;
+    farm: Farm;
+    category: Category;
+    img_shelter: ImageUrl[];
+    care_give: CareGive[];
+}
+
+export interface CategoryDetailResponse {
+    message: string;
+    data: Category[];
+}
+
 export interface LivestockAllResponse {
     message: string;
     data: Livestock[];
 }
-
 export interface LivestockDetailResponse {
     message: string;
     data: Livestock;
 }
-export interface CategoryDetailResponse {
+
+export interface ShelterAllResponse {
     message: string;
-    data: Category[];
+    data: Shelter[];
+}
+export interface ShelterDetailResponse {
+    message: string;
+    data: Shelter;
 }
 
 export interface CustomApiError {

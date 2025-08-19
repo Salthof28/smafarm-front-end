@@ -7,8 +7,9 @@ import { useCallback, useState } from "react";
 
 interface FilterCardProp {
     category: Category;
+    activeIconNav: string;
 }
-export default function FilterCard ({ category }: FilterCardProp) {
+export default function FilterCard ({ category, activeIconNav }: FilterCardProp) {
     const router: AppRouterInstance = useRouter();
     const searchParams: ReadonlyURLSearchParams = useSearchParams();
     const categoryParams = searchParams.getAll('category').map(Number) || 'All';
@@ -26,7 +27,12 @@ export default function FilterCard ({ category }: FilterCardProp) {
         params.delete('category');
         // add new params
         catParams.forEach((cat) => params.append('category', `${cat}`));
-        router.push(`/livestock?${params.toString()}`);
+        if(activeIconNav === 'animal'){
+            router.push(`/livestock?${params.toString()}`);
+        } 
+        else  {
+            router.push(`/shelter?${params.toString()}`);
+        }
         router.refresh();
     }, [searchParams])
     

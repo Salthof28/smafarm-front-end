@@ -23,7 +23,7 @@ export default async function LivestockPage() {
                         { "data" in category ? (
                             category.data.length > 0 ? (
                             category.data.map((cat) => (
-                                <FilterCard key={cat.id} category={cat} />
+                                <FilterCard key={cat.id} category={cat} activeIconNav={activeIconNav} />
                             ))
                             ) : (
                             <p className="text-gray-500">No categories available</p>
