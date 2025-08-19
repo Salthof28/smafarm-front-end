@@ -36,8 +36,8 @@ export default function ShelterCardList ({ shelters }: AnimalCardListProp) {
         fetchFiltered();
     }, [findParams]);
     // console.log(animal)
-    const handleRouter = (animalId: number) => {
-        router.push(`/livestock/${animalId}`);
+    const handleRouter = (shelterlId: number) => {
+        router.push(`/shelter/${shelterlId}`);
     }
 
     if (error) return <p className="text-red-500">{error}</p>;
