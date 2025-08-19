@@ -69,7 +69,7 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
             <header className={`w-[98vw] flex flex-col lg:h-fit bg-black/80 text-white mt-[1rem] p-[0.5rem] items-center rounded-[1rem] duration-500 fixed overflow-hidden ${show ? "translate-y-0" : "-translate-y-full"} transition-all duration-300 ease-in-out ${menu ? 'h-[23rem]' : 'h-[2.5rem]'}`}>
                 <div className="w-full flex flex-col lg:flex-row justify-between lg:h-fit lg:gap-[2rem] gap-[1rem] ">
                     <div className="w-full flex justify-between items-center lg:w-auto">
-                        <p>SmaFarm</p>
+                        <img src='/smafarm-logo.png' className="w-[4rem]" />
                         {(activeIconNav === 'animal' || activeIconNav === 'shelter') && (
                         <form className="lg:hidden" onSubmit={handleInptSearch}>
                             <input data-testid='inptSearch' onChange={getInputSearch} className="text-center bg-white/40 rounded-md hover:bg-emerald-500 p-[0.1rem] text-[0.8rem] text-white" placeholder="Search" ></input>
