@@ -3,7 +3,7 @@ import { Animal, Category, CategoryDetailResponse, CustomApiError, Farm, Livesto
 
 const API_SMAFARM = 'http://localhost:4000';
 
-export async function fetchAllCategory (category_id?: number, name?: string): Promise<CategoryDetailResponse | CustomApiError> {
+export async function fetchAllCategory (): Promise<CategoryDetailResponse | CustomApiError> {
     try {
         const response: Response = await fetch(`${API_SMAFARM}/category`);
         return response.json();
@@ -12,9 +12,15 @@ export async function fetchAllCategory (category_id?: number, name?: string): Pr
     }
 }
 
-export async function fetchAllLivestock (): Promise<LivestockAllResponse | CustomApiError> {
+export async function fetchAllLivestock (category_id?: number[], name?: string): Promise<LivestockAllResponse | CustomApiError> {
     try {
-        const response: Response = await fetch(`${API_SMAFARM}/livestocks`);
+        const params: string[] = []
+        if (category_id && category_id.length > 0) {
+            category_id.forEach(id => params.push(`category_id=${encodeURIComponent(id)}`));
+        }
+        if(name) params.push(`name=${encodeURIComponent(name)}`);
+        const queryString = params.length > 0 ? `?${params.join("&")}` : "";
+        const response: Response = await fetch(`${API_SMAFARM}/livestocks${queryString}`);
         return response.json();
     } catch(error: unknown) {
         return errorNetworking(error);

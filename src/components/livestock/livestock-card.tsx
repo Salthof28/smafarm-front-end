@@ -4,6 +4,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { ReadonlyURLSearchParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import FormBuyAnimal from "./form-buy";
+import { fetchAllLivestock } from "@/services/api";
 
 
 interface AnimalCardListProp {
@@ -17,24 +18,30 @@ export default function AnimalCardList ({ livestocks }: AnimalCardListProp) {
     const [currentAnimal, setCurrentAnimal] = useState<Livestock[]>(livestocks);
     const [showForm, setShowForm] = useState<boolean>(false);
     const [selectedAnimal, setSelectedAnimal] = useState<Livestock | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const handleBuy = (animal: Livestock) => {
         setSelectedAnimal(animal);
         setShowForm(true);
     };
     useEffect(() => {
-        const filtered = livestocks.filter(livestock => {
-            const categoryMatch = categoryParams.length === 0 || categoryParams.includes(livestock?.category?.name);
-            // Filter pencarian: hanya lulus jika searchParams kosong atau anim.type mengandung searchParams
-            const searchMatch = searchParams === '' || livestock?.name.toLowerCase().includes(searchParams.toLowerCase());
-            return categoryMatch && searchMatch
-        })
-        setCurrentAnimal(filtered)
+        const fetchFiltered = async () => {
+            const categoryIds = categoryParams.map(id => Number(id));
+            const filteredRaw = await fetchAllLivestock(categoryIds, searchParams);
+            if ('data' in filteredRaw) {
+                setCurrentAnimal(filteredRaw.data);
+            } else {
+                setError(filteredRaw.error || filteredRaw.message);
+            }
+        };
+        fetchFiltered();
     }, [findParams]);
     // console.log(animal)
     const handleRouter = (animalId: number) => {
         router.push(`/livestock/${animalId}`);
     }
+
+    if (error) return <p className="text-red-500">{error}</p>;
 
     return (
         <section className={`flex flex-row gap-[0.6rem] md:gap-[1rem] xl:gap-[2rem] flex-wrap w-full justify-center ${currentAnimal.length > 0 ? 'lg:justify-start' : 'justify-center min-h-[75vh]' } min-w-[71vw] xl:min-w-[77vw] 2xl:min-w-[70vw] items-center`}>

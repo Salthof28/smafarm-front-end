@@ -11,21 +11,21 @@ interface FilterCardProp {
 export default function FilterCard ({ category }: FilterCardProp) {
     const router: AppRouterInstance = useRouter();
     const searchParams: ReadonlyURLSearchParams = useSearchParams();
-    const categoryParams = searchParams.getAll('category') || 'All';
-    const [checklist, setChecklist] = useState<boolean>(categoryParams.includes(category.name));
+    const categoryParams = searchParams.getAll('category').map(Number) || 'All';
+    const [checklist, setChecklist] = useState<boolean>(categoryParams.includes(category.id));
     
     const handleChecklist = (): void => {
-        const collectCatParams = checklist ? categoryParams.filter((cat) => cat !== category.name) : [...categoryParams, category.name];
+        const collectCatParams = checklist ? categoryParams.filter((cat) => cat !== category.id) : [...categoryParams, category.id];
         setChecklist(!checklist);
         // console.log(collectCatParams)
         updateParams(collectCatParams)
     } 
-    const updateParams = useCallback((catParams: string[]) => {
+    const updateParams = useCallback((catParams: number[]) => {
         const params = new URLSearchParams(searchParams.toString());
         // delete old params
         params.delete('category');
         // add new params
-        catParams.forEach((cat) => params.append('category', cat));
+        catParams.forEach((cat) => params.append('category', `${cat}`));
         router.push(`/livestock?${params.toString()}`);
         router.refresh();
     }, [searchParams])
