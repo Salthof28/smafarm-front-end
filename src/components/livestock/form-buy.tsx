@@ -58,7 +58,7 @@ export default function FormBuyAnimal ({ animal, hiddenForm }: FormBuyAnimalProp
         console.log(data)
     }
     return(
-        <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {e.preventDefault(); handleSubmit(formData)}} className="flex flex-col w-[95vw] 2xl:w-[75vw] bg-amber-50 shadow-lg/30 ring-[0.1rem] ring-black/5 rounded-[1rem] p-[1rem] fixed">
+        <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {e.preventDefault(); handleSubmit(formData)}} className="flex flex-col w-[95vw] 2xl:w-[75vw] bg-amber-50 shadow-lg/30 ring-[0.1rem] ring-black/5 rounded-[1rem] p-[1rem] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <button onClick={hiddenForm}><ArrowLeft /></button>
             <h3 className="text-center font-bold mb-[1rem]">Buy {animal?.name}</h3>
             <label className="tds">Do you want care animal:</label>
