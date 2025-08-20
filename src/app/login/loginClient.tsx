@@ -1,6 +1,6 @@
 'use client'
 import Navbar from "@/components/navbar";
-import useAuthCustomer from "@/hooks/useAuthCustomer";
+import useAuth from "@/hooks/useAuth";
 import { signIn } from "next-auth/react";
 // import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +11,7 @@ interface LoginClientProps {
 }
 export default function LoginClient({ initialLoading }: LoginClientProps) {
     const activeIconNav: string = 'login'; 
-    const { router } = useAuthCustomer();
+    const { router } = useAuth();
     const searchParams = useSearchParams();
     const redirect = searchParams.get('redirect') || ('/dashboard');
     const errorType = searchParams.get('error')

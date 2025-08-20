@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
           const loginJson = await loginRes.json();
           const loginData = loginJson.data;
 
-          // 2. Fetch profile pakai access_token
+          // 2. Fetch profile with access_token
           const profileRes = await fetch("http://localhost:4000/users/profile", {
             method: "GET",
             headers: {
@@ -64,7 +64,7 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
-      // saat login pertama kali
+      // first login
       if (user) {
         token.id = Number(user.id);
         token.name = user.name;
@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
         token.profile = user.profile;
       }
 
-      // cek expired token
+      // check expired token
       const now = Math.floor(Date.now() / 1000);
       if (token.expiresAt && now >= (token.expiresAt as number)) {
         try {
@@ -94,7 +94,7 @@ export const authOptions: NextAuthOptions = {
             token.refreshToken = newTokens.refresh_token;
             token.expiresAt = newTokens.expires_at;
 
-            // update profile lagi dengan token baru
+            // update profile with new Token
             const profileRes = await fetch("http://localhost:4000/users/profile", {
               headers: {
                 Authorization: `Bearer ${newTokens.access_token}`,
@@ -133,100 +133,3 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
   },
 };
-
-
-// import { NextAuthOptions } from "next-auth";
-// import CredentialsProvider from "next-auth/providers/credentials";
-
-// export const authOptions: NextAuthOptions = {
-//   session: {
-//     strategy: "jwt",
-//   },
-//   secret: process.env.NEXTAUTH_SECRET,
-//   providers: [
-//     CredentialsProvider({
-//       name: "Credentials",
-//       credentials: {
-//         email: {
-//           label: "Email",
-//           type: "email",
-//           placeholder: "blabla@gmail.com",
-//         },
-//         password: { label: "Password", type: "password" },
-//       },
-//       async authorize(credentials) {
-//         if (!credentials?.email || !credentials?.password) {
-//           return null;
-//         }
-
-//         try {
-//           // hit API login (NestJS kamu)
-//           const response = await fetch(
-//             "http://localhost:4000/auth/login", // ganti sesuai URL NestJS
-//             {
-//               method: "POST",
-//               headers: { "Content-Type": "application/json" },
-//               body: JSON.stringify({
-//                 email: credentials.email,
-//                 password: credentials.password,
-//               }),
-//             }
-//           );
-
-//           if (!response.ok) {
-//             console.error(`Login Failed: ${await response.text()}`);
-//             return null;
-//           }
-
-//           const data = await response.json();
-//           console.log("login data: ", data);
-
-//           // di Nest kamu return payloadnya gini:
-//           // { id, id_token, name, role, expires_at }
-//           return {
-//             id: data.id,
-//             sub: data.id,
-//             name: data.name,
-//             role: data.role,
-//             idToken: data.id_token,
-//             expiresAt: data.expires_at,
-//             accessToken: data.access_token,
-//             refreshToken: data.refresh_token,
-//           };
-//         } catch (error) {
-//           console.error("Authorize error: ", error);
-//           return null;
-//         }
-//       },
-//     }),
-//   ],
-//   callbacks: {
-//     async jwt({ token, user }) {
-//       if (user) {
-//         token.id = user.id;
-//         token.name = user.name;
-//         token.role = user.role;
-//         token.idToken = user.idToken;
-//         token.expiresAt = user.expiresAt;
-//         token.accessToken = user.accessToken;
-//         token.refreshToken = user.refreshToken;
-//       }
-//       return token;
-//     },
-//     async session({ session, token }) {
-//       if (token) {
-//         session.user.id = token.id as string;
-//         session.user.name = token.name as string;
-//         session.user.role = token.role as string;
-//         session.user.idToken = token.idToken as string;
-//         session.expiresAt = token.expiresAt as string;
-//         session.accessToken = token.accessToken as string;
-//         session.refreshToken = token.refreshToken as string;
-//       }
-//       return session;
-//     },
-//   },
-//   pages: {
-//     signIn: "/login", // custom login page
-//   },
-// };

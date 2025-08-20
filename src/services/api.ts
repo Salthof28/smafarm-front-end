@@ -68,6 +68,25 @@ export async function fetchDetailShelter(id: number) {
     }
 }
 
+export async function fetchLogout(access_token: string) {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/auth/logout`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${access_token}`,
+                "Content-Type": "application/json",
+            }
+        });
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
 function errorNetworking(error: unknown): CustomApiError {
     return {
         message: (error as Error).message,
