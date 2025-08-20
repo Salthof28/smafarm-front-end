@@ -1,22 +1,8 @@
-// export interface Category {
-//     id: number,
-//     name: string,
-//     slug: string,
-//     image: string
-// };
-
-// export interface Farm {
-//     id: number,
-//     userId: number,
-//     name: string,
-//     categoryShed: Category,
-//     location: string,
-//     images: string[],
-//     accommodate: number,
-//     shed: number,
-//     createdAt: string,
-//     updatedAt: string
-// }
+export interface InptRegister {
+    name: string,
+    email: string,
+    password: string,
+}
 export interface Animal {
     id: number,
     userId: number,
@@ -38,8 +24,8 @@ export type Farm = {
   location: string;
   img_farm: string;
   rating: number;
-  created_at: string; // bisa Date kalau kamu parse
-  updated_at: string; // bisa Date juga
+  created_at: string; 
+  updated_at: string; 
 };
 export interface ImageUrl {
   url: string;

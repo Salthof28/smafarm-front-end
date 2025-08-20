@@ -1,23 +1,11 @@
 'use client'
+import useAuth from "@/hooks/useAuth";
 import { fetchLogout } from "@/services/api";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { signOut } from "next-auth/react";
 
 
 export default function Dashboard () {
-    const { data: session, status } = useSession();
-    const router = useRouter();
-
-    useEffect(() => {
-        if (status === "unauthenticated") {
-            router.push("/login");
-        } 
-        // else if (session?.user?.role === "customer") {
-        //     router.push("/profile");
-        // }
-    }, [status, session, router]);
-
+    const { session } = useAuth()
     const logOut = async (): Promise<void> => {
         if (!session?.accessToken) {
             console.error("No access token found");
