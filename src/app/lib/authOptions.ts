@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
 
           // 2. Fetch profile pakai access_token
           const profileRes = await fetch("http://localhost:4000/users/profile", {
+            method: "GET",
             headers: {
               Authorization: `Bearer ${loginData.access_token}`,
             },
@@ -43,11 +44,11 @@ export const authOptions: NextAuthOptions = {
           const profileData = profileJson.data;
 
           return {
-            id: loginData.id,
-            sub: loginData.id,
-            name: loginData.name,
-            role: loginData.role,
-            idToken: loginData.id_token,
+            id: profileData.id,
+            sub: profileData.id,
+            name: profileData.name,
+            role: profileData.role,
+            idToken: profileData.id_token,
             expiresAt: loginData.expires_at,
             accessToken: loginData.access_token,
             refreshToken: loginData.refresh_token,
