@@ -25,7 +25,8 @@ export type Farm = {
   img_farm: string;
   rating: number;
   created_at: string; 
-  updated_at: string; 
+  updated_at: string;
+  shelters: Shelter[]; 
 };
 export interface ImageUrl {
   url: string;
@@ -98,7 +99,10 @@ export interface ShelterDetailResponse {
     message: string;
     data: Shelter;
 }
-
+export interface FarmDetailResponse {
+    message: string;
+    data: Farm;
+}
 export interface CustomApiError {
   message: string;
   error: string;   

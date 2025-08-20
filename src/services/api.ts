@@ -1,4 +1,4 @@
-import { Animal, Category, CategoryDetailResponse, CustomApiError, Farm, InptRegister, LivestockAllResponse, LivestockDetailResponse } from "@/types/interfaces";
+import { Animal, Category, CategoryDetailResponse, CustomApiError, Farm, FarmDetailResponse, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -40,7 +40,7 @@ export async function fetchDetailLivestock(id: number): Promise<LivestockDetailR
     }
 }
 
-export async function fetchAllShelter(category_id?: number[], name?: string) {
+export async function fetchAllShelter(category_id?: number[], name?: string): Promise<ShelterAllResponse | CustomApiError> {
     try {
         const params: string[] = []
         if (category_id && category_id.length > 0) {
@@ -55,9 +55,22 @@ export async function fetchAllShelter(category_id?: number[], name?: string) {
     }
 }
 
-export async function fetchDetailShelter(id: number) {
+export async function fetchDetailShelter(id: number): Promise<ShelterDetailResponse | CustomApiError> {
     try {
         const response: Response = await fetch(`${API_SMAFARM}/shelters/${id}`);
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchSheltersFarm(id: number): Promise<FarmDetailResponse | CustomApiError> {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/farms/shelter/${id}`);
         if(!response.ok){
             const errorData: CustomApiError = await response.json();
             return errorData;

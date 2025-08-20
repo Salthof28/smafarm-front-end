@@ -1,7 +1,11 @@
 'use client'
-import { Animal, Livestock } from "@/types/interfaces";
+import { useCart } from "@/app/context/Cart-context";
+import { fetchSheltersFarm } from "@/services/api";
+import { Animal, CustomApiError, Farm, FarmDetailResponse, Livestock, Shelter } from "@/types/interfaces";
+import { Form, Input, Select, Button, DatePicker, Checkbox, InputNumber } from "antd";
 import { ArrowLeft, CirclePlus } from "lucide-react";
 import { useEffect, useState } from "react";
+
 
 interface FormBuyAnimalProp {
     animal: Livestock;
@@ -17,88 +21,176 @@ interface FormAnimal {
     rent: string,
     address: string
 }
-export default function FormBuyAnimal ({ animal, hiddenForm }: FormBuyAnimalProp) {
-    const [hidden, setHidden] = useState<boolean>(false)
-    const [requiredTreatment, setRequiredTreatment] = useState<Treatment[]> ([
-        {
-            name: 'Feeder',
-            price: 18000
-        },
-        {
-            name: 'Care',
-            price: 15000
-        },
-    ]);
-    const optionalTreatment: Treatment = {
-        name: 'Nutrition',
-        price: 90000,
-    }
-    
-    const [formData, setFormData] = useState<FormAnimal>({
-        wantCare: '0',
-        moreTreatment: '0',
-        rent: '',
-        address: ''
-    });
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const {name, value} = e.target;
-        // const index = e.target.dataset.index;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    }
-    const handleAddTreatment = () => {
-        console.log(formData.moreTreatment)
-        if(formData.moreTreatment === 'nutrition') {
-            setRequiredTreatment(prev => ([...prev, optionalTreatment]))
+export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp) {
+    const [hidden, setHidden] = useState<boolean>(true);
+    const [shelters, setShelters] = useState<Shelter[]>([]);
+    const [form] = Form.useForm();
+    const { Option } = Select;
+    const { setTransaction, addBuyItem, addCareItem } = useCart();
+
+    // const requiredTreatment = [
+    //     { name: "Feeder", price: 18000 },
+    //     { name: "Care", price: 15000 },
+    // ];
+
+    // const optionalTreatment = { name: "Nutrition", price: 90000 };
+
+    const wantCare = Form.useWatch("wantCare", form);
+    const selectedShelterId = Form.useWatch("shelterId", form);
+    const selectedShelter = shelters.find(s => s.id === selectedShelterId);
+
+    const fetchAllShelters = async (id: number) => {
+        const farmsJson: FarmDetailResponse | CustomApiError = await fetchSheltersFarm(id);
+        if ("data" in farmsJson) {
+            const allShelters = farmsJson.data;
+            setShelters(allShelters.shelters)
+        } else {
+            console.error("Error fetching shelters:", farmsJson.message);
         }
+
     }
     useEffect(() => {
-        setHidden(formData.wantCare === 'yes' ? true : false)
-    }, [formData.wantCare]);
-    const handleSubmit = (data: FormAnimal) => {
-        console.log(data)
+        setHidden(wantCare !== "yes");
+    }, [wantCare]);
+
+    useEffect(() => {
+    if (!hidden && shelters.length < 1) {
+        console.log(animal.farm_id);
+        fetchAllShelters(animal.farm_id);
     }
-    return(
-        <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {e.preventDefault(); handleSubmit(formData)}} className="flex flex-col w-[95vw] 2xl:w-[75vw] bg-amber-50 shadow-lg/30 ring-[0.1rem] ring-black/5 rounded-[1rem] p-[1rem]">
-            <button onClick={hiddenForm}><ArrowLeft /></button>
-            <h3 className="text-center font-bold mb-[1rem]">Buy {animal?.name}</h3>
-            <label className="tds">Do you want care animal:</label>
-            <select name="wantCare" onChange={handleChange} className="bg-amber-100 rounded-[0.5rem] border border-gray-300/20 p-[0.3rem] tds">
-                <option value ='0'>Select yes or no</option>
-                <option value='yes'>Yes</option>
-                <option value='no'>No</option>
-            </select>
-            <div className={`${hidden === true ? 'flex': 'hidden'} flex-col my-[0.5rem] bg-amber-100 p-[1rem]`}>
-                <h5>Treatment</h5>
-                <table className="min-w-full mb-[1rem]">
-                    <tbody className="bg-white/30">
-                        {/* w-[88%] 2xl: */}
-                        {requiredTreatment.map(treatment => (
-                            <tr className="tds border-t border-gray-500/15">
-                                <td className="w-[70%] md:w-[85%] lg:w-[90%] 2xl:w-[93%]">{treatment.name}</td>
-                                <td>Rp {treatment.price} /day</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                <label className="tds">More Treatment:</label>
-                <div className="flex flex-row gap-[1rem]">
-                    <select onChange={handleChange} name="moreTreatment" className="bg-amber-50 rounded-[0.5rem] border border-gray-300/20 p-[0.3rem] tds">
-                        <option value='0'>Select More Treatment</option>
-                        <option value='nutrition'>Nutrition</option>
-                    </select>
-                    <button onClick={handleAddTreatment} type="button" className="flex font-bold w-[2rem] bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem text-[1.5rem] transition-opacity delay-200 active:scale-90 justify-center items-center rounded-[0.5rem]"><CirclePlus /></button>
+    }, [hidden]);
+
+    const onFinish = (values: any) => {
+        // 1. pastikan transaksi ada farm id
+        setTransaction({ id_farm: animal.farm_id });
+
+        // 2. simpan pembelian hewan
+        addBuyItem({
+            livestock_id: animal.id,
+            price: animal.price, 
+            total_livestock: values.totalLivestock,
+        });
+
+        // 3. kalau ada care
+        if (values.wantCare === "yes") {
+            const careGiveIds = selectedShelter?.care_give
+            ?.filter((_, index) => values.treatments?.[index]?.selected)
+            ?.map(t => t.id) || [];
+            
+            const selectedCareGives = selectedShelter?.care_give?.filter(cg => 
+                values.careGiveIds.includes(cg.id)
+            ) || [];
+            const priceDaily = selectedCareGives.reduce((sum, cg) => sum + cg.price, 0);
+
+            const start = values.start;   // DatePicker value
+            const finish = values.finish; // DatePicker value
+            const totalDays = finish.diff(start, "day"); 
+
+            addCareItem({
+            livestock_id: animal.id,
+            shelter_id: values.shelterId,
+            total_livestock: values.totalLivestock,
+            start_date: values.start.format("YYYY-MM-DD"),
+            finish_date: values.finish.format("YYYY-MM-DD"),
+            price_daily: priceDaily, // bisa diubah sum semua
+            careGive_id: careGiveIds,
+            total_days: values.finish.diff(values.start, "day"),
+            });
+        }
+
+        hiddenForm(); // close form
+    };
+
+    return (
+        <div className="w-[95vw] 2xl:w-[75vw] bg-amber-50 rounded-[1rem] p-[2rem]">
+            <Form
+                form={form}
+                layout="vertical"
+                onFinish={onFinish}
+                className="w-full bg-amber-50"
+            >
+                <Button onClick={hiddenForm} type="text" icon={<ArrowLeft />} />
+                <h4 className="text-center font-bold mb-4">Buy {animal?.name}</h4>
+
+                <Form.Item
+                    label="Do you want care animal?"
+                    name="wantCare"
+                    rules={[{ required: true, message: "Please select an option" }]}
+                >
+                    <Select placeholder="Select yes or no">
+                    <Select.Option value="yes">Yes</Select.Option>
+                    <Select.Option value="no">No</Select.Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    label="Total Livestock"
+                    name="totalLivestock"
+                    rules={[{ required: true, message: "Please input total livestock" }]}
+                >
+                    <InputNumber defaultValue={1} min={1} max={animal.stock}  />
+                </Form.Item>
+                <div className={`${hidden === true ? 'hidden' : 'flex'} flex-col my-[0.5rem] bg-amber-100 p-[1rem] rounded-[1rem]`}>
+                        <Form.Item
+                            label="Select Shelter"
+                            name="shelterId"
+                            rules={[{ required: true, message: "Please pick a date" }]}
+                        >
+                            <Select placeholder="Select a role">
+                            {shelters?.map((shelter) => (
+                                <Option key={shelter.id} value={shelter.id}>
+                                {shelter.name}
+                                </Option>
+                            ))}
+                            </Select>
+                        </Form.Item>
+                    <Form.List name="treatments">
+                        {(fields, { add }) => (
+                        <>
+                            <h5 className="mb-[1.5rem]">Care Service:</h5>
+                            {selectedShelter?.care_give?.map((treatment, index) => (
+                                <Form.Item
+                                key={treatment.id ?? index}
+                                name={[index, "selected"]}
+                                valuePropName="checked"
+                                >
+                                    
+                                <Checkbox disabled={treatment.required} defaultChecked={treatment.required}>
+                                    {treatment.name} - Rp {treatment.price}
+                                </Checkbox>
+                                </Form.Item>
+                            ))}
+                        </>
+                        )}
+                    </Form.List>
+                    <div className="flex flex-row gap-[1rem] md:gap-[4rem]">
+                        <Form.Item
+                            label="Start Care"
+                            name="start"
+                            rules={[{ required: true, message: "Please pick a date" }]}
+                        >
+                            <DatePicker />
+                        </Form.Item>
+                        <Form.Item
+                            label="Finish Care"
+                            name="finish"
+                            rules={[{ required: true, message: "Please pick a date" }]}
+                        >
+                            <DatePicker />
+                        </Form.Item>
+                    </div>
                 </div>
-            </div>
-            <label className="tds">Rent Period:</label>
-            <input onChange={handleChange} name="rent" type="date" className="bg-amber-100 rounded-[0.5rem] border border-gray-300/20 p-[0.3rem] tds" />
-            <label className="tds">Address Delivery:</label>
-            <input onChange={handleChange} name="address" className="bg-amber-100 rounded-[0.5rem] border border-gray-300/20 p-[0.3rem] tds" />
-            <div className="flex flex-col items-center mt-[1rem] gap-[1rem]">
-                <button className="font-bold btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem text-[1.5rem] transition-opacity delay-200 active:scale-90">Coming Soon</button>
-                <button type="submit" className="font-bold btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem text-[1.5rem] transition-opacity delay-200 active:scale-90">Buy</button>
-            </div>
-            {/* <label className="tds">Note:</label>
-            <input className="bg-amber-100 rounded-[0.5rem] border border-gray-300/20 p-[0.3rem] tds" /> */}
-        </form>
-    )
+
+                <Form.Item
+                    label="Address Delivery"
+                    name="address"
+                    rules={[{ required: true, message: "Please input your address" }]}
+                >
+                    <Input.TextArea placeholder="Enter your full address" rows={3} />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">Buy</Button>
+                </Form.Item>
+            </Form>
+        </div>
+    );
 }
