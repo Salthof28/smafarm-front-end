@@ -1,11 +1,13 @@
 'use client'
 import { useCart } from "@/app/context/Cart-context";
-import { fetchSheltersFarm } from "@/services/api";
-import { CustomApiError, FarmDetailResponse, Livestock, Shelter } from "@/types/interfaces";
-import { Form, Input, Select, Button, DatePicker, Checkbox, InputNumber } from "antd";
+import { fetchAllCareTransaction, fetchSheltersFarm } from "@/services/api";
+import { CareTransaction, CustomApiError, FarmDetailResponse, Livestock, Shelter } from "@/types/interfaces";
+import { Form, Input, Select, Button, DatePicker, Checkbox, InputNumber, message } from "antd";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
+dayjs.extend(isSameOrBefore);
 
 interface FormBuyAnimalProp {
   animal: Livestock;
@@ -30,22 +32,41 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
     const [form] = Form.useForm();
     const { Option } = Select;
     const { setTransaction, addBuyItem, addCareItem } = useCart();
-    
     const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [careGiveIds, setCareGiveIds] = useState<number[]>([]);
+    const [priceDaily, setPriceDaily] = useState<number>(0);
+    const [livestock, setLivestock] = useState<number>(0);
+    const [totalDays, setTotalDays] = useState<number>(0);
+    const [careTransactions, setCareTransactions] = useState<CareTransaction[]>([]);
+    const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs | null>(null);
+    const [maxSlots, setMaxSlots] = useState<number>(1);
+
     const wantCare = Form.useWatch("wantCare", form);
     const selectedShelterId = Form.useWatch("shelterId", form);
     const selectedShelter = shelters.find((s) => s.id === selectedShelterId);
 
     /** Fetch shelters for farm */
-    const fetchAllShelters = async (id: number) => {
+    const fetchSheltersAndBooking = async (id: number) => {
         const farmsJson: FarmDetailResponse | CustomApiError = await fetchSheltersFarm(id);
-        if ("data" in farmsJson) {
+        if ("data" in farmsJson ) {
             setShelters(farmsJson.data.shelters);
         } else {
             console.error("Error fetching shelters:", farmsJson.message);
         }
     };
-
+    useEffect(() => {
+        async function fetchCare() {
+            if(selectedShelterId) {
+                const bookingJson = await fetchAllCareTransaction(selectedShelterId);
+                if ('data' in bookingJson && selectedShelter && careTransactions.length < 1) {
+                    // console.log('masuk ga')
+                    setMaxSlots(selectedShelter.accomodate);
+                    setCareTransactions(bookingJson.data);
+                };
+            }
+        }
+        fetchCare();
+    }, [selectedShelterId])
     /** Toggle hidden when wantCare change */
     useEffect(() => {
         setHidden(wantCare !== "yes");
@@ -54,7 +75,7 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
     /** Fetch shelters one time */
     useEffect(() => {
         if (!hidden && shelters.length < 1) {
-        fetchAllShelters(animal.farm_id);
+            fetchSheltersAndBooking(animal.farm_id);
         }
     }, [hidden]);
 
@@ -70,63 +91,127 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
         }
         calculateTotal()
     }, [selectedShelter, form]);
-    // useEffect(() => {
-    //     calculateTotal()
-    // }, [form]);
 
     const calculateTotal = () => {
         const values = form.getFieldsValue();
-        // Base price = harga beli per ekor x jumlah
-        const basePrice = animal.price * (values.totalLivestock || 1);
-        // Jika user pilih perawatan
+        // Base price = price animal per head
+        const currentLivestock = values.totalLivestock;
+        const basePrice = animal.price * (currentLivestock);
+        // if user select care
         if (values.wantCare === "yes" && selectedShelter) {
-            const careGiveIds = values.treatments
+            const currentCareGiveIds = values.treatments
                 ?.filter((t: TreatmentValue) => t.selected)
                 ?.map((t: TreatmentValue) => t.id) || [];
 
-            const priceDaily = selectedShelter.care_give
-                .filter((cg) => careGiveIds.includes(cg.id))
-                .reduce((sum, cg) => sum + cg.price, 0);
+            const currentPriceDaily = selectedShelter.care_give
+                .filter((cg) => currentCareGiveIds.includes(cg.id))
+                .reduce((sum, cg) => {
+                    let priceDaily = cg.price;
+                    if(cg.unit === "WEEK"){
+                        priceDaily = Math.ceil(cg.price / 7);
+                    }
+                    return sum + priceDaily;
+                }, 0);
             const start = values.start;
             const finish = values.finish;
-            const totalDays = start && finish ? finish.diff(start, "day") : 0;
-            const carePrice = (priceDaily + selectedShelter.price_daily) * (values.totalLivestock || 1) * totalDays;
+            const totalDays = start && finish ? (finish.diff(start, "day")) + 1 : 1;
+            const carePrice = (currentPriceDaily + selectedShelter.price_daily) * (currentLivestock) * totalDays;
+            setCareGiveIds(currentCareGiveIds);
+            setPriceDaily(currentPriceDaily);
+            setTotalDays(totalDays);
+            setLivestock(currentLivestock);
             setTotalPrice(basePrice + carePrice);
         } else {
-            // Hanya harga beli
+            // only buy
             setTotalPrice(basePrice);
         }
+    };
+
+const dateMap: Record<string, number> = {};
+    careTransactions.forEach(ct => {
+        const start = dayjs(ct.start_date);
+        const finish = dayjs(ct.finish_date);
+        let curr = start;
+        while (curr.isSameOrBefore(finish, 'day')) {
+            const key = curr.format('YYYY-MM-DD');
+            dateMap[key] = (dateMap[key] || 0) + ct.total_livestock;
+            curr = curr.add(1, 'day');
+        }
+    });
+
+    const disabledDateStart = (current: dayjs.Dayjs) => {
+        const today = dayjs().startOf('day');
+        const dateStr = current.format('YYYY-MM-DD');
+        const mapDate = dateMap[dateStr] || 0
+        return current.isBefore(today, 'day') || mapDate >= maxSlots;
+    };
+
+    const disabledDateFinish = (current: dayjs.Dayjs) => {
+        const start: dayjs.Dayjs = form.getFieldValue('start');
+        if (!start) return true; // disable semua kalau start belum dipilih
+        if (current.isBefore(start, 'day')) return true;
+
+        let curr = start;
+        while (curr.isSameOrBefore(current, 'day')) {
+            const key = curr.format('YYYY-MM-DD');
+            if ((dateMap[key] || 0) + (form.getFieldValue('totalLivestock') || 0) > maxSlots) return true;
+            curr = curr.add(1, 'day');
+        }
+        return false;
+    };
+
+     const remainingSlots = selectedDate != null ? maxSlots - (dateMap[selectedDate.format("YYYY-MM-DD")] || 0) : maxSlots;
+
+    const renderDateCell = (current: dayjs.Dayjs) => {
+        const dateStr = current.format('YYYY-MM-DD');
+        const used = dateMap[dateStr] || 0;
+        const remaining = maxSlots - used;
+        return (
+            <div style={{ position: "relative" }}>
+            <div>{current.date()}</div>
+            {used > 0 && remaining > 0 && ( // showed remaining slots
+                <div style={{ fontSize: 10, color: "green" }}>
+                {remaining} slot
+                </div>
+            )}
+            </div>
+        );
     };
 
     const onFinish = (values: FormValues) => {
         // Set transaksi farm id
         setTransaction({ id_farm: animal.farm_id });
-
         // save buy transaction in localstorage
         addBuyItem({
-        livestock_id: animal.id,
-        price: animal.price,
-        total_livestock: values.totalLivestock,
+            livestock_id: animal.id,
+            price: animal.price,
+            total_livestock: values.totalLivestock,
         });
-
         // if select care
         if (values.wantCare === "yes" && selectedShelter) {
-            const careGiveIds = values.treatments
-                ?.filter((t) => t.selected)
-                ?.map((t) => t.id) || [];
+            const start = values.start;
+            const finish = values.finish;
 
-            const priceDaily = selectedShelter.care_give
-                .filter((cg) => careGiveIds.includes(cg.id))
-                .reduce((sum, cg) => sum + cg.price, 0);
-
-            const start = values.start!;
-            const finish = values.finish!;
-            const totalDays = finish.diff(start, "day");
+            let overbooked = false;
+            let curr = start;
+            while (curr.isSameOrBefore(finish, 'day')) {
+                const key = curr.format('YYYY-MM-DD');
+                const booked = dateMap[key] || 0;
+                if (booked + values.totalLivestock > maxSlots) {
+                    overbooked = true;
+                    break;
+                }
+                curr = curr.add(1, 'day');
+            }
+            if (overbooked) {
+                message.error("Selected date exceeds available slots. Please adjust your selection.");
+                return;
+            }  
 
             addCareItem({
                 livestock_id: animal.id,
-                shelter_id: values.shelterId!,
-                total_livestock: values.totalLivestock,
+                shelter_id: values.shelterId,
+                total_livestock: livestock,
                 start_date: start.format("YYYY-MM-DD"),
                 finish_date: finish.format("YYYY-MM-DD"),
                 price_daily: priceDaily + selectedShelter.price_daily,
@@ -204,27 +289,29 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
                         </Form.Item>
                     </div>
                     ))}
-
+                    {selectedShelterId && (
                     <div className="flex flex-row gap-[1rem] md:gap-[4rem]">
-                    <Form.Item
-                        label="Start Care"
-                        name="start"
-                        rules={wantCare === "yes"
-                        ? [{ required: true, message: "Please pick a start date" }]
-                        : []}
-                    >
-                        <DatePicker />
-                    </Form.Item>
-                    <Form.Item
-                        label="Finish Care"
-                        name="finish"
-                        rules={wantCare === "yes"
-                        ? [{ required: true, message: "Please pick a finish date" }]
-                        : []}
-                    >
-                        <DatePicker />
-                    </Form.Item>
+                        <Form.Item
+                            label="Start Care"
+                            name="start"
+                            rules={wantCare === "yes"
+                            ? [{ required: true, message: "Please pick a start date" }]
+                            : []}
+                        >
+                            <DatePicker disabledDate={disabledDateStart} onChange={(date) => setSelectedDate(date)} dateRender={renderDateCell} />
+                        </Form.Item>
+                        <Form.Item
+                            label="Finish Care"
+                            name="finish"
+                            rules={wantCare === "yes"
+                            ? [{ required: true, message: "Please pick a finish date" }]
+                            : []}
+                        >
+                            <DatePicker disabledDate={disabledDateFinish} dateRender={renderDateCell} />
+                        </Form.Item>
                     </div>
+                    )}
+                    <p>Sisa slot pada start date: {remainingSlots}</p>
                 </div>
                 )}
 

@@ -78,6 +78,18 @@ export interface Shelter {
     care_give: CareGive[];
 }
 
+export interface CareTransaction {
+    id: number;
+    transaction_id: number;
+    livestock_id: number | null;
+    total_livestock: number;
+    shelter_id: number;
+    start_date: string;
+    finish_date: string; 
+    one_day_price: number;
+    sub_total: number;
+}
+
 export interface CategoryDetailResponse {
     message: string;
     data: Category[];
@@ -104,9 +116,13 @@ export interface FarmDetailResponse {
     message: string;
     data: Farm;
 }
+
+export interface CareTransactionResponse {
+    message: string;
+    data: CareTransaction[];
+}
 export interface CustomApiError {
   message: string;
   error: string;   
   statusCode: number;
 }
-
