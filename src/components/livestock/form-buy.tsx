@@ -1,25 +1,28 @@
 'use client'
 import { useCart } from "@/app/context/Cart-context";
 import { fetchSheltersFarm } from "@/services/api";
-import { Animal, CustomApiError, Farm, FarmDetailResponse, Livestock, Shelter } from "@/types/interfaces";
+import { CustomApiError, FarmDetailResponse, Livestock, Shelter } from "@/types/interfaces";
 import { Form, Input, Select, Button, DatePicker, Checkbox, InputNumber } from "antd";
-import { ArrowLeft, CirclePlus } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import dayjs from "dayjs";
 
 interface FormBuyAnimalProp {
-    animal: Livestock;
-    hiddenForm: () => void;
+  animal: Livestock;
+  hiddenForm: () => void;
 }
-interface Treatment {
-    name: string,
-    price: number,
+interface TreatmentValue {
+  id: number;
+  selected: boolean;
 }
-interface FormAnimal {
-    wantCare: string,
-    moreTreatment: string,
-    rent: string,
-    address: string
+
+interface FormValues {
+  totalLivestock: number;
+  wantCare: "yes" | "no";
+  shelterId: number;
+  start: dayjs.Dayjs;
+  finish: dayjs.Dayjs;
+  treatments: TreatmentValue[];
 }
 export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp) {
     const [hidden, setHidden] = useState<boolean>(true);
@@ -28,77 +31,82 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
     const { Option } = Select;
     const { setTransaction, addBuyItem, addCareItem } = useCart();
 
-    // const requiredTreatment = [
-    //     { name: "Feeder", price: 18000 },
-    //     { name: "Care", price: 15000 },
-    // ];
-
-    // const optionalTreatment = { name: "Nutrition", price: 90000 };
-
     const wantCare = Form.useWatch("wantCare", form);
     const selectedShelterId = Form.useWatch("shelterId", form);
-    const selectedShelter = shelters.find(s => s.id === selectedShelterId);
+    const selectedShelter = shelters.find((s) => s.id === selectedShelterId);
 
+    /** Fetch shelters for farm */
     const fetchAllShelters = async (id: number) => {
         const farmsJson: FarmDetailResponse | CustomApiError = await fetchSheltersFarm(id);
         if ("data" in farmsJson) {
-            const allShelters = farmsJson.data;
-            setShelters(allShelters.shelters)
+        setShelters(farmsJson.data.shelters);
         } else {
-            console.error("Error fetching shelters:", farmsJson.message);
+        console.error("Error fetching shelters:", farmsJson.message);
         }
+    };
 
-    }
+    /** Toggle hidden when wantCare change */
     useEffect(() => {
         setHidden(wantCare !== "yes");
     }, [wantCare]);
 
+    /** Fetch shelters one time */
     useEffect(() => {
-    if (!hidden && shelters.length < 1) {
-        console.log(animal.farm_id);
+        if (!hidden && shelters.length < 1) {
         fetchAllShelters(animal.farm_id);
-    }
+        }
     }, [hidden]);
 
-    const onFinish = (values: any) => {
-        // 1. pastikan transaksi ada farm id
+  /** Update form treatment when shelter selected */
+    useEffect(() => {
+        form.setFieldsValue({ totalLivestock: 1 })
+        if (selectedShelter) {
+            const initTreatments = selectedShelter.care_give.map((cg) => ({
+                id: cg.id,
+                selected: cg.required, // auto true for required
+            }));
+            form.setFieldsValue({ treatments: initTreatments });
+        }
+    }, [selectedShelter, form]);
+
+    const onFinish = (values: FormValues) => {
+        // Set transaksi farm id
         setTransaction({ id_farm: animal.farm_id });
 
-        // 2. simpan pembelian hewan
+        // Simpan pembelian
         addBuyItem({
-            livestock_id: animal.id,
-            price: animal.price, 
-            total_livestock: values.totalLivestock,
+        livestock_id: animal.id,
+        price: animal.price,
+        total_livestock: values.totalLivestock,
         });
 
-        // 3. kalau ada care
-        if (values.wantCare === "yes") {
-            const careGiveIds = selectedShelter?.care_give
-            ?.filter((_, index) => values.treatments?.[index]?.selected)
-            ?.map(t => t.id) || [];
-            
-            const selectedCareGives = selectedShelter?.care_give?.filter(cg => 
-                values.careGiveIds.includes(cg.id)
-            ) || [];
-            const priceDaily = selectedCareGives.reduce((sum, cg) => sum + cg.price, 0);
+        // Kalau user pilih care
+        if (values.wantCare === "yes" && selectedShelter) {
+            const careGiveIds = values.treatments
+                ?.filter((t: any) => t.selected)
+                ?.map((t: any) => t.id) || [];
 
-            const start = values.start;   // DatePicker value
-            const finish = values.finish; // DatePicker value
-            const totalDays = finish.diff(start, "day"); 
+            const priceDaily = selectedShelter.care_give
+                .filter((cg) => careGiveIds.includes(cg.id))
+                .reduce((sum, cg) => sum + cg.price, 0);
+
+            const start = values.start!;
+            const finish = values.finish!;
+            const totalDays = finish.diff(start, "day");
 
             addCareItem({
-            livestock_id: animal.id,
-            shelter_id: values.shelterId,
-            total_livestock: values.totalLivestock,
-            start_date: values.start.format("YYYY-MM-DD"),
-            finish_date: values.finish.format("YYYY-MM-DD"),
-            price_daily: priceDaily, // bisa diubah sum semua
-            careGive_id: careGiveIds,
-            total_days: values.finish.diff(values.start, "day"),
+                livestock_id: animal.id,
+                shelter_id: values.shelterId!,
+                total_livestock: values.totalLivestock,
+                start_date: start.format("YYYY-MM-DD"),
+                finish_date: finish.format("YYYY-MM-DD"),
+                price_daily: priceDaily,
+                careGive_id: careGiveIds,
+                total_days: totalDays,
             });
         }
 
-        hiddenForm(); // close form
+        hiddenForm();
     };
 
     return (
@@ -113,82 +121,95 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
                 <h4 className="text-center font-bold mb-4">Buy {animal?.name}</h4>
 
                 <Form.Item
-                    label="Do you want care animal?"
-                    name="wantCare"
-                    rules={[{ required: true, message: "Please select an option" }]}
+                label="Do you want care animal?"
+                name="wantCare"
+                rules={[{ required: true, message: "Please select an option" }]}
                 >
-                    <Select placeholder="Select yes or no">
-                    <Select.Option value="yes">Yes</Select.Option>
-                    <Select.Option value="no">No</Select.Option>
-                    </Select>
+                <Select placeholder="Select yes or no">
+                    <Option value="yes">Yes</Option>
+                    <Option value="no">No</Option>
+                </Select>
                 </Form.Item>
-                <Form.Item
-                    label="Total Livestock"
-                    name="totalLivestock"
-                    rules={[{ required: true, message: "Please input total livestock" }]}
-                >
-                    <InputNumber defaultValue={1} min={1} max={animal.stock}  />
-                </Form.Item>
-                <div className={`${hidden === true ? 'hidden' : 'flex'} flex-col my-[0.5rem] bg-amber-100 p-[1rem] rounded-[1rem]`}>
-                        <Form.Item
-                            label="Select Shelter"
-                            name="shelterId"
-                            rules={[{ required: true, message: "Please pick a date" }]}
-                        >
-                            <Select placeholder="Select a role">
-                            {shelters?.map((shelter) => (
-                                <Option key={shelter.id} value={shelter.id}>
-                                {shelter.name}
-                                </Option>
-                            ))}
-                            </Select>
-                        </Form.Item>
-                    <Form.List name="treatments">
-                        {(fields, { add }) => (
-                        <>
-                            <h5 className="mb-[1.5rem]">Care Service:</h5>
-                            {selectedShelter?.care_give?.map((treatment, index) => (
-                                <Form.Item
-                                key={treatment.id ?? index}
-                                name={[index, "selected"]}
-                                valuePropName="checked"
-                                >
-                                    
-                                <Checkbox disabled={treatment.required} defaultChecked={treatment.required}>
-                                    {treatment.name} - Rp {treatment.price}
-                                </Checkbox>
-                                </Form.Item>
-                            ))}
-                        </>
-                        )}
-                    </Form.List>
-                    <div className="flex flex-row gap-[1rem] md:gap-[4rem]">
-                        <Form.Item
-                            label="Start Care"
-                            name="start"
-                            rules={[{ required: true, message: "Please pick a date" }]}
-                        >
-                            <DatePicker />
-                        </Form.Item>
-                        <Form.Item
-                            label="Finish Care"
-                            name="finish"
-                            rules={[{ required: true, message: "Please pick a date" }]}
-                        >
-                            <DatePicker />
-                        </Form.Item>
-                    </div>
-                </div>
 
                 <Form.Item
-                    label="Address Delivery"
-                    name="address"
-                    rules={[{ required: true, message: "Please input your address" }]}
+                label="Total Livestock"
+                name="totalLivestock"
+                rules={[{ required: true, message: "Please input total livestock" }]}
                 >
-                    <Input.TextArea placeholder="Enter your full address" rows={3} />
+                <InputNumber defaultValue={1} min={1} max={animal.stock} />
                 </Form.Item>
+
+                {/* Form Care */}
+                {!hidden && (
+                <div className="flex flex-col my-[0.5rem] bg-amber-100 p-[1rem] rounded-[1rem]">
+                    <Form.Item
+                    label="Select Shelter"
+                    name="shelterId"
+                    rules={wantCare === "yes"
+                        ? [{ required: true, message: "Please select shelter" }]
+                        : []}
+                    >
+                        <Select placeholder="Select a shelter">
+                            {shelters?.map((shelter) => (
+                            <Option key={shelter.id} value={shelter.id}>
+                                {shelter.name}
+                            </Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
+                    {/* Checkbox untuk Treatments */}
+                    {selectedShelter?.care_give?.map((treatment, index) => (
+                    <div key={treatment.id}>
+                        <Form.Item name={['treatments', index, 'id']} hidden>
+                            <Input type="hidden" />
+                        </Form.Item>
+                        <Form.Item
+                        name={['treatments', index, 'selected']}
+                        valuePropName="checked"
+                        >
+                            <Checkbox disabled={treatment.required}>
+                                {treatment.name} - Rp {treatment.price}
+                            </Checkbox>
+                        </Form.Item>
+                    </div>
+                    ))}
+
+                    <div className="flex flex-row gap-[1rem] md:gap-[4rem]">
+                    <Form.Item
+                        label="Start Care"
+                        name="start"
+                        rules={wantCare === "yes"
+                        ? [{ required: true, message: "Please pick a start date" }]
+                        : []}
+                    >
+                        <DatePicker />
+                    </Form.Item>
+                    <Form.Item
+                        label="Finish Care"
+                        name="finish"
+                        rules={wantCare === "yes"
+                        ? [{ required: true, message: "Please pick a finish date" }]
+                        : []}
+                    >
+                        <DatePicker />
+                    </Form.Item>
+                    </div>
+                </div>
+                )}
+
+                <Form.Item
+                label="Address Delivery"
+                name="address"
+                rules={[{ required: true, message: "Please input your address" }]}
+                >
+                <Input.TextArea placeholder="Enter your full address" rows={3} />
+                </Form.Item>
+
                 <Form.Item>
-                    <Button type="primary" htmlType="submit">Buy</Button>
+                <Button type="primary" htmlType="submit">
+                    Buy
+                </Button>
                 </Form.Item>
             </Form>
         </div>
