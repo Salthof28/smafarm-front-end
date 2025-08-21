@@ -73,14 +73,14 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
         // Set transaksi farm id
         setTransaction({ id_farm: animal.farm_id });
 
-        // Simpan pembelian
+        // save buy transaction in localstorage
         addBuyItem({
         livestock_id: animal.id,
         price: animal.price,
         total_livestock: values.totalLivestock,
         });
 
-        // Kalau user pilih care
+        // if select care
         if (values.wantCare === "yes" && selectedShelter) {
             const careGiveIds = values.treatments
                 ?.filter((t: any) => t.selected)
