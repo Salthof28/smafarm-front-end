@@ -30,7 +30,8 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
     const [form] = Form.useForm();
     const { Option } = Select;
     const { setTransaction, addBuyItem, addCareItem } = useCart();
-
+    
+    const [totalPrice, setTotalPrice] = useState<number>(0);
     const wantCare = Form.useWatch("wantCare", form);
     const selectedShelterId = Form.useWatch("shelterId", form);
     const selectedShelter = shelters.find((s) => s.id === selectedShelterId);
@@ -39,9 +40,9 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
     const fetchAllShelters = async (id: number) => {
         const farmsJson: FarmDetailResponse | CustomApiError = await fetchSheltersFarm(id);
         if ("data" in farmsJson) {
-        setShelters(farmsJson.data.shelters);
+            setShelters(farmsJson.data.shelters);
         } else {
-        console.error("Error fetching shelters:", farmsJson.message);
+            console.error("Error fetching shelters:", farmsJson.message);
         }
     };
 
@@ -67,7 +68,35 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
             }));
             form.setFieldsValue({ treatments: initTreatments });
         }
+        calculateTotal()
     }, [selectedShelter, form]);
+    // useEffect(() => {
+    //     calculateTotal()
+    // }, [form]);
+
+    const calculateTotal = () => {
+        const values = form.getFieldsValue();
+        // Base price = harga beli per ekor x jumlah
+        const basePrice = animal.price * (values.totalLivestock || 1);
+        // Jika user pilih perawatan
+        if (values.wantCare === "yes" && selectedShelter) {
+            const careGiveIds = values.treatments
+                ?.filter((t: TreatmentValue) => t.selected)
+                ?.map((t: TreatmentValue) => t.id) || [];
+
+            const priceDaily = selectedShelter.care_give
+                .filter((cg) => careGiveIds.includes(cg.id))
+                .reduce((sum, cg) => sum + cg.price, 0);
+            const start = values.start;
+            const finish = values.finish;
+            const totalDays = start && finish ? finish.diff(start, "day") : 0;
+            const carePrice = (priceDaily + selectedShelter.price_daily) * (values.totalLivestock || 1) * totalDays;
+            setTotalPrice(basePrice + carePrice);
+        } else {
+            // Hanya harga beli
+            setTotalPrice(basePrice);
+        }
+    };
 
     const onFinish = (values: FormValues) => {
         // Set transaksi farm id
@@ -100,7 +129,7 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
                 total_livestock: values.totalLivestock,
                 start_date: start.format("YYYY-MM-DD"),
                 finish_date: finish.format("YYYY-MM-DD"),
-                price_daily: priceDaily,
+                price_daily: priceDaily + selectedShelter.price_daily,
                 careGive_id: careGiveIds,
                 total_days: totalDays,
             });
@@ -116,6 +145,7 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
                 layout="vertical"
                 onFinish={onFinish}
                 className="w-full bg-amber-50"
+                onValuesChange={calculateTotal}
             >
                 <Button onClick={hiddenForm} type="text" icon={<ArrowLeft />} />
                 <h4 className="text-center font-bold mb-4">Buy {animal?.name}</h4>
@@ -205,7 +235,9 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
                 >
                 <Input.TextArea placeholder="Enter your full address" rows={3} />
                 </Form.Item>
-
+                <Form.Item>
+                    <h5>Rp {totalPrice}</h5>
+                </Form.Item>
                 <Form.Item>
                 <Button type="primary" htmlType="submit">
                     Buy

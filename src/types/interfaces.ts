@@ -64,6 +64,7 @@ export interface CareGive {
 }
 export interface Shelter {
     id: number;
+    farm_id: number;
     name: string;
     location: string;
     accomodate: number;
