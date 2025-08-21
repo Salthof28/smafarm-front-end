@@ -47,7 +47,7 @@ export default function AnimalCardList ({ livestocks }: AnimalCardListProp) {
         <section className={`flex flex-row gap-[0.6rem] md:gap-[1rem] xl:gap-[2rem] flex-wrap w-full justify-center ${currentAnimal.length > 0 ? 'lg:justify-start' : 'justify-center min-h-[75vh]' } min-w-[71vw] xl:min-w-[77vw] 2xl:min-w-[70vw] items-center`}>
         {currentAnimal.length > 0 ? (
             currentAnimal.map((animal) => (
-                <div className="flex flex-col bg-amber-50 rounded-[1rem] w-[9rem] md:w-[14rem] xl:w-[20rem] shadow-lg/30 ring-[0.1rem] ring-black/5">
+                <div key={animal.id} className="flex flex-col bg-amber-50 rounded-[1rem] w-[9rem] md:w-[14rem] xl:w-[20rem] shadow-lg/30 ring-[0.1rem] ring-black/5">
                     <img src={animal?.img_livestock[0]?.url} className="object-cover w-full rounded-t-[1rem] h-[8rem] md:h-[10rem] xl:h-[15rem]" alt={animal?.name} />
                     <div className="flex flex-col text-center px-[1rem]">
                         <h4 className="font-extralight">{animal?.name?.slice(0,14)}{animal?.name?.length > 15 ? '...' : ''}</h4>

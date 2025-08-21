@@ -1,9 +1,8 @@
 import ClientDescriptionAnimal from "@/components/livestock/client-detail-livestock";
-import FormBuyAnimal from "@/components/livestock/form-buy";
 import Navbar from "@/components/navbar";
 import { fetchDetailLivestock } from "@/services/api";
 import { CustomApiError, LivestockDetailResponse } from "@/types/interfaces";
-import { MessageSquareText } from "lucide-react";
+
 export const revalidate = 300;
 
 interface AnimalDetailParam {

@@ -35,8 +35,8 @@ export default function FormRentShelter ({ shelter, hiddenForm }: FormCareAnimal
     const calculateTotal = () => {
         const values = form.getFieldsValue();
         const currentCareGiveIds = values.treatments
-            ?.filter((t: any) => t.selected)
-            ?.map((t: any) => t.id) || [];
+            ?.filter((t: TreatmentValue) => t.selected)
+            ?.map((t: TreatmentValue) => t.id) || [];
         const currentPriceDaily = shelter.care_give
             .filter((cg) => currentCareGiveIds.includes(cg.id))
             .reduce((sum, cg) => sum + cg.price, 0);

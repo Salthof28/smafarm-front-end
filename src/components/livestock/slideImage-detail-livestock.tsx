@@ -1,5 +1,5 @@
 'use client'
-import { ImageUrl, Livestock } from "@/types/interfaces"
+import { ImageUrl } from "@/types/interfaces"
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -25,8 +25,8 @@ export default function SlideImageAnimal ({ images }: SlideImageAnimalProp) {
             <div className="w-[90%] flex items-center gap-2 justify-center">
                 <button data-testid="arrow-left" onClick={() => handleSlider('left')} className="bg-yellow-300 h-6 rounded-[50%] shadow-lg hover:shadow-[0_0_4px_4px_rgba(240,183,140,0.6)] active:scale-80 duration-200"><ChevronLeft className="text-amber-700" /></button>
                 <div ref={sliderRef} className="flex flex-row flex-nowrap gap-[0.5rem] lg:gap-[1rem] overflow-x-auto items-center overscroll-y-contain scrollbar-hide w-[80vw]">
-                    {images?.map(image => (
-                    <div className="relative flex flex-col items-start bg-cover bg-center rounded-2xl bg-black flex-shrink-0 justify-center p-[0.8rem] md:p-[2rem] pb-[4rem] w-[5rem] h-[5rem] lg:w-[5rem] lg:h-[5rem] ">
+                    {images?.map((image, index) => (
+                    <div key={index} className="relative flex flex-col items-start bg-cover bg-center rounded-2xl bg-black flex-shrink-0 justify-center p-[0.8rem] md:p-[2rem] pb-[4rem] w-[5rem] h-[5rem] lg:w-[5rem] lg:h-[5rem] ">
                         <button onClick={() => showImage(image.url)}><img alt={image.url || 'Category image'} className="absolute inset-0 w-full h-full object-cover rounded-2xl opacity-40" src={image.url || "/no-img.jpg"} /></button>
                     </div>
                     ))}

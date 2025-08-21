@@ -66,17 +66,45 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const addBuyItem = (item: BuyItem) => {
-        setCart(prev => ({
-        ...prev,
-        buy: prev.buy ? [...prev.buy, item] : [item],
-        }));
+        // setCart(prev => ({
+        // ...prev,
+        // buy: prev.buy ? [...prev.buy, item] : [item],
+        // }));
+        setCart(prev => {
+            const existingIndex = prev.buy?.findIndex(b => b.livestock_id === item.livestock_id);
+
+            if (existingIndex !== undefined && existingIndex >= 0) {
+                const updatedBuy = [...(prev.buy || [])];
+                updatedBuy[existingIndex].total_livestock += item.total_livestock;
+                return { ...prev, buy: updatedBuy };
+            }
+
+            return { ...prev, buy: [...(prev.buy || []), item] };
+        });
     };
 
     const addCareItem = (item: CareItem) => {
-        setCart(prev => ({
-        ...prev,
-        care: prev.care ? [...prev.care, item] : [item],
-        }));
+        // setCart(prev => ({
+        // ...prev,
+        // care: prev.care ? [...prev.care, item] : [item],
+        // }));
+
+        setCart(prev => {
+            const existingIndex = prev.care?.findIndex(c => 
+                c.shelter_id === item.shelter_id &&
+                (c.livestock_id === item.livestock_id || (c.livestock_id === undefined && item.livestock_id === undefined)) &&
+                c.start_date === item.start_date &&
+                c.finish_date === item.finish_date
+            );
+
+            if (existingIndex !== undefined && existingIndex >= 0) {
+                const updatedCare = [...(prev.care || [])];
+                updatedCare[existingIndex].total_livestock += item.total_livestock;
+                return { ...prev, care: updatedCare };
+            }
+
+            return { ...prev, care: [...(prev.care || []), item] };
+        });
     };
     const getTotal = () => {
         let total = 0;

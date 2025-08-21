@@ -1,5 +1,5 @@
 'use client'
-import { Animal, Livestock } from "@/types/interfaces";
+import { Livestock } from "@/types/interfaces";
 import { MessageSquareText } from "lucide-react";
 import { useState } from "react";
 import FormBuyAnimal from "./form-buy";

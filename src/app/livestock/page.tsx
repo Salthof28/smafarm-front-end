@@ -1,44 +1,18 @@
-import AnimalCardList from "@/components/livestock/livestock-card";
-import FilterCard from "@/components/livestock/filter-card";
-import Navbar from "@/components/navbar";
-import { CategoryDetailResponse, CustomApiError, LivestockAllResponse } from "@/types/interfaces";
+// app/livestock/page.tsx
 import { fetchAllCategory, fetchAllLivestock } from "@/services/api";
+import { CategoryDetailResponse, CustomApiError, LivestockAllResponse } from "@/types/interfaces";
+import LivestockClient from "./livestockClient";
+import { Suspense } from "react";
+
+
 export const revalidate = 10;
 
 export default async function LivestockPage() {
     const category: CategoryDetailResponse | CustomApiError = await fetchAllCategory();
     const livestocks: LivestockAllResponse | CustomApiError = await fetchAllLivestock();
-    const activeIconNav: string = 'animal'; 
-    // const filterAnimals: Animal[] = animals;
-    return(
-        <div className="bg-amber-100 w-full flex flex-col items-center min-h-screen overflow-x-hidden">
-            <Navbar activeIconNav={activeIconNav}/>
-            <main className="flex items-center flex-col mt-[6rem] lg:mt-[12rem]" >
-                {/* <h1 className="p-[8rem]">Hello Animal</h1> */}
-                <section className="flex flex-row px-[0.5rem] md:px-[2vw] xl:px-[3vw] 2xl:px-[10vw] justify-center w-full md:gap-[1rem] xl:gap-[2rem]">
-                    <section className="hidden lg:block bg-amber-50 p-[2rem] shadow-lg/30 ring-[0.1rem] ring-black/5 min-w-[15rem] w-fit h-fit rounded-[0.5rem]">
-                        <h4>Filter</h4>
-                        <hr></hr>
-                        <p className="font-bold">Category</p>
-                        { "data" in category ? (
-                            category.data.length > 0 ? (
-                            category.data.map((cat) => (
-                                <FilterCard key={cat.id} category={cat} activeIconNav={activeIconNav} />
-                            ))
-                            ) : (
-                            <p className="text-gray-500">No categories available</p>
-                            )
-                        ) : (
-                            <p className="text-red-500">Failed to load categories {category.statusCode}</p>
-                        )}
-                    </section>
-                    { "data" in livestocks ? (
-                        <AnimalCardList livestocks={livestocks.data} />
-                    ) : (
-                        <p className="text-red-500">Failed to load livestocks {livestocks.error}</p>
-                    )}
-                </section>
-            </main>
-        </div>
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <LivestockClient category={category} livestocks={livestocks} />
+        </Suspense>
     )
 }

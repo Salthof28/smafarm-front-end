@@ -56,7 +56,7 @@ export default function ClientDescriptionShelter ({ shelter }: DescriptionAnimal
                             <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Care Required:</td>
                         </tr>
                         {requiredCares.map((required) => (                      
-                            <tr className="tds border-t border-gray-500/15">
+                            <tr key={required.id} className="tds border-t border-gray-500/15">
                                 <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">{required.name}</td>
                                 <td>Rp {required.price} / {required.unit}</td>
                             </tr>
@@ -65,7 +65,7 @@ export default function ClientDescriptionShelter ({ shelter }: DescriptionAnimal
                             <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Care Optional:</td>
                         </tr>
                         {optionalCares.map((optional) => (                      
-                            <tr className="tds border-t border-gray-500/15">
+                            <tr key={optional.id} className="tds border-t border-gray-500/15">
                                 <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">{optional.name}</td>
                                 <td>Rp {optional.price} / {optional.unit}</td>
                             </tr>

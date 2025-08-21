@@ -112,8 +112,8 @@ export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp)
         // if select care
         if (values.wantCare === "yes" && selectedShelter) {
             const careGiveIds = values.treatments
-                ?.filter((t: any) => t.selected)
-                ?.map((t: any) => t.id) || [];
+                ?.filter((t) => t.selected)
+                ?.map((t) => t.id) || [];
 
             const priceDaily = selectedShelter.care_give
                 .filter((cg) => careGiveIds.includes(cg.id))

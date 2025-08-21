@@ -1,4 +1,4 @@
-import { Animal, Category, CategoryDetailResponse, CustomApiError, Farm, FarmDetailResponse, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse } from "@/types/interfaces";
+import { CategoryDetailResponse, CustomApiError, FarmDetailResponse, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -125,19 +125,3 @@ function errorNetworking(error: unknown): CustomApiError {
     };
 }
 
-export const mockCategory: Category[] = [
-    {
-        id: 1,
-        name: 'Cow',
-        img_category: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkvy5wCD2kMlWbP7f-wdMVYVgB8L45FerDsSJfrnc9m_dFGLRbGg6324U2MgyaqNeCaho&usqp=CAU',
-        created_at: 'ss',
-        updated_at: 'ss'
-    },
-    {
-        id: 2,
-        name: 'Sheep',
-        img_category: 'https://a-z-animals.com/media/2021/12/sheep.jpg',
-        created_at: 'ss',
-        updated_at: 'ss'
-    }
-];

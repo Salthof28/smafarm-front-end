@@ -1,5 +1,5 @@
 'use client'
-import { Animal, Category, CustomApiError } from "@/types/interfaces";
+import { Category } from "@/types/interfaces";
 import { Square, SquareCheckBig } from "lucide-react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { ReadonlyURLSearchParams, useRouter, useSearchParams } from "next/navigation";
