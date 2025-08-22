@@ -17,8 +17,7 @@ This repository contains the **frontend application** of SmaFarm, built with **N
 - **State Management:** React Context API
 - **API Communication:** Fetch API / Axios
 - **Date Handling:** Day.js
-- **Authentication:** NextAuth.js (Google OAuth)
-- **Deployment:** Vercel
+- **Authentication:** NextAuth.js
 
 ---
 
@@ -33,7 +32,7 @@ This repository contains the **frontend application** of SmaFarm, built with **N
 ### 💰 Livestock Marketplace
 - Browse livestock listings for sale
 - Add livestock to the cart and checkout
-- Manage purchase history and invoices
+- Manage purchase history
 
 ### 👨‍🌾 Farm Management for Breeders
 - Breeders can register and manage their farm profiles
