@@ -1,5 +1,5 @@
 import { Cart } from "@/app/context/Cart-context";
-import { CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CustomApiError, FarmDetailResponse, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
+import { CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CustomApiError, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -169,6 +169,80 @@ export async function fetchTransactionBuyCare (transaction: CleanCartBuyCare, to
             return errorData;
         }
         return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchUploadProfile (photo: FormData, token: string) {
+    try {
+        const responseUrl: Response = await fetch(`${API_SMAFARM}/uploads/profile`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}` 
+            },
+            body: photo
+        });
+        const urlJson = await responseUrl.json();
+        if(!responseUrl.ok){
+            const errorData: CustomApiError = await responseUrl.json();
+            return errorData;
+        }
+        const url: string = urlJson.data.url;
+
+        const responseSave = await fetch(`${API_SMAFARM}/users/profile`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ img_profile: url }),
+        });
+
+        const saveJson = await responseSave.json();
+        if (!responseSave.ok) {
+            const errorData: CustomApiError = await responseUrl.json();
+            return errorData;
+        };
+        return saveJson;
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchEditProfile(editData: FormValues, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/users/profile`, {
+            method: "PATCH",
+            headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`, // kalau backend butuh auth
+            },
+            body: JSON.stringify(editData),
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchHistoryTransaction(token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/transactions/history`, {
+            method: "GET",
+            headers: {
+            "Authorization": `Bearer ${token}`, // kalau backend butuh auth
+            }
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            return errorData;
+        }        
+        return res.json();
     } catch(error: unknown) {
         return errorNetworking(error);
     }

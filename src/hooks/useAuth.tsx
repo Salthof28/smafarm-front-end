@@ -12,7 +12,7 @@ export default function useAuth() {
     if (status === "unauthenticated") {
       router.push("/login");
     } else if (session?.user?.role === "CUSTOMER") {
-      router.replace("/dashboard");
+      router.replace("/profile");
     } else if (session?.user?.role === "BREEDER") {
       router.replace("/dashboard");
     } else if (session?.user?.role === "ADMIN") {

@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
             accessToken: loginData.access_token,
             refreshToken: loginData.refresh_token,
             expiresAt: accessTokenExpiresAt,
-            profile: profileData.data,
+            profile: profileData,
           };
         } catch (err) {
           console.error("Authorize error:", err);

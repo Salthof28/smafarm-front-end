@@ -98,25 +98,33 @@ export interface DetailCare {
 }
 
 export interface CareTransaction {
-  id: number;
-  transaction_id: number;
-  livestock_id: number | null;
-  total_livestock: number;
-  shelter_id: number;
-  start_date: string; 
-  finish_date: string;
-  one_day_price: number;
-  sub_total: number;
-  detail_care: DetailCare[];
+    id: number;
+    transaction_id: number;
+    livestock_id: number | null;
+    total_livestock: number;
+    shelter_id: number;
+    start_date: string; 
+    finish_date: string;
+    one_day_price: number;
+    sub_total: number;
+    detail_care: DetailCare[];
+    shelter?: {
+        name: string;
+        img_shelter: ImageUrl[]
+    };
 }
 
 export interface DetailBuy {
-  id: number;
-  transaction_id: number;
-  livestock_id: number;
-  total_livestock: number;
-  unit_price: number;
-  sub_total: number;
+    id: number;
+    transaction_id: number;
+    livestock_id: number;
+    total_livestock: number;
+    unit_price: number;
+    sub_total: number;
+    livestock?: {
+        name: string;
+        img_livestock: ImageUrl[]
+    };
 }
 
 export interface Transaction {
@@ -202,4 +210,12 @@ export interface CleanCartBuyCare {
     transaction: Transaction;
     care: CleanCare[];
     buy: CleanBuy[];
+}
+
+export interface FormValues {
+    name?: string,
+    email?: string,
+    phone?: string,
+    oldPassword?: string,
+    password?: string
 }

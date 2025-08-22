@@ -10,6 +10,7 @@
     "test": "set NODE_OPTIONS=--no-deprecation && jest"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.0.0",
     "@ant-design/pro-components": "^2.8.10",
     "@ant-design/pro-layout": "^7.22.7",
     "@ant-design/pro-provider": "^2.16.2",
