@@ -24,6 +24,7 @@ interface FormValues {
   shelterId: number;
   start: dayjs.Dayjs;
   finish: dayjs.Dayjs;
+  address: string,
   treatments: TreatmentValue[];
 }
 export default function FormBuyAnimal({ animal, hiddenForm }: FormBuyAnimalProp) {
@@ -184,8 +185,11 @@ const dateMap: Record<string, number> = {};
         // save buy transaction in localstorage
         addBuyItem({
             livestock_id: animal.id,
+            name: animal.name,
             price: animal.price,
             total_livestock: values.totalLivestock,
+            image: animal.img_livestock[0].url || '/cow-not-found.png',
+            address: values.address
         });
         // if select care
         if (values.wantCare === "yes" && selectedShelter) {
@@ -211,12 +215,15 @@ const dateMap: Record<string, number> = {};
             addCareItem({
                 livestock_id: animal.id,
                 shelter_id: values.shelterId,
+                name: selectedShelter.name,
                 total_livestock: livestock,
                 start_date: start.format("YYYY-MM-DD"),
                 finish_date: finish.format("YYYY-MM-DD"),
                 price_daily: priceDaily + selectedShelter.price_daily,
                 careGive_id: careGiveIds,
                 total_days: totalDays,
+                image: selectedShelter.img_shelter[0].url || '/cow-not-found.png',
+                address: values.address
             });
         }
 
@@ -314,7 +321,6 @@ const dateMap: Record<string, number> = {};
                     <p>Sisa slot pada start date: {remainingSlots}</p>
                 </div>
                 )}
-
                 <Form.Item
                 label="Address Delivery"
                 name="address"

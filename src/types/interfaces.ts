@@ -90,6 +90,54 @@ export interface CareTransaction {
     sub_total: number;
 }
 
+export interface DetailCare {
+  id: number;
+  careTransaction_id: number;
+  careGive_id: number;
+  careGive: CareGive;
+}
+
+export interface CareTransaction {
+  id: number;
+  transaction_id: number;
+  livestock_id: number | null;
+  total_livestock: number;
+  shelter_id: number;
+  start_date: string; 
+  finish_date: string;
+  one_day_price: number;
+  sub_total: number;
+  detail_care: DetailCare[];
+}
+
+export interface DetailBuy {
+  id: number;
+  transaction_id: number;
+  livestock_id: number;
+  total_livestock: number;
+  unit_price: number;
+  sub_total: number;
+}
+
+export interface Transaction {
+  id: number;
+  customer_id: number;
+  farm_id: number;
+  date_transaction: string; 
+  total_amount: number;
+  status_transaction: string;
+  rating: number | null;
+  review: string | null;
+  updated_at: string;
+  detail_buy: DetailBuy[];
+  care_transaction: CareTransaction[];
+}
+
+export interface TransactionResponse {
+  message: string;
+  data: Transaction[];
+}
+
 export interface CategoryDetailResponse {
     message: string;
     data: Category[];
@@ -125,4 +173,33 @@ export interface CustomApiError {
   message: string;
   error: string;   
   statusCode: number;
+}
+export interface CleanCare {
+    livestock_id?: number,
+    shelter_id: number,
+    total_livestock: number,
+    start_date: string,
+    finish_date: string,
+    careGive_id: number[],
+    address?: string
+}
+
+export interface CleanBuy {
+    livestock_id: number,
+    total_livestock: number,
+    address: string,
+}
+export interface CleanCartBuy {
+    transaction: Transaction;
+    buy: CleanBuy[];
+}
+
+export interface CleanCartCare {
+    transaction: Transaction;
+    care: CleanCare[];
+}
+export interface CleanCartBuyCare {
+    transaction: Transaction;
+    care: CleanCare[];
+    buy: CleanBuy[];
 }

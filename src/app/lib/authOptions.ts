@@ -31,16 +31,15 @@ export const authOptions: NextAuthOptions = {
           const loginJson = await loginRes.json();
           const loginData = loginJson.data;
 
-          // 2. Fetch profile with access_token
-          const profileRes = await fetch("http://localhost:4000/users/profile", {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${loginData.access_token}`,
-            },
-          });
+          // 2. Access token kadaluarsa
+          const accessTokenExpiresAt = new Date(loginData.expires_at).getTime() / 1000;
 
+          // 3. Fetch profile dengan access token
+          const profileRes = await fetch("http://localhost:4000/users/profile", {
+            headers: { Authorization: `Bearer ${loginData.access_token}` },
+          });
           if (!profileRes.ok) return null;
-          const profileJson = await profileRes.json()
+          const profileJson = await profileRes.json();
           const profileData = profileJson.data;
 
           return {
@@ -49,10 +48,10 @@ export const authOptions: NextAuthOptions = {
             name: profileData.name,
             role: profileData.role,
             idToken: profileData.id_token,
-            expiresAt: loginData.expires_at,
             accessToken: loginData.access_token,
             refreshToken: loginData.refresh_token,
-            profile: profileData.data, // simpan profil user di sini
+            expiresAt: accessTokenExpiresAt,
+            profile: profileData.data,
           };
         } catch (err) {
           console.error("Authorize error:", err);
@@ -70,17 +69,16 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.role = user.role;
         token.idToken = user.idToken;
-        token.expiresAt = Math.floor(new Date(user.expiresAt).getTime() / 1000);
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
+        token.expiresAt = user.expiresAt;
         token.profile = user.profile;
       }
 
-      // check expired token
+      // refresh token jika access token kadaluarsa
       const now = Math.floor(Date.now() / 1000);
-      if (token.expiresAt && now >= (token.expiresAt as number)) {
+      if (token.expiresAt && now >= token.expiresAt) {
         try {
-          // refresh token
           const refreshRes = await fetch("http://localhost:4000/auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -90,21 +88,22 @@ export const authOptions: NextAuthOptions = {
           if (refreshRes.ok) {
             const newTokens = await refreshRes.json();
 
+            const newAccessTokenExpiresAt = new Date(newTokens.expires_at).getTime() / 1000;
+
             token.accessToken = newTokens.access_token;
             token.refreshToken = newTokens.refresh_token;
-            token.expiresAt = newTokens.expires_at;
+            token.expiresAt = newAccessTokenExpiresAt;
 
-            // update profile with new Token
+            // update profile
             const profileRes = await fetch("http://localhost:4000/users/profile", {
-              headers: {
-                Authorization: `Bearer ${newTokens.access_token}`,
-              },
+              headers: { Authorization: `Bearer ${newTokens.access_token}` },
             });
-
             if (profileRes.ok) {
-              const profileData = await profileRes.json();
-              token.profile = profileData.data;
+              const profileJson = await profileRes.json();
+              token.profile = profileJson.data;
             }
+          } else {
+            console.error("Failed to refresh token");
           }
         } catch (err) {
           console.error("Error refreshing token:", err);
@@ -120,10 +119,10 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name as string;
         session.user.role = token.role as string;
         session.user.idToken = token.idToken as string;
-        session.expiresAt = new Date((token.expiresAt as number) * 1000).toISOString();
         session.accessToken = token.accessToken as string;
         session.refreshToken = token.refreshToken as string;
-        session.user.profile = token.profile; // profile user full
+        session.expiresAt = new Date((token.expiresAt as number) * 1000).toISOString();
+        session.user.profile = token.profile;
       }
       return session;
     },

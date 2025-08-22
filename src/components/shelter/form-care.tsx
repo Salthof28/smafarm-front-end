@@ -15,6 +15,7 @@ interface FormValues {
   shelterId: number;
   start: dayjs.Dayjs;
   finish: dayjs.Dayjs;
+  address: string,
   treatments: TreatmentValue[];
 }
 interface TreatmentValue {
@@ -162,13 +163,16 @@ export default function FormRentShelter ({ shelter, hiddenForm }: FormCareAnimal
         }        
 
         addCareItem({
-            shelter_id: values.shelterId,
+            shelter_id: shelter.id,
+            name: shelter.name,
             total_livestock: livestock,
             start_date: start.format("YYYY-MM-DD"),
             finish_date: finish.format("YYYY-MM-DD"),
             price_daily: priceDaily + shelter.price_daily,
             careGive_id: careGiveIds,
             total_days: totalDays,
+            image: shelter.img_shelter[0].url || '/cow-not-found.png',
+            address: values.address
         });
 
         hiddenForm();
@@ -231,7 +235,7 @@ export default function FormRentShelter ({ shelter, hiddenForm }: FormCareAnimal
                 name="address"
                 rules={[{ required: true, message: "Please input your address" }]}
                 >
-                    <Input.TextArea placeholder="Enter your full address" rows={3} />
+                    <Input placeholder="Enter your full address"  />
                 </Form.Item>
                 <Form.Item>
                     <h5>Rp {totalPrice}</h5>

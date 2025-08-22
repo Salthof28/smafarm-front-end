@@ -1,19 +1,133 @@
+'use client'
 import Navbar from "@/components/navbar";
-import { Suspense } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { CareItem, Cart, useCart } from "../context/Cart-context";
+import BuyList from "@/components/cart/buy-list";
+import CareList from "@/components/cart/care-list";
+import { useSession } from "next-auth/react";
+import { fetchTransactionBuy, fetchTransactionBuyCare, fetchTransactionCare } from "@/services/api";
+import { message } from "antd";
+import { CleanCartBuyCare } from "@/types/interfaces";
 
-export default async function Cart() {
-    const activeIconNav: string = 'cart'; 
-    return(
+export default function Carts() {
+    const activeIconNav: string = 'cart';
+    const { data: session, status } = useSession();
+    const router = useRouter();
+
+    const {cart, getTotal, addBuyItem, addCareItem, decreaseBuyItem, decreaseCareItem, removeBuyItem, removeCareItem, checkout } = useCart();
+
+    const handleCheckOut = async () => {
+        if (status === "unauthenticated") {
+            router.push("/login");
+        } 
+        else {
+            const cleanCart = await filterPayload(cart)
+            await fetchCreateTransaction(cleanCart);
+        }
+    };
+
+    const filterPayload = (cart: Cart) => {
+        const payload: any = {
+            transaction: { id_farm: Number(cart.transaction.id_farm) }
+        };
+        if (cart.buy.length > 0) {
+            payload.buy = cart.buy.map(b => ({
+            livestock_id: Number(b.livestock_id),
+            total_livestock: Number(b.total_livestock),
+            address: b.address
+            }));
+        }
+        if (cart.care.length > 0) {
+            payload.care = cart.care.map(c => ({
+            livestock_id: c.livestock_id,
+            shelter_id: Number(c.shelter_id),
+            total_livestock: Number(c.total_livestock),
+            address: c.address,
+            start_date: c.start_date,
+            finish_date:  c.finish_date,
+            careGive_id: c.careGive_id
+            }));
+        }
+        return payload;
+    };
+
+    const fetchCreateTransaction = async (cartClean: CleanCartBuyCare) => {
+        try {
+            if (!session?.accessToken) return;
+            console.log(cart)
+            let result;
+            if (cart.buy.length > 0 && cart.care.length > 0) {
+                console.log(session?.accessToken);
+                result = await fetchTransactionBuyCare(cartClean, session?.accessToken!);
+            } 
+            if (cart.buy.length > 0) {
+                console.log(session?.accessToken);
+                result = await fetchTransactionBuy(cartClean, session?.accessToken!);
+            } 
+            if (cart.care.length > 0) {
+                result = await fetchTransactionCare(cartClean, session?.accessToken!);
+            }
+            if (result?.message) {
+                message.error(result.message);
+                console.log(result.message)
+            } 
+            checkout();
+        } catch (err) {
+            message.error("Something went wrong while processing checkout.");
+        }
+    }
+
+    return (
         <div className="w-full bg-amber-100 flex flex-col items-center min-h-screen overflow-x-hidden">
             <Suspense fallback={<div>Loading...</div>}>
                 <Navbar activeIconNav={activeIconNav} />
             </Suspense>
-            <h2 className="pt-[8rem]">Checkout</h2>
-            <main className="flex flex-col items-center gap-[2rem] text-black" >
-                <div className="flex flex-col max-lg:items-center lg:flex-row gap-[2rem] xl:gap-[4rem] 2xl:gap-[6rem] w-[95vw] 2xl:w-[75vw] bg-amber-50 shadow-lg/30 ring-[0.1rem] ring-black/5 p-[2rem] rounded-[1rem] justify-center">
-                    <h4>{`Your cart is empty. Let's fill it up with something awesome!`}</h4>
-                </div>
+            <h2 className="pt-[8rem] text-2xl font-bold">Checkout</h2>
+            <main className="flex flex-col items-center gap-6 text-black w-full px-6 py-4">
+                {/* empty cart */}
+                {(cart.buy.length < 1 && cart.care.length < 1) && (
+                    <div className="flex flex-col items-center gap-4 w-[95vw] md:w-[75vw] bg-amber-50 shadow-lg ring-[0.1rem] ring-black/5 p-8 rounded-xl justify-center">
+                        <h4 className="text-lg font-semibold text-center">
+                            Your cart is empty. Let's fill it up with something awesome!
+                        </h4>
+                    </div>
+                )}
+                {/* List Buy Items */}
+                {cart.buy.length > 0 && (
+                    <div className="w-[95vw] md:w-[75vw] bg-amber-50 shadow-md rounded-xl p-6">
+                        <h3 className="text-xl font-semibold mb-4">Buy Items</h3>
+                        {cart.buy.map((item, index) => (
+                            <BuyList key={index} item={item} decreaseBuyItem={decreaseBuyItem} addBuyItem={addBuyItem} removeBuyItem={removeBuyItem} />
+                        ))}
+                    </div>
+                )}
+                {/* List Care Items */}
+                {cart.care.length > 0 && (
+                    <div className="w-[95vw] md:w-[75vw] bg-amber-50 shadow-md rounded-xl p-6">
+                        <h3 className="text-xl font-semibold mb-4">Care Items</h3>
+                        {cart.care.map((item, index) => (
+                            <CareList key={index} item={item} decreaseCareItem={decreaseCareItem} addCareItem={addCareItem} removeCareItem={removeCareItem} />
+                        ))}
+                    </div>
+                )}
+
+                {/* Total price + button Checkout */}
+                {(cart.buy.length > 0 || cart.care.length > 0) && (
+                    <div className="flex flex-col items-center gap-4 mt-6 w-[95vw] md:w-[75vw] bg-amber-50 shadow-md rounded-xl p-6">
+                        <div className="flex justify-between w-full text-lg font-semibold">
+                            <span>Total:</span>
+                            <span>Rp {getTotal().toLocaleString()}</span>
+                        </div>
+                        <button
+                            className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition"
+                            onClick={handleCheckOut}
+                        >
+                            Proceed to Checkout
+                        </button>
+                    </div>
+                )}
             </main>
         </div>
-    )
+    );
 }

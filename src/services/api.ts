@@ -1,4 +1,5 @@
-import { CareTransactionResponse, CategoryDetailResponse, CustomApiError, FarmDetailResponse, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse } from "@/types/interfaces";
+import { Cart } from "@/app/context/Cart-context";
+import { CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CustomApiError, FarmDetailResponse, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -101,6 +102,68 @@ export async function fetchRegisterUser(input: InptRegister) {
 export async function fetchAllCareTransaction(shelter_id: number): Promise<CareTransactionResponse | CustomApiError> {
     try {
         const response: Response = await fetch(`${API_SMAFARM}/transactions/care?shelter_id=${shelter_id}`);
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchTransactionBuy (transactionBuy: CleanCartBuy, token: string): Promise<TransactionResponse | CustomApiError> {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/transactions/transactionbuy`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify(transactionBuy)
+        });
+
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchTransactionCare (transactionCare: CleanCartCare, token: string): Promise<TransactionResponse | CustomApiError> {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/transactions/transactioncare`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
+            body: JSON.stringify(transactionCare)
+        });
+
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchTransactionBuyCare (transaction: CleanCartBuyCare, token: string): Promise<TransactionResponse | CustomApiError> {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/transactions/transactionbuycare`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+            },
+            body: JSON.stringify(transaction)
+        });
         if(!response.ok){
             const errorData: CustomApiError = await response.json();
             return errorData;
