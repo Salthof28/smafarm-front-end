@@ -14,8 +14,7 @@ This repository contains the **frontend application** of SmaFarm, built with **N
 - **Framework:** [Next.js](https://nextjs.org/) (v14+)
 - **Language:** TypeScript
 - **UI Library:** [Ant Design](https://ant.design/)
-- **State Management:** React Context API
-- **API Communication:** Fetch API / Axios
+- **API Communication:** Fetch API
 - **Date Handling:** Day.js
 - **Authentication:** NextAuth.js
 
