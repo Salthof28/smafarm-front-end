@@ -74,20 +74,20 @@ export default function HistoryCustomer() {
     <div className="bg-amber-100 w-full min-h-screen overflow-x-hidden">
       <Navbar activeIconNav="login"/>
       <div className='mt-[6rem] lg:mt-[12rem] flex justify-center py-[1rem]'>
-        <div className='w-[85vw] 2xl:w-[50vw]'>
+        <div className='w-[95vw] lg:w-[85vw] 2xl:w-[50vw] shadow-md h-[45vh] md:h-[43vh] lg:h-[46vh] xl:h-[50vh] 2xl:h-[45vh]'>
           <Layout
-            style={{ padding: '24px 0', background: colorBgContainer, borderRadius: borderRadiusLG }}
+            style={{ padding: '24px 0', background: '#fffbeb', borderRadius: borderRadiusLG, height: '100%' }}
           >
-            <Sider style={{ background: colorBgContainer }} width={250} breakpoint="md" collapsedWidth={0}>
+            <Sider style={{ background: '#fffbeb' }} width={250} breakpoint="md" collapsedWidth={0}>
               <Menu
                 mode="inline"
                 defaultSelectedKeys={['menu-1']}
-                style={{ height: '100%' }}
+                style={{ height: '100%', background: '#fffbeb', overflowY: 'auto' }}
                 items={items2}
               />
               
             </Sider>
-            <Content style={{ padding: '0 24px', minHeight: 280 }}>
+            <Content style={{ padding: '0 24px', minHeight: 280, overflowY: 'auto' }}>
                 <HistoryCustomerChild history={history} />
             </Content>
           </Layout>

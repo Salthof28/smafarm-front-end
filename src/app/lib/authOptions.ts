@@ -36,6 +36,7 @@ export const authOptions: NextAuthOptions = {
 
           // 3. Fetch profile dengan access token
           const profileRes = await fetch("http://localhost:4000/users/profile", {
+            method: 'GET',
             headers: { Authorization: `Bearer ${loginData.access_token}` },
           });
           if (!profileRes.ok) return null;
@@ -79,10 +80,9 @@ export const authOptions: NextAuthOptions = {
       const now = Math.floor(Date.now() / 1000);
       if (token.expiresAt && now >= token.expiresAt) {
         try {
-          const refreshRes = await fetch("http://localhost:4000/auth/refresh", {
+          const refreshRes = await fetch("http://localhost:4000/auth/refreshToken", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refresh_token: token.refreshToken }),
+            headers: { Authorization: `Bearer ${token.refreshToken}` },
           });
 
           if (refreshRes.ok) {
@@ -96,8 +96,9 @@ export const authOptions: NextAuthOptions = {
 
             // update profile
             const profileRes = await fetch("http://localhost:4000/users/profile", {
+              method: 'GET',
               headers: { Authorization: `Bearer ${newTokens.access_token}` },
-            });
+              });
             if (profileRes.ok) {
               const profileJson = await profileRes.json();
               token.profile = profileJson.data;

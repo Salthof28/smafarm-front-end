@@ -101,6 +101,7 @@ export interface CareTransaction {
     id: number;
     transaction_id: number;
     livestock_id: number | null;
+    duration_care: number;
     total_livestock: number;
     shelter_id: number;
     start_date: string; 
