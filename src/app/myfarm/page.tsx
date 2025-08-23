@@ -53,13 +53,13 @@ export default function FarmProfile() {
                     key: 'shelters',
                     icon: React.createElement(ShopOutlined),
                     label: 'Shelters',
-                    onClick: () => console.log('Tambah Hewan diklik'),
+                    onClick: () => router.push('/myfarm/shelters'),
                 },
                 {
                     key: 'livestocks',
                     icon: React.createElement(ShopOutlined),
                     label: 'Livestocks',
-                    onClick: () => console.log('Lihat Statistik diklik'),
+                    onClick: () => router.push('/myfarm/livestocks'),
                 },
             ]
         },
