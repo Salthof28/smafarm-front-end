@@ -42,13 +42,14 @@ export async function fetchDetailLivestock(id: number): Promise<LivestockDetailR
     }
 }
 
-export async function fetchAllShelter(category_id?: number[], name?: string): Promise<ShelterAllResponse | CustomApiError> {
+export async function fetchAllShelter(category_id?: number[], name?: string, farm_id?: number): Promise<ShelterAllResponse | CustomApiError> {
     try {
         const params: string[] = []
         if (category_id && category_id.length > 0) {
             category_id.forEach(id => params.push(`category_id=${encodeURIComponent(id)}`));
         }
         if(name) params.push(`name=${encodeURIComponent(name)}`);
+        if (farm_id) params.push(`farm_id=${encodeURIComponent(farm_id)}`);
         const queryString = params.length > 0 ? `?${params.join("&")}` : "";
         const response: Response = await fetch(`${API_SMAFARM}/shelters${queryString}`);
         return response.json();

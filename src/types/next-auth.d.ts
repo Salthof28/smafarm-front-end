@@ -13,6 +13,7 @@ declare module "next-auth" {
         email: string;
         phone: string;
         hasFarm: boolean;
+        farmId: number;
         status: string;
         img_profile: string;
         role: string;
@@ -39,6 +40,7 @@ declare module "next-auth" {
       email: string;
       phone: string;
       hasFarm: boolean;
+      farmId: number;
       status: string;
       img_profile: string;
       role: string;
@@ -63,6 +65,7 @@ declare module "next-auth/jwt" {
       email: string;
       phone: string;
       hasFarm: boolean;
+      farmId: number;
       status: string;
       img_profile: string;
       role: string;

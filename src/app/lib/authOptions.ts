@@ -48,6 +48,7 @@ export const authOptions: NextAuthOptions = {
             profile: {
               ...profileData,
               hasFarm: profileData.farms !== null,
+              farmId: profileData.farms?.id
             },
           };
         } catch (err) {
@@ -94,6 +95,7 @@ export const authOptions: NextAuthOptions = {
               token.profile = {
                 ...profileJson.data,
                 hasFarm: profileJson.data.farms !== null,
+                farmId: profileJson.data.farms?.id
               };
             }
           }
