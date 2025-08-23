@@ -2,9 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions: NextAuthOptions = {
-  session: {
-    strategy: "jwt",
-  },
+  session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     CredentialsProvider({
@@ -17,7 +15,6 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         try {
-          // 1. Login
           const loginRes = await fetch("http://localhost:4000/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -26,17 +23,13 @@ export const authOptions: NextAuthOptions = {
               password: credentials.password,
             }),
           });
-
           if (!loginRes.ok) return null;
+
           const loginJson = await loginRes.json();
           const loginData = loginJson.data;
+          const accessTokenExpiresAt = Math.floor(Date.now() / 1000) + 3600;
 
-          // 2. Access token kadaluarsa
-          const accessTokenExpiresAt = new Date(loginData.expires_at).getTime() / 1000;
-
-          // 3. Fetch profile dengan access token
           const profileRes = await fetch("http://localhost:4000/users/profile", {
-            method: 'GET',
             headers: { Authorization: `Bearer ${loginData.access_token}` },
           });
           if (!profileRes.ok) return null;
@@ -52,7 +45,10 @@ export const authOptions: NextAuthOptions = {
             accessToken: loginData.access_token,
             refreshToken: loginData.refresh_token,
             expiresAt: accessTokenExpiresAt,
-            profile: profileData,
+            profile: {
+              ...profileData,
+              hasFarm: profileData.farms !== null,
+            },
           };
         } catch (err) {
           console.error("Authorize error:", err);
@@ -63,7 +59,7 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       // first login
       if (user) {
         token.id = Number(user.id);
@@ -76,7 +72,7 @@ export const authOptions: NextAuthOptions = {
         token.profile = user.profile;
       }
 
-      // refresh token jika access token kadaluarsa
+      // refresh token if expired access token
       const now = Math.floor(Date.now() / 1000);
       if (token.expiresAt && now >= token.expiresAt) {
         try {
@@ -84,47 +80,55 @@ export const authOptions: NextAuthOptions = {
             method: "POST",
             headers: { Authorization: `Bearer ${token.refreshToken}` },
           });
-
           if (refreshRes.ok) {
             const newTokens = await refreshRes.json();
-
-            const newAccessTokenExpiresAt = new Date(newTokens.expires_at).getTime() / 1000;
-
             token.accessToken = newTokens.access_token;
             token.refreshToken = newTokens.refresh_token;
-            token.expiresAt = newAccessTokenExpiresAt;
+            token.expiresAt = new Date(newTokens.expires_at).getTime() / 1000;
 
-            // update profile
             const profileRes = await fetch("http://localhost:4000/users/profile", {
-              method: 'GET',
-              headers: { Authorization: `Bearer ${newTokens.access_token}` },
-              });
+              headers: { Authorization: `Bearer ${token.accessToken}` },
+            });
             if (profileRes.ok) {
               const profileJson = await profileRes.json();
-              token.profile = profileJson.data;
+              token.profile = {
+                ...profileJson.data,
+                hasFarm: profileJson.data.farms !== null,
+              };
             }
-          } else {
-            console.error("Failed to refresh token");
           }
         } catch (err) {
           console.error("Error refreshing token:", err);
         }
       }
 
+      // handle update 
+      if (trigger === "update" && session?.user) {
+        if (session.user.name) token.name = session.user.name;
+        if (session.user.role) token.role = session.user.role;
+        if (session.user.profile) token.profile = { ...token.profile, ...session.user.profile };
+      }
+
       return token;
     },
 
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as number;
-        session.user.name = token.name as string;
-        session.user.role = token.role as string;
-        session.user.idToken = token.idToken as string;
-        session.accessToken = token.accessToken as string;
-        session.refreshToken = token.refreshToken as string;
-        session.expiresAt = new Date((token.expiresAt as number) * 1000).toISOString();
-        session.user.profile = token.profile;
+    async session({ session, token, trigger }) {
+      session.user.id = token.id as number;
+      session.user.name = token.name as string;
+      session.user.role = token.role as string;
+      session.user.idToken = token.idToken as string;
+      session.accessToken = token.accessToken as string;
+      session.refreshToken = token.refreshToken as string;
+      session.expiresAt = new Date((token.expiresAt as number) * 1000).toISOString();
+      session.user.profile = token.profile;
+
+      // update session dari frontend
+      if (trigger === "update" && session.user) {
+        if (session.user.profile) session.user.profile = { ...session.user.profile, ...session.user.profile };
+        if (session.user.name) session.user.name = session.user.name;
+        if (session.user.role) session.user.role = session.user.role;
       }
+
       return session;
     },
   },

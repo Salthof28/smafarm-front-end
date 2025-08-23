@@ -8,11 +8,10 @@ import { useSession } from "next-auth/react";
 
 interface FormEditProfileProp {
     hiddenForm: () => void;
-    session: Session | null
 }
-export default function EditProfile({hiddenForm, session}: FormEditProfileProp) {
+export default function EditProfile({hiddenForm}: FormEditProfileProp) {
     const [form] = Form.useForm();
-    const { update } = useSession();
+    const { data: session, update } = useSession();
 
     const onFinish = async (values: FormValues) => {
         const token = session?.accessToken;
@@ -28,17 +27,16 @@ export default function EditProfile({hiddenForm, session}: FormEditProfileProp) 
             }
             console.log(session.user.profile)
             message.success("Profile updated successfully!");
-            await update();
-            // await update({
-            //     ...session,
-            //     user: {
-            //         ...session.user,
-            //         profile: {
-            //         ...session.user.profile,
-            //         ...values,
-            //         }
-            //     }
-            // });
+            await update({
+                trigger: "update",
+                user: {
+                    ...session.user,
+                    profile: {
+                    ...session.user.profile,
+                    ...values,
+                    }
+                }
+            });
             console.log(session.user.profile)
             hiddenForm(); // Menutup form setelah sukses
         } catch (error) {

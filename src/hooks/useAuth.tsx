@@ -14,7 +14,7 @@ export default function useAuth() {
     } else if (session?.user?.role === "CUSTOMER") {
       router.replace("/profile");
     } else if (session?.user?.role === "BREEDER") {
-      router.replace("/dashboard");
+      router.replace("/myfarm");
     } else if (session?.user?.role === "ADMIN") {
       router.replace("/dashboard");
     }

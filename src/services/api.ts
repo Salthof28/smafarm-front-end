@@ -1,4 +1,5 @@
 import { Cart } from "@/app/context/Cart-context";
+import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
 import { CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CustomApiError, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
 
 
@@ -111,6 +112,7 @@ export async function fetchAllCareTransaction(shelter_id: number): Promise<CareT
         return errorNetworking(error);
     }
 }
+
 
 export async function fetchTransactionBuy (transactionBuy: CleanCartBuy, token: string): Promise<TransactionResponse | CustomApiError> {
     try {
@@ -246,6 +248,27 @@ export async function fetchHistoryTransaction(token: string) {
     } catch(error: unknown) {
         return errorNetworking(error);
     }
+}
+
+export async function fetchCreatefarm(data: FormCreateFarm, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/farms`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }    
 }
 
 export async function fetchLogout(access_token: string) {

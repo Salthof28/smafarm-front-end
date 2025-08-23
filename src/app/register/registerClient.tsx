@@ -1,7 +1,7 @@
 'use client'
 import Navbar from "@/components/navbar";
 import Link from "next/link";
-import { Form, Input, Button, Typography, Alert, Select } from "antd";
+import { Form, Input, Button, Typography, Alert, Select, message } from "antd";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -43,6 +43,7 @@ export default function RegisterClient () {
         const register = await fetchRegisterUser(values);
         if ('statusCode' in register && register.statusCode !== 200) {
             // misal email atau phone sudah ada
+            message.error(register.message);
             setErrorMsg(register.message); 
             setLoading(false);
             return;

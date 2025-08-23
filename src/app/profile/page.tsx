@@ -59,13 +59,13 @@ export default function ProfileCustomer() {
               
             </Sider>
             <Content style={{ padding: '0 24px', minHeight: 280, overflowY: 'auto' }}>
-                <ProfileCustomerDetail session={session} showForm={() => setShowForm(true)} />
+                <ProfileCustomerDetail showForm={() => setShowForm(true)} />
             </Content>
             {showForm === true && (
             <>
                 <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" onClick={() => setShowForm(false)} />
                 <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-                    <EditProfile session={session} hiddenForm={() => setShowForm(false)} />
+                    <EditProfile hiddenForm={() => setShowForm(false)} />
                 </div>
             </>
             )}
