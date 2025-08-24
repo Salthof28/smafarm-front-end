@@ -16,6 +16,7 @@
     "@ant-design/pro-provider": "^2.16.2",
     "antd": "^5.27.1",
     "dayjs": "^1.11.13",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.523.0",
     "next": "15.3.4",
     "next-auth": "^4.24.11",

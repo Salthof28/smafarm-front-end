@@ -1,6 +1,6 @@
 import { Cart } from "@/app/context/Cart-context";
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CustomApiError, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
+import { AllUpdate, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -263,13 +263,82 @@ export async function fetchCreatefarm(data: FormCreateFarm, token: string) {
         });
         if (!res.ok) {
             const errorData: CustomApiError = await res.json();
-            console.log(errorData)
             return errorData;
         }        
         return res.json();
     } catch(error: unknown) {
         return errorNetworking(error);
     }    
+}
+
+export async function fetchUploadImageShelter(files: File[], shelterId: number, token: string) {
+    try {
+        const formData = new FormData();
+        files.forEach(file => formData.append('files', file)); // key 'files' should same interceptor
+        formData.append('id', shelterId.toString());
+
+        const res = await fetch(`${API_SMAFARM}/uploads/shelter`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData
+        });
+
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData);
+            return errorData;
+        }
+
+        return res.json(); // { url: string[] }
+    } catch (error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchDeleteImageShelter(photoDelete: DeleteUrlDto, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/uploads/shelter/deleted`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(photoDelete)
+        });
+
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData);
+            return errorData;
+        }
+
+        return res.json(); // { url: string[] }
+    } catch (error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchUpdateShelter(dataUpdate: AllUpdate, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/shelters/${dataUpdate.shelter_id}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dataUpdate)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
 }
 
 export async function fetchLogout(access_token: string) {

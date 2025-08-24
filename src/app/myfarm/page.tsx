@@ -29,7 +29,7 @@ export default function FarmProfile() {
     }
 
     useEffect(() => {
-        console.log(session?.user.profile);
+        // console.log(session);
         if(!session?.user.profile?.hasFarm){
             setFormFarm(true)
         } else {

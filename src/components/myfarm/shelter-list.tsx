@@ -4,16 +4,21 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Menu, Table, Button, Input, Modal, Pagination } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
-import { Shelter } from '@/types/interfaces';
-import { fetchAllShelter } from '@/services/api';
+import { Category, Shelter } from '@/types/interfaces';
+import { fetchAllCategory, fetchAllShelter } from '@/services/api';
 import { useSession } from 'next-auth/react';
+import FormShelterBreeder from './form-shelter';
 
 
 export default function ShelterBreederList() {
     const { data: session } = useSession()
     const [shelters, setShelters] = useState<Shelter[]>([]);
     const [loading, setLoading] = useState(false);
+    const [category, setCategory] = useState<Category[]>([]);
+    const [statusForm, setStatusForm] = useState<string>("")
     const [search, setSearch] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [currentShelter, setCurrentShelter] = useState<Shelter | undefined>(undefined)
 
     const fetchShelter = async () => {
         const farm_id = session?.user.profile?.farmId
@@ -21,54 +26,72 @@ export default function ShelterBreederList() {
         const res = await fetchAllShelter(undefined, undefined, farm_id); 
         if ('data' in res) {
             setShelters(res.data);
-            shelters[0].accomodate
-        } 
-        else {
+        } else {
             console.error('Error fetching shelters:', res);
         }
         setLoading(false);
     }
+    const fetchCategory = async () => {
+        const res = await fetchAllCategory() 
+        if ('data' in res) {
+            setCategory(res.data);
+        } else {
+            console.error('Error fetching category:', res);
+        }
+    }
     useEffect(() => {
         if (session?.user?.profile?.farmId) {
             fetchShelter();
+            fetchCategory();
         }
     }, [session]);
 
+    const handleShowForm = (status: string, shelter?: Shelter) => {
+        if(status === "Edit" && shelter) {
+            setStatusForm(status);
+            setCurrentShelter(shelter)
+            setShowModal(true);
+        } else {
+            setStatusForm(status);
+            setShowModal(true);
+        }
+    } 
+
     const columns = [
-    {
-        title: 'Shelters',
-        dataIndex: 'title',
-        key: 'title',
-        render: (_: any, record: any) => (
-        <div className="flex items-center gap-4">
-            <img src={record.images?.[0] || '/cow-not-found.png'}  className="w-12 h-12 rounded-full object-contain border max-lg:hidden" />
-            <div>
-                <p className="font-bold">{record.name}</p>
-                <span className="text-sm max-xl:hidden">{record.location.slice(0,41)}{record.location.length > 41 ? '...' : ''}</span>
+        {
+            title: 'Shelters',
+            dataIndex: 'title',
+            key: 'title',
+            render: (_: any, record: any) => (
+            <div className="flex flex-row items-center gap-4">
+                <img src={record.images?.[0] || '/cow-not-found.png'}  className="w-12 h-12 rounded-full object-contain border max-lg:hidden" />
+                <div>
+                    <p className="font-bold max-md:text-[0.6rem]">{record.name}</p>
+                    <span className="text-sm max-xl:hidden">{record.location.slice(0,41)}{record.location.length > 41 ? '...' : ''}</span>
+                </div>
             </div>
-        </div>
-        ),
-    },
-    { title: 'Price', dataIndex: 'price_daily', key: 'price',
-        render: (price: number) => `Rp ${price.toLocaleString('id-ID')}`,
-     },
-    { title: 'Category', dataIndex: ['category', 'name'], key: 'category' },
-    {
-        title: 'Accommodate',
-        dataIndex: 'accomodate',
-        key: 'accomodate',
-        render: (accomodate: number) => <span>{accomodate} Heads</span>, 
-    },
-    {
-        title: 'Actions',
-        key: 'actions',
-        render: (_: any, record: any) => (
-        <div className="flex flex-col xl:flex-row  gap-2">
-            <Button icon={<EditOutlined />} type="primary" size="small">Edit</Button>
-            <Button icon={<DeleteOutlined />} danger size="small">Delete</Button>
-        </div>
-        ),
-    },
+            ),
+        },
+        { title: 'Price', dataIndex: 'price_daily', key: 'price',
+            render: (price: number) => `Rp ${price.toLocaleString('id-ID')}`,
+        },
+        { title: 'Category', dataIndex: ['category', 'name'], key: 'category' },
+        {
+            title: 'Accommodate',
+            dataIndex: 'accomodate',
+            key: 'accomodate',
+            render: (accomodate: number) => <span>{accomodate} Heads</span>, 
+        },
+        {
+            title: 'Actions',
+            key: 'actions',
+            render: (_: unknown, record: Shelter) => (
+            <div className="flex flex-col xl:flex-row  gap-2">
+                <Button icon={<EditOutlined />} type="primary" size="small" onClick={() => handleShowForm("Edit", record)}>Edit</Button>
+                <Button icon={<DeleteOutlined />} danger size="small">Delete</Button>
+            </div>
+            ),
+        },
     ];
 
 
@@ -78,9 +101,7 @@ export default function ShelterBreederList() {
                 <Content className="p-6">
                     <div className="flex justify-between mb-4">
                         <h4 className="text-2xl font-bold">Handle Shelters</h4>
-                        <Button icon={<PlusOutlined />} type="primary" 
-                        // onClick={() => setShowModal(true)}
-                        >
+                        <Button icon={<PlusOutlined />} type="primary" onClick={() => handleShowForm("Create")}>
                             Add Shelters
                         </Button>
                     </div>
@@ -107,12 +128,12 @@ export default function ShelterBreederList() {
 
                     {/* Modal */}
                     <Modal
-                    title="Add / Edit Product"
-                    // open={showModal}
-                    // onCancel={() => setShowModal(false)}
+                    title={`${statusForm} Shelter`}
+                    open={showModal}
+                    onCancel={() => setShowModal(false)}
                     footer={null}
                     >
-                    <p>Form goes here...</p>
+                        <FormShelterBreeder shelter={currentShelter} category={category} hiddenForm={() => setShowModal(false)} statusForm={statusForm} />
                     </Modal>
                 </Content>
             </Layout>

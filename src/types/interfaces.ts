@@ -29,7 +29,8 @@ export type Farm = {
   shelters: Shelter[]; 
 };
 export interface ImageUrl {
-  url: string;
+    id: number;
+    url: string;
 }
 
 export interface Category {
@@ -219,4 +220,55 @@ export interface FormValues {
     phone?: string,
     oldPassword?: string,
     password?: string
+}
+
+export interface UpdateShelterDto {
+    id?: number;
+    name?: string;
+    location?: string;
+    accomodate?: number;
+    description?: string;
+    price?: number;
+    category_id?: number;
+}
+
+export interface CreateCareDto {
+  name: string;
+  price: number;
+  unit: string;
+  required: boolean;
+}
+
+export interface UpdateCareDto {
+  id: number;
+  name?: string;
+  price?: number;
+  unit?: string;
+  required?: boolean;
+}
+
+export interface AllUpdate {
+  shelter_id: number;
+  shelter?: UpdateShelterDto;
+  uploadImage?: string[];
+  deleteImage?: number[];
+  newCare?: Partial<CreateCareDto>[];
+  updateCare?: UpdateCareDto[];
+  deletCare?: number[];
+}
+
+// interface untuk response API
+export interface UpdateShelterResponse {
+  success: boolean;
+  updatedFields?: string[];
+  newImages?: number;
+  deletedImages?: number;
+  newCareCount?: number;
+  updatedCareCount?: number;
+  deletedCareCount?: number;
+}
+
+export interface DeleteUrlDto {
+    id: number; //shelter_id or livestock_id
+    url: string[];
 }

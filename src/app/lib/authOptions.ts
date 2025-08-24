@@ -1,6 +1,13 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { jwtDecode } from "jwt-decode";
 
+type DecodedToken = {
+  exp?: number;
+  iat?: number;
+  sub?: string;
+  [key: string]: any;
+};
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
@@ -27,7 +34,12 @@ export const authOptions: NextAuthOptions = {
 
           const loginJson = await loginRes.json();
           const loginData = loginJson.data;
-          const accessTokenExpiresAt = Math.floor(Date.now() / 1000) + 3600;
+
+          const decoded: DecodedToken = jwtDecode(loginData.access_token);
+          const accessTokenExpiresAt = decoded.exp
+            ? decoded.exp
+            : Math.floor(Date.now() / 1000) + 3600;
+          // const accessTokenExpiresAt = Math.floor(Date.now() / 1000) + 3600;
 
           const profileRes = await fetch("http://localhost:4000/users/profile", {
             headers: { Authorization: `Bearer ${loginData.access_token}` },
@@ -62,6 +74,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       // first login
+      const now = Math.floor(Date.now() / 1000);
       if (user) {
         token.id = Number(user.id);
         token.name = user.name;
@@ -74,7 +87,6 @@ export const authOptions: NextAuthOptions = {
       }
 
       // refresh token if expired access token
-      const now = Math.floor(Date.now() / 1000);
       if (token.expiresAt && now >= token.expiresAt) {
         try {
           const refreshRes = await fetch("http://localhost:4000/auth/refreshToken", {
@@ -85,7 +97,11 @@ export const authOptions: NextAuthOptions = {
             const newTokens = await refreshRes.json();
             token.accessToken = newTokens.access_token;
             token.refreshToken = newTokens.refresh_token;
-            token.expiresAt = new Date(newTokens.expires_at).getTime() / 1000;
+            const decodedNew: DecodedToken = jwtDecode(newTokens.access_token);
+            token.expiresAt = decodedNew.exp
+              ? decodedNew.exp
+              : Math.floor(Date.now() / 1000) + 3600;
+            // token.expiresAt = new Date(newTokens.expires_at).getTime() / 1000;
 
             const profileRes = await fetch("http://localhost:4000/users/profile", {
               headers: { Authorization: `Bearer ${token.accessToken}` },
