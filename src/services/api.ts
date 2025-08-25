@@ -1,6 +1,5 @@
-import { Cart } from "@/app/context/Cart-context";
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { AllUpdate, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
+import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -14,13 +13,14 @@ export async function fetchAllCategory (): Promise<CategoryDetailResponse | Cust
     }
 }
 
-export async function fetchAllLivestock (category_id?: number[], name?: string): Promise<LivestockAllResponse | CustomApiError> {
+export async function fetchAllLivestock (category_id?: number[], name?: string, farm_id?: number): Promise<LivestockAllResponse | CustomApiError> {
     try {
         const params: string[] = []
         if (category_id && category_id.length > 0) {
             category_id.forEach(id => params.push(`category_id=${encodeURIComponent(id)}`));
         }
         if(name) params.push(`name=${encodeURIComponent(name)}`);
+        if (farm_id) params.push(`farm_id=${encodeURIComponent(farm_id)}`);
         const queryString = params.length > 0 ? `?${params.join("&")}` : "";
         const response: Response = await fetch(`${API_SMAFARM}/livestocks${queryString}`);
         return response.json();
@@ -341,7 +341,7 @@ export async function fetchCreateShelter(data: CreateShelter, token: string) {
     }  
 }
 
-export async function fetchUpdateShelter(dataUpdate: AllUpdate, token: string) {
+export async function fetchUpdateShelter(dataUpdate: AllUpdateShelter, token: string) {
     try {
         const res = await fetch(`${API_SMAFARM}/shelters/${dataUpdate.shelter_id}`, {
             method: "PATCH",
@@ -365,6 +365,116 @@ export async function fetchUpdateShelter(dataUpdate: AllUpdate, token: string) {
 export async function fetchDeleteShelter(id: number, token: string) {
     try {
         const res = await fetch(`${API_SMAFARM}/shelters/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
+export async function fetchUploadImageLivestock(files: File[], livestockId: number, token: string) {
+    try {
+        const formData = new FormData();
+        files.forEach(file => formData.append('files', file)); // key 'files' should same interceptor
+        formData.append('id', livestockId.toString());
+
+        const res = await fetch(`${API_SMAFARM}/uploads/livestock`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+            body: formData
+        });
+
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData);
+            return errorData;
+        }
+
+        return res.json(); // { url: string[] }
+    } catch (error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchDeleteImageLivestock(photoDelete: DeleteUrlDto, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/uploads/livestock/deleted`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(photoDelete)
+        });
+
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData);
+            return errorData;
+        }
+
+        return res.json(); // { url: string[] }
+    } catch (error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchCreateLivestock(data: CreateLivestockDto, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/livestocks`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
+export async function fetchUpdateLivestock(dataUpdate: AllUpdateLivestock, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/livestocks/${dataUpdate.livestock_id}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dataUpdate)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
+export async function fetchDeleteLivestock(id: number, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/livestocks/${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`,

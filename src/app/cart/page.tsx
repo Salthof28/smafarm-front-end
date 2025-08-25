@@ -1,8 +1,8 @@
 'use client'
 import Navbar from "@/components/navbar";
 import { useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
-import { CareItem, Cart, useCart } from "../context/Cart-context";
+import { Suspense } from "react";
+import { Cart, useCart } from "../context/Cart-context";
 import BuyList from "@/components/cart/buy-list";
 import CareList from "@/components/cart/care-list";
 import { useSession } from "next-auth/react";
@@ -28,8 +28,10 @@ export default function Carts() {
     };
 
     const filterPayload = (cart: Cart) => {
-        const payload: any = {
-            transaction: { id_farm: Number(cart.transaction.id_farm) }
+        const payload: CleanCartBuyCare = {
+            transaction: { id_farm: Number(cart.transaction.id_farm) },
+            buy: [],
+            care: [],
         };
         if (cart.buy.length > 0) {
             payload.buy = cart.buy.map(b => ({
@@ -54,19 +56,20 @@ export default function Carts() {
 
     const fetchCreateTransaction = async (cartClean: CleanCartBuyCare) => {
         try {
-            if (!session?.accessToken) return;
+            const token = session?.accessToken;
+            if (!token) return;
             console.log(cart)
-            let result;
+            let result: { message?: string } | undefined = undefined;
             if (cart.buy.length > 0 && cart.care.length > 0) {
                 console.log(session?.accessToken);
-                result = await fetchTransactionBuyCare(cartClean, session?.accessToken!);
+                result = await fetchTransactionBuyCare(cartClean, token);
             } 
             if (cart.buy.length > 0) {
                 console.log(session?.accessToken);
-                result = await fetchTransactionBuy(cartClean, session?.accessToken!);
+                result = await fetchTransactionBuy(cartClean, token);
             } 
             if (cart.care.length > 0) {
-                result = await fetchTransactionCare(cartClean, session?.accessToken!);
+                result = await fetchTransactionCare(cartClean, token);
             }
             if (result?.message) {
                 message.error(result.message);
@@ -75,6 +78,7 @@ export default function Carts() {
             checkout();
         } catch (err) {
             message.error("Something went wrong while processing checkout.");
+            message.error(`${err}`);
         }
     }
 
@@ -89,7 +93,7 @@ export default function Carts() {
                 {(cart.buy.length < 1 && cart.care.length < 1) && (
                     <div className="flex flex-col items-center gap-4 w-[95vw] md:w-[75vw] bg-amber-50 shadow-lg ring-[0.1rem] ring-black/5 p-8 rounded-xl justify-center">
                         <h4 className="text-lg font-semibold text-center">
-                            Your cart is empty. Let's fill it up with something awesome!
+                            {`Your cart is empty. Let's fill it up with something awesome!`}
                         </h4>
                     </div>
                 )}

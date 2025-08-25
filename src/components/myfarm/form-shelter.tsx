@@ -1,5 +1,5 @@
 'use client'
-import { Category, Shelter, CareGive, AllUpdate, CreateCareDto, UpdateShelterDto, CreateShelter } from "@/types/interfaces";
+import { Category, Shelter, CareGive, AllUpdateShelter, CreateCareDto, UpdateShelterDto, CreateShelter } from "@/types/interfaces";
 import { Button, Form, Input, InputNumber, Select, Collapse, Switch, Upload, message } from "antd";
 import { PlusOutlined, MinusCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -106,7 +106,7 @@ const handleFieldChange = (changedValues: Partial<UpdateShelterDto>) => {
                         ? shelter.price_daily
                         : key === "category_id"
                         ? shelter.category?.id
-                        : (shelter as any)[key];
+                        : shelter[key as Exclude<keyof Shelter, "category">];
 
                 if (newValue !== originalValue) {
                     updated[key] = newValue as never;
@@ -185,7 +185,7 @@ const handleFieldChange = (changedValues: Partial<UpdateShelterDto>) => {
             setNewCareGive(prev => prev.filter(c => c !== removed))
         };
         setCareGive(prev => prev.filter((_, i) => i !== index));
-        const updatedCare = form.getFieldValue('care_give').filter((_: any, i: number) => i !== index);
+        const updatedCare: CareGive[] = (form.getFieldValue('care_give') as CareGive[]).filter((_, i: number) => i !== index);
         form.setFieldsValue({ care_give: updatedCare });
     };
     // === SUBMIT FORM ===
@@ -236,7 +236,7 @@ const handleFieldChange = (changedValues: Partial<UpdateShelterDto>) => {
             // }
         };
         const idImgDelete = deletedImages.map(images => images.id);
-        const updateData: AllUpdate = {
+        const updateData: AllUpdateShelter = {
             shelter_id: Number(shelter.id),
             shelter: updatedShelter ? { ...updatedShelter, id: Number(shelter.id) } : undefined,
             uploadImage: imagesUrl.length > 0 ? imagesUrl : undefined,

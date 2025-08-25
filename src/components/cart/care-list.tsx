@@ -1,5 +1,5 @@
 
-import { BuyItem, CareItem } from "@/app/context/Cart-context";
+import { CareItem } from "@/app/context/Cart-context";
 
 interface CareListProp {
     item: CareItem;

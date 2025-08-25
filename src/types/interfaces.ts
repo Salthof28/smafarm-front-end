@@ -200,17 +200,20 @@ export interface CleanBuy {
     total_livestock: number,
     address: string,
 }
+
+export interface CleanTransaction {
+    id_farm: number
+}
 export interface CleanCartBuy {
-    transaction: Transaction;
+    transaction: CleanTransaction;
     buy: CleanBuy[];
 }
-
 export interface CleanCartCare {
-    transaction: Transaction;
+    transaction: CleanTransaction;
     care: CleanCare[];
 }
 export interface CleanCartBuyCare {
-    transaction: Transaction;
+    transaction: CleanTransaction;
     care: CleanCare[];
     buy: CleanBuy[];
 }
@@ -257,7 +260,7 @@ export interface UpdateCareDto {
   required?: boolean;
 }
 
-export interface AllUpdate {
+export interface AllUpdateShelter {
   shelter_id: number;
   shelter?: UpdateShelterDto;
   uploadImage?: string[];
@@ -269,16 +272,44 @@ export interface AllUpdate {
 
 // interface untuk response API
 export interface UpdateShelterResponse {
-  success: boolean;
-  updatedFields?: string[];
-  newImages?: number;
-  deletedImages?: number;
-  newCareCount?: number;
-  updatedCareCount?: number;
-  deletedCareCount?: number;
+    success: boolean;
+    updatedFields?: string[];
+    newImages?: number;
+    deletedImages?: number;
+    newCareCount?: number;
+    updatedCareCount?: number;
+    deletedCareCount?: number;
 }
 
 export interface DeleteUrlDto {
     id: number; //shelter_id or livestock_id
     url: string[];
+}
+
+export interface CreateLivestockDto {
+    category_id: number;
+    name: string;
+    age: number;
+    price: number;
+    stock: number;
+    description: string;
+    location: string;
+}
+
+export interface UpdateLivestockDto {
+    id: number;
+    category_id?: number;
+    name?: string;
+    age?: number;
+    price?: number;
+    stock?: number;
+    description?: string;
+    location?: string;
+}
+
+export interface AllUpdateLivestock {
+    livestock_id: number;
+    livestock?: UpdateLivestockDto;
+    uploadImage?: string[];
+    deleteImage?: number[];
 }

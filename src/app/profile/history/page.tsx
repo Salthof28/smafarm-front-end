@@ -1,12 +1,10 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { LaptopOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, message, theme } from 'antd';
 import Navbar from '@/components/navbar';
-import ProfileCustomerDetail from '@/components/customer/profile-customer-detail';
-import useAuth from '@/hooks/useAuth';
 import { fetchHistoryTransaction, fetchLogout } from '@/services/api';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -67,12 +65,14 @@ export default function HistoryCustomer() {
       onClick: item.action ? item.action : () => router.push(item.path), // ini bagian navigasinya
   }));
   const {
-      token: { colorBgContainer, borderRadiusLG },
+      token: { borderRadiusLG },
   } = theme.useToken();
 
   return (
     <div className="bg-amber-100 w-full min-h-screen overflow-x-hidden">
-      <Navbar activeIconNav="login"/>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Navbar activeIconNav="login"/>
+      </Suspense>
       <div className='mt-[6rem] lg:mt-[12rem] flex justify-center py-[1rem]'>
         <div className='w-[95vw] lg:w-[85vw] 2xl:w-[50vw] shadow-md h-[45vh] md:h-[43vh] lg:h-[46vh] xl:h-[50vh] 2xl:h-[45vh]'>
           <Layout

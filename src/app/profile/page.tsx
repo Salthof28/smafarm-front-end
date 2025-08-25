@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import { LaptopOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
@@ -43,7 +43,9 @@ export default function ProfileCustomer() {
 
   return (
     <div className="bg-amber-100 w-full min-h-screen overflow-x-hidden">
-      <Navbar activeIconNav="login"/>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Navbar activeIconNav="login"/>
+      </Suspense>
       <div className='mt-[6rem] lg:mt-[12rem] flex justify-center py-[1rem]'>
         <div className='w-[95vw] lg:w-[85vw] 2xl:w-[50vw] shadow-md h-[45vh] md:h-[43vh] lg:h-[46vh] xl:h-[50vh] 2xl:h-[45vh]'  >
           <Layout

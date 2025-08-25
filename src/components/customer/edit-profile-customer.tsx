@@ -1,9 +1,8 @@
 'use client'
 import { fetchEditProfile } from "@/services/api";
 import { FormValues } from "@/types/interfaces";
-import { Button, Form, Input, InputNumber, message } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { ArrowLeft } from "lucide-react";
-import { Session } from 'next-auth';
 import { useSession } from "next-auth/react";
 
 interface FormEditProfileProp {
@@ -40,7 +39,8 @@ export default function EditProfile({hiddenForm}: FormEditProfileProp) {
             console.log(session.user.profile)
             hiddenForm(); // Menutup form setelah sukses
         } catch (error) {
-            message.error("Network error, please try again.");
+            console.log(error)
+            message.error(`Network error, please try again`);
         }
     };
     return(

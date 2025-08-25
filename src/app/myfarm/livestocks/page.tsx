@@ -1,295 +1,99 @@
 'use client'
-import { Category, Shelter, CareGive } from "@/types/interfaces";
-import { Button, Form, Input, InputNumber, Select, Collapse, Switch } from "antd";
-import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import React, { Suspense } from 'react';
+import { BankOutlined, LaptopOutlined, LogoutOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Layout, Menu, theme } from 'antd';
+import Navbar from '@/components/navbar';
+import { fetchLogout } from '@/services/api';
+import { signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import LivestockBreederList from '@/components/myfarm/livestock-list';
 
-interface ImageItem {
-  id?: number;
-  file?: File;
-  url: string;
-}
+const { Content, Sider } = Layout;
 
-interface FormShelterBreederProp {
-  category: Category[];
-  hiddenForm: () => void;
-  statusForm: string;
-  shelter?: Shelter;
-}
+export default function LivestocksBreeder() {
+    const router = useRouter()
+    const { data: session } = useSession()
 
-interface UpdatedShelter {
-    name?: string;
-    location?: string;
-    accomodate?: number;
-    description?: string;
-    price?: number;
-    category_id?: number;
-}
-
-export default function FormShelterBreeder({ category, hiddenForm, statusForm, shelter }: FormShelterBreederProp) {
-    const [form] = Form.useForm();
-    const { Option } = Select;
-    const { Panel } = Collapse;
-
-    // Images state
-    const [images, setImages] = useState<ImageItem[]>([]);
-    const [newImages, setNewImages] = useState<ImageItem[]>([]);
-    const [deletedImages, setDeletedImages] = useState<number[]>([]);
-
-    // Care Give state    
-    const [careGive, setCareGive] = useState<CareGive[]>([]);
-    const [newCareGive, setNewCareGive] = useState<Partial<CareGive>[]>([]);
-    const [deletedCareGive, setDeletedCareGive] = useState<number[]>([]);
-    const [updatedCareGive, setUpdatedCareGive] = useState<CareGive[]>([]);
-
-    const [updatedShelter, setUpdatedShelter] = useState<UpdatedShelter>();
-
-    // populate form saat edit
-    useEffect(() => {
-        if (shelter && statusForm === "Edit") {
-            form.setFieldsValue({
-                name: shelter.name,
-                location: shelter.location,
-                accomodate: shelter.accomodate,
-                description: shelter.description,
-                price: shelter.price_daily,
-                category_id: shelter.category?.id,
-                care_give: shelter.care_give || []
-            });
-
-            // populate existing images
-            const existingImages = shelter.img_shelter?.map(img => ({ id: img.id, url: img.url })) || [];
-            setImages(existingImages);
-
-            // populate existing care give
-            setCareGive(shelter.care_give || []);
-        } else {
-            form.resetFields();
-            setImages([]);
-            setNewImages([]);
-            setDeletedImages([]);
-            setCareGive([]);
-            setNewCareGive([]);
-            setDeletedCareGive([]);
-            setUpdatedCareGive([]);
-            setUpdatedShelter({});
+    const logOut = async (): Promise<void> => {
+        if (!session?.accessToken) {
+            console.error("No access token found");
+            return;
         }
-    }, [shelter, form, statusForm]);
+        await fetchLogout(session.accessToken);      
+        signOut({ callbackUrl: "/login" });
+    }
 
-    const handleFieldChange = (changedValues: any) => {
-        if (!shelter) return;
-        const trackedFields = ["name", "location", "accomodate", "description", "price", "category_id"];
 
-        setUpdatedShelter(prev => {
-        const updated = { ...prev };
-        for (const key of Object.keys(changedValues)) {
-            if (trackedFields.includes(key)) {
-            const newValue = changedValues[key];
-            const originalValue =
-                key === "price"
-                ? shelter.price_daily
-                : key === "category_id"
-                ? shelter.category?.id
-                : (shelter as any)[key];
-
-            if (newValue !== originalValue) {
-                updated[key as keyof UpdatedShelter] = newValue;
-            } else {
-                delete updated[key as keyof UpdatedShelter];
-            }
-            }
+    const items2: MenuProps['items'] = [
+        {
+            key: 'profile',
+            icon: React.createElement(UserOutlined),
+            label: 'Profile',
+            onClick: () => router.push('/myfarm')
+        },
+        {
+            key: 'myfarm',
+            icon: React.createElement(BankOutlined),
+            label: 'My Farm',
+            children: [
+                {
+                    key: 'shelters',
+                    icon: React.createElement(ShopOutlined),
+                    label: 'Shelters',
+                    onClick: () => router.push('/myfarm/shelters'),
+                },
+                {
+                    key: 'livestocks',
+                    icon: React.createElement(ShopOutlined),
+                    label: 'Livestocks',
+                    onClick: () => router.push('/myfarm/livestocks'),
+                },
+            ]
+        },
+        {
+            key: 'history',
+            icon: React.createElement(LaptopOutlined),
+            label: 'History Transaction',
+            onClick: () => router.push('/myfarm/history')
+        },
+        {
+            key: 'signout',
+            icon: React.createElement(LogoutOutlined),
+            label: 'Sign Out',
+            onClick: logOut
         }
-        return updated;
-        });
-    };
+    ];
 
-    const handleCareChange = () => {
-        const currentValues: CareGive[] = form.getFieldValue('care_give') || [];
-        const updatedList = currentValues.filter(cv => {
-        const original = careGive.find(c => c.id === cv.id);
-        if (!original) return false;
-        return (
-            cv.name !== original.name ||
-            cv.price !== original.price ||
-            cv.unit !== original.unit ||
-            cv.required !== original.required
-        );
-        });
-        setUpdatedCareGive(updatedList);
-    };
-
-    // handle add images baru
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = Array.from(e.target.files || []);
-        const addedImages = files.map(file => ({
-            file,
-            url: URL.createObjectURL(file)
-        }));
-        setImages(prev => [...prev, ...addedImages]);
-        setNewImages(prev => [...prev, ...addedImages]);
-    };
-
-    // handle remove image
-    const handleRemoveImage = (index: number) => {
-        const removed = images[index];
-        if (removed?.id !== undefined) {
-            const id: number = removed.id;  
-            setDeletedImages(prev => [...prev, id]);
-        } else {
-            setNewImages(prev => prev.filter(img => img !== removed));
-        }
-        setImages(prev => prev.filter((_, i) => i !== index));
-    };
-
-    // handle add care
-    const handleAddCare = () => {
-        const newCare: Partial<CareGive> = { name: '', price: 0, unit: '', required: false };
-
-        // update careGive untuk UI
-        setCareGive(prev => [...prev, newCare as CareGive]);
-
-        // update newCareGive untuk tracking care baru
-        setNewCareGive(prev => [...prev, newCare]);
-
-        // tambahkan ke Form.List
-        const currentCare = form.getFieldValue('care_give') || [];
-        form.setFieldsValue({ care_give: [...currentCare, newCare] });
-    };
-
-    // handle remove care
-    const handleRemoveCare = (index: number) => {
-        const removed = form.getFieldValue(['care_give', index]);
-        if (removed?.id) {
-            setDeletedCareGive(prev => [...prev, removed.id])
-        };
-        if (!removed?.id) {
-            setNewCareGive(prev => prev.filter(c => c !== removed))
-        };
-        setCareGive(prev => prev.filter((_, i) => i !== index));
-        const updatedCare = form.getFieldValue('care_give').filter((_: any, i: number) => i !== index);
-        form.setFieldsValue({ care_give: updatedCare });
-    };
-
-    // === SUBMIT FORM ===
-    const handleSubmit = () => {
-        const values: Shelter = form.getFieldsValue();
-        console.log("Form Values:", values);
-        console.log("Updated Shelter:", updatedShelter);
-        console.log("Images:", images);
-        console.log("New Images to upload:", newImages);
-        console.log("Deleted Images:", deletedImages);
-        console.log("Care Give:", careGive);
-        console.log("New Care Give:", newCareGive);
-        console.log("Updated Care Give:", updatedCareGive);
-        console.log("Deleted Care Give:", deletedCareGive);
-        // TODO: API call
-    };
+    const {
+        token: { colorBgContainer, borderRadiusLG },
+    } = theme.useToken();
 
     return (
-        <Form form={form} layout="vertical" className="w-full" onFinish={handleSubmit} onValuesChange={handleFieldChange}>
-        <h4 className="text-center font-bold mb-4">{statusForm} Shelter</h4>
-        <Form.Item label="Name" name="name" rules={[{ required: true }]}>
-            <Input placeholder="Mulyono Shelter" />
-        </Form.Item>
-
-        <Form.Item label="Location" name="location" rules={[{ required: true }]}>
-            <Input placeholder="Jl.xxxxx" />
-        </Form.Item>
-
-        <Form.Item label="Accomodate" name="accomodate" rules={[{ required: true }]}>
-            <InputNumber className="w-full" placeholder="10" />
-        </Form.Item>
-
-        <Form.Item label="Description" name="description" rules={[{ required: true }]}>
-            <Input.TextArea rows={3} placeholder="description" />
-        </Form.Item>
-
-        <Form.Item label="Price Common" name="price" rules={[{ required: true }]} >
-            <InputNumber className="w-full" placeholder="20000" />
-        </Form.Item>
-
-        <Form.Item label="Select Category" name="category_id" rules={[{ required: true }]}>
-            <Select placeholder="Select a category">
-            {category.map(cat => (
-                <Option key={cat.id} value={cat.id}>{cat.name}</Option>
-            ))}
-            </Select>
-        </Form.Item>
-
-        {/* Images Upload */}
-        <div className="mb-4">
-            <label className="font-semibold">Images</label>
-            <input type="file" multiple accept="image/*" onChange={handleFileChange} className="block mt-2 mb-2" />
-            <div className="flex flex-wrap gap-2">
-            {images.map((img, idx) => (
-                <div key={idx} className="relative w-24 h-24 border rounded overflow-hidden">
-                <img src={img.url} className="w-full h-full object-cover" />
-                <button
-                    type="button"
-                    className="absolute top-0 right-0 bg-red-500 text-white w-6 h-6 flex items-center justify-center rounded-full"
-                    onClick={() => handleRemoveImage(idx)}
-                >
-                    &times;
-                </button>
+        <div className="bg-amber-100 w-full min-h-screen overflow-x-hidden">
+            <Suspense fallback={<div>Loading...</div>}>
+                <Navbar activeIconNav="login"/>
+            </Suspense>
+            <div className='mt-[6rem] lg:mt-[12rem] flex justify-center py-[1rem]'>
+                <div className='w-[95vw] lg:w-[85vw] 2xl:w-[50vw] shadow-md h-[45vh] md:h-[43vh] lg:h-[46vh] xl:h-[50vh] 2xl:h-[45vh]'>
+                    <Layout
+                        style={{ padding: '24px 0', background: '#fffbeb', borderRadius: borderRadiusLG, height: '100%' }}
+                    >
+                        <Sider style={{ background: colorBgContainer }} width={250} breakpoint="lg" collapsedWidth={0}>
+                            <Menu
+                                mode="inline"
+                                defaultSelectedKeys={['livestocks']}
+                                defaultOpenKeys={['myfarm']}
+                                style={{ height: '100%', background: '#fffbeb', overflowY: 'auto' }}
+                                items={items2}
+                            />
+                        </Sider>
+                        <Content style={{ padding: '0 24px', minHeight: 280, overflowY: 'auto' }}>
+                            <LivestockBreederList />
+                        </Content>
+                    </Layout>
                 </div>
-            ))}
             </div>
         </div>
-
-        {/* CARE GIVE LIST */}
-        <Form.List name="care_give">
-            {(fields) => (
-            <div className="mb-4">
-                <Collapse>
-                {fields.map(({ key, name, ...restField }, index) => (
-                    <Panel
-                    header={form.getFieldValue(['care_give', name, 'name']) || `Care ${name + 1}`}
-                    key={key}
-                    >
-                    <Form.Item {...restField} label="Care Name" name={[name, 'name']} rules={[{ required: true }]}>
-                        <Input onChange={handleCareChange} />
-                    </Form.Item>
-                    <Form.Item {...restField} label="Price" name={[name, 'price']} rules={[{ required: true }]}>
-                        <InputNumber className="w-full" onBlur={handleCareChange} />
-                    </Form.Item>
-                    <Form.Item {...restField} label="Unit" name={[name, 'unit']} rules={[{ required: true }]}>
-                        <Input onChange={handleCareChange} />
-                    </Form.Item>
-                    <Form.Item {...restField} label="Required" name={[name, 'required']} valuePropName="checked">
-                        <Switch onChange={handleCareChange} />
-                    </Form.Item>
-                    <Button
-                        type="dashed"
-                        danger
-                        onClick={() => handleRemoveCare(index)}
-                        icon={<MinusCircleOutlined />}
-                        className="mt-2"
-                    >
-                        Remove Care
-                    </Button>
-                    </Panel>
-                ))}
-                </Collapse>
-                <Button
-                type="dashed"
-                onClick={handleAddCare}
-                icon={<PlusOutlined />}
-                className="mt-2"
-                >
-                Add Care
-                </Button>
-            </div>
-            )}
-        </Form.List>
-
-        <div className="flex justify-end gap-2">
-            <Button htmlType="button" onClick={hiddenForm} danger>
-            Cancel
-            </Button>
-            <Button htmlType="submit" type="primary">
-            {statusForm}
-            </Button>
-        </div>
-        </Form>
     );
 }

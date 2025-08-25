@@ -2,7 +2,6 @@
 
 import { Transaction } from "@/types/interfaces"
 import dayjs from "dayjs"
-import { Session } from "next-auth"
 
 interface HistoryCustomerProp {
     history: Transaction[]
@@ -11,7 +10,7 @@ export default function HistoryCustomerChild({history}: HistoryCustomerProp) {
     return (
         <div className='flex flex-col gap-[1rem] px-[2rem] items-center'>
             {history.map(h => (
-            <div className="shadow-lg min-w-[16rem] md:min-w-[28rem] lg:min-w-[35rem] 2xl:min-w-[55rem] p-[1rem] rounded-[1rem]"> 
+            <div key={h.id} className="shadow-lg min-w-[16rem] md:min-w-[28rem] lg:min-w-[35rem] 2xl:min-w-[55rem] p-[1rem] rounded-[1rem]"> 
                 <div className="flex flex-col"> 
                     <p className="text-center font-bold">{new Date(h.date_transaction).toLocaleDateString('id-ID')}</p>
 

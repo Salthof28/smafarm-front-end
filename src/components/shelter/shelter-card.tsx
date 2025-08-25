@@ -78,7 +78,6 @@ export default function ShelterCardList ({ shelters }: AnimalCardListProp) {
                 </div>
             </>
         )}
-        {/* yg bawak mock semua */}
         </section>
     );
 }

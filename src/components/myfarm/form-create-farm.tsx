@@ -1,8 +1,5 @@
 'use client'
-import { UploadOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Spin } from "antd";
-import { ArrowLeft } from "lucide-react";
-import { Session } from 'next-auth';
 import { useSession } from "next-auth/react";
 import { fetchCreatefarm } from "@/services/api"; // pastikan path ini sesuai
 import { useState } from "react";
@@ -58,6 +55,7 @@ export default function CreatedFarm({hiddenForm}: FormEditProfileProp) {
             message.success("Farm created successfully!");
             hiddenForm();
         } catch (error) {
+            console.log(error)
             message.error("Network error, please try again.");
         } finally {
             setLoading(false);
