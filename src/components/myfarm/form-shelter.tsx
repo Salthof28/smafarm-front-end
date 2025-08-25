@@ -1,9 +1,9 @@
 'use client'
-import { Category, Shelter, CareGive, AllUpdate, CreateCareDto } from "@/types/interfaces";
+import { Category, Shelter, CareGive, AllUpdate, CreateCareDto, UpdateShelterDto, CreateShelter } from "@/types/interfaces";
 import { Button, Form, Input, InputNumber, Select, Collapse, Switch, Upload, message } from "antd";
 import { PlusOutlined, MinusCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { fetchDeleteImageShelter, fetchUpdateShelter, fetchUploadImageShelter } from "@/services/api";
+import { fetchCreateShelter, fetchDeleteImageShelter, fetchUpdateShelter, fetchUploadImageShelter } from "@/services/api";
 import { useSession } from "next-auth/react";
 
 interface ImageItem {
@@ -29,16 +29,6 @@ interface FormShelterBreederProp {
   shelter?: Shelter;
 }
 
-interface UpdatedShelter {
-    id?: number;
-    name?: string;
-    location?: string;
-    accomodate?: number;
-    description?: string;
-    price?: number;
-    category_id?: number;
-}
-
 export default function FormShelterBreeder({ category, hiddenForm, statusForm, shelter }: FormShelterBreederProp) {
     const [form] = Form.useForm();
     const { Option } = Select;
@@ -48,7 +38,6 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
     // Images state
     const [images, setImages] = useState<ImageItem[]>([]);
     const [newImages, setNewImages] = useState<ImageUpload[]>([]);
-    const [newImagesUrl, setNewImagesUrl] = useState<string[]>([]);
     const [deletedImages, setDeletedImages] = useState<DeleteImage[]>([]);
 
     // Care Give state    
@@ -57,7 +46,7 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
     const [deletedCareGive, setDeletedCareGive] = useState<number[]>([]);
     const [updatedCareGive, setUpdatedCareGive] = useState<CareGive[]>([]);
 
-    const [updatedShelter, setUpdatedShelter] = useState<UpdatedShelter>();
+    const [updatedShelter, setUpdatedShelter] = useState<Partial<UpdateShelterDto>>({});
 
     // populate form saat edit
     useEffect(() => {
@@ -67,7 +56,7 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
                 location: shelter.location,
                 accomodate: shelter.accomodate,
                 description: shelter.description,
-                price: shelter.price_daily,
+                price_daily: shelter.price_daily,
                 category_id: shelter.category?.id,
                 care_give: shelter.care_give || []
             });
@@ -91,32 +80,44 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
         }
     }, [shelter, form, statusForm]);
 
-    const handleFieldChange = (changedValues: any) => {
-        if (!shelter) return;
-        const trackedFields = ["name", "location", "accomodate", "description", "price", "category_id"];
+const handleFieldChange = (changedValues: Partial<UpdateShelterDto>) => {
+    if (!shelter) return;
 
-        setUpdatedShelter(prev => {
+    const trackedFields: (keyof UpdateShelterDto)[] = [
+        "name",
+        "location",
+        "accomodate",
+        "description",
+        "price_daily",
+        "category_id",
+    ];
+
+    setUpdatedShelter((prev) => {
         const updated = { ...prev };
-        for (const key of Object.keys(changedValues)) {
+        for (const key of Object.keys(changedValues) as (keyof UpdateShelterDto)[]) {
             if (trackedFields.includes(key)) {
-            const newValue = changedValues[key];
-            const originalValue =
-                key === "price"
-                ? shelter.price_daily
-                : key === "category_id"
-                ? shelter.category?.id
-                : (shelter as any)[key];
+                let newValue = changedValues[key];
+                // Konversi ke number jika field numerik
+                if (key === "price_daily" || key === "category_id" || key === "accomodate") {
+                    newValue = newValue !== undefined ? Number(newValue) : undefined;
+                }
+                const originalValue =
+                    key === "price_daily"
+                        ? shelter.price_daily
+                        : key === "category_id"
+                        ? shelter.category?.id
+                        : (shelter as any)[key];
 
-            if (newValue !== originalValue) {
-                updated[key as keyof UpdatedShelter] = newValue;
-            } else {
-                delete updated[key as keyof UpdatedShelter];
-            }
+                if (newValue !== originalValue) {
+                    updated[key] = newValue as never;
+                } else {
+                    delete updated[key];
+                }
             }
         }
         return updated;
-        });
-    };
+    });
+};
 
     const handleCareChange = () => {
     const currentValues: CareGive[] = form.getFieldValue('care_give') || [];
@@ -201,20 +202,25 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
         console.log("Deleted Care Give:", deletedCareGive);
         const token = session?.accessToken;
         if(statusForm === "Edit" && shelter && token){
-            newUpdated(shelter, token);
+            updated(shelter, token);
+        } else if (statusForm === "Create" && token){
+            newShelter(token)
+        } else {
+            message.error('token not found');
         }
 
         // TODO: API call
     };
 
-    const newUpdated = async (shelter: Shelter, token: string) => {
+    const updated = async (shelter: Shelter, token: string) => {
+        let imagesUrl: string[] = []
         if(newImages.length > 0) {
             const uploadFile = newImages.map(images => images.file);
             const imageJson = await fetchUploadImageShelter(uploadFile, shelter?.id, token);
 
             if("data"  in imageJson) {
-                const dataImage = await imageJson.data.url
-                setNewImagesUrl(dataImage);
+                imagesUrl = imageJson.data.url
+                console.log(imagesUrl);
             }
         };
         if(deletedImages.length > 0) {
@@ -233,18 +239,29 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
         const updateData: AllUpdate = {
             shelter_id: Number(shelter.id),
             shelter: updatedShelter ? { ...updatedShelter, id: Number(shelter.id) } : undefined,
-            uploadImage: newImagesUrl.length > 0 ? newImagesUrl : undefined,
+            uploadImage: imagesUrl.length > 0 ? imagesUrl : undefined,
             deleteImage: idImgDelete.length > 0 ? idImgDelete : undefined,
             newCare: newCareGive.length > 0 ? newCareGive : undefined,
             updateCare: updatedCareGive.length > 0 ? updatedCareGive : undefined,
-            deletCare: deletedCareGive.length > 0 ? deletedCareGive : undefined
+            deleteCare: deletedCareGive.length > 0 ? deletedCareGive : undefined
         };
-        // console.log(updateData)
+        console.log(updateData)
         const fetchUpdate = await fetchUpdateShelter(updateData, token);
         if(fetchUpdate.success) {
             message.success('Update success')
         } else {
             message.error('Update failed')
+        }
+        hiddenForm();
+    };
+
+    const newShelter = async (token: string) => {
+        const values: CreateShelter = form.getFieldsValue();
+        const fetchCreate = await fetchCreateShelter(values, token);
+        if("data" in fetchCreate) {
+            message.success('Create success');
+        } else {
+            message.error('Create failed');
         }
         hiddenForm();
     }
@@ -253,6 +270,7 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
         <Form form={form} layout="vertical" className="w-full" onFinish={handleSubmit} onValuesChange={handleFieldChange}>
         <h4 className="text-center font-bold mb-4">{statusForm} Shelter</h4>
         {/* Images Upload */}
+        {statusForm === "Edit" && (
         <div className="mb-4">
             <label className="font-semibold">Images</label>
             {/* <input type="file" multiple accept="image/*" onChange={handleFileChange} className="block mt-2 mb-2" /> */}
@@ -282,6 +300,7 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
                 </Button>
             </Upload>
         </div>
+        )}
         {/* Shelter */}
         <Form.Item label="Name" name="name" rules={[{ required: true }]}>
             <Input placeholder="Mulyono Shelter" />
@@ -299,7 +318,7 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
             <Input.TextArea rows={3} placeholder="description" />
         </Form.Item>
 
-        <Form.Item label="Price Common" name="price" rules={[{ required: true }]} >
+        <Form.Item label="Price Common" name="price_daily" rules={[{ required: true }]} >
             <InputNumber className="w-full" placeholder="20000" />
         </Form.Item>
 
@@ -331,7 +350,11 @@ export default function FormShelterBreeder({ category, hiddenForm, statusForm, s
                         <InputNumber className="w-full" onBlur={handleCareChange} />
                     </Form.Item>
                     <Form.Item {...restField} label="Unit" name={[name, 'unit']} rules={[{ required: true }]}>
-                        <Input onChange={handleCareChange} />
+                        {/* <Input onChange={handleCareChange} /> */}
+                        <Select placeholder="Select a shelter" onChange={handleCareChange}>
+                            <Option value='DAY'>DAY</Option>
+                            <Option value='WEEK'>WEEK</Option>
+                        </Select>
                     </Form.Item>
                     <Form.Item {...restField} label="Required" name={[name, 'required']} valuePropName="checked">
                         <Switch onChange={handleCareChange} />

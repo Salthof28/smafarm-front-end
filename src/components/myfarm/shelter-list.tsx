@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Layout, Menu, Table, Button, Input, Modal, Pagination } from 'antd';
+import { Layout, Menu, Table, Button, Input, Modal, Pagination, message } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Content } from 'antd/es/layout/layout';
 import { Category, Shelter } from '@/types/interfaces';
-import { fetchAllCategory, fetchAllShelter } from '@/services/api';
+import { fetchAllCategory, fetchAllShelter, fetchDeleteShelter } from '@/services/api';
 import { useSession } from 'next-auth/react';
 import FormShelterBreeder from './form-shelter';
 
@@ -40,11 +40,11 @@ export default function ShelterBreederList() {
         }
     }
     useEffect(() => {
-        if (session?.user?.profile?.farmId) {
+        if (showModal === false) {
             fetchShelter();
             fetchCategory();
         }
-    }, [session]);
+    }, [showModal]);
 
     const handleShowForm = (status: string, shelter?: Shelter) => {
         if(status === "Edit" && shelter) {
@@ -55,7 +55,20 @@ export default function ShelterBreederList() {
             setStatusForm(status);
             setShowModal(true);
         }
-    } 
+    }
+
+    const handleDelete = async (id: number) => {
+        const token = session?.accessToken
+        if (token){
+            const deleteShelter = await fetchDeleteShelter(id, token);
+            if("data" in deleteShelter){
+                message.success('delete success');
+                fetchShelter();
+            } else {
+                message.error('delete failed')
+            }
+        }
+    }
 
     const columns = [
         {
@@ -88,7 +101,7 @@ export default function ShelterBreederList() {
             render: (_: unknown, record: Shelter) => (
             <div className="flex flex-col xl:flex-row  gap-2">
                 <Button icon={<EditOutlined />} type="primary" size="small" onClick={() => handleShowForm("Edit", record)}>Edit</Button>
-                <Button icon={<DeleteOutlined />} danger size="small">Delete</Button>
+                <Button icon={<DeleteOutlined />} danger size="small" onClick={() => handleDelete(record.id)}>Delete</Button>
             </div>
             ),
         },

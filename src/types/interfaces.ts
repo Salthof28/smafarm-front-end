@@ -66,6 +66,7 @@ export interface CareGive {
 export interface Shelter {
     id: number;
     farm_id: number;
+    category_id: number
     name: string;
     location: string;
     accomodate: number;
@@ -222,13 +223,22 @@ export interface FormValues {
     password?: string
 }
 
+export interface CreateShelter {
+    name: string;
+    location: string;
+    accomodate: number;
+    description: string;
+    price_daily: number;
+    category_id: number;
+}
+
 export interface UpdateShelterDto {
     id?: number;
     name?: string;
     location?: string;
     accomodate?: number;
     description?: string;
-    price?: number;
+    price_daily?: number;
     category_id?: number;
 }
 
@@ -254,7 +264,7 @@ export interface AllUpdate {
   deleteImage?: number[];
   newCare?: Partial<CreateCareDto>[];
   updateCare?: UpdateCareDto[];
-  deletCare?: number[];
+  deleteCare?: number[];
 }
 
 // interface untuk response API

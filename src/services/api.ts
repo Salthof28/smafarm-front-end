@@ -1,6 +1,6 @@
 import { Cart } from "@/app/context/Cart-context";
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { AllUpdate, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
+import { AllUpdate, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -320,6 +320,27 @@ export async function fetchDeleteImageShelter(photoDelete: DeleteUrlDto, token: 
     }
 }
 
+export async function fetchCreateShelter(data: CreateShelter, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/shelters`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
 export async function fetchUpdateShelter(dataUpdate: AllUpdate, token: string) {
     try {
         const res = await fetch(`${API_SMAFARM}/shelters/${dataUpdate.shelter_id}`, {
@@ -329,6 +350,25 @@ export async function fetchUpdateShelter(dataUpdate: AllUpdate, token: string) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(dataUpdate)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
+export async function fetchDeleteShelter(id: number, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/shelters/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+            },
         });
         if (!res.ok) {
             const errorData: CustomApiError = await res.json();
