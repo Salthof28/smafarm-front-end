@@ -1,5 +1,5 @@
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction } from "@/types/interfaces";
+import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusTransaction } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -238,7 +238,25 @@ export async function fetchHistoryTransaction(token: string) {
         const res = await fetch(`${API_SMAFARM}/transactions/history`, {
             method: "GET",
             headers: {
-            "Authorization": `Bearer ${token}`, // kalau backend butuh auth
+            "Authorization": `Bearer ${token}`, 
+            }
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchHistoryTransactionBreeder(token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/transactions/historyBreeder`, {
+            method: "GET",
+            headers: {
+            "Authorization": `Bearer ${token}`, 
             }
         });
         if (!res.ok) {
@@ -521,6 +539,27 @@ export async function fetchReviewTransaction(id: number, review: ReviewTransacti
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(review)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
+export async function fetchUpdateStatusTransactionBreed(id: number, status: UpdateStatusTransaction, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/transactions/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(status)
         });
         if (!res.ok) {
             const errorData: CustomApiError = await res.json();

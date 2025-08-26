@@ -1,19 +1,17 @@
 'use client'
 
-import { CareTransaction, Transaction } from "@/types/interfaces"
+import { Transaction } from "@/types/interfaces"
 import { Button, Flex } from "antd"
 import dayjs from "dayjs"
 
 interface HistoryCustomerProp {
     history: Transaction[],
-    showForm: () => void,
-    handleReshedule: (care: CareTransaction) => void,
-    handleDrop: (id_transaction: number) => void,
-    handleFinish: (id_transaction: number) => void
+    handleAccept: (id_transaction: number, stat: string) => void,
+    handleDecline: (id_transaction: number) => void
 }
 
 
-export default function HistoryCustomerChild({history, handleReshedule, handleDrop, handleFinish}: HistoryCustomerProp) {
+export default function HistoryBreederChild({ history, handleAccept, handleDecline }: HistoryCustomerProp) {
     return (
         <div className='flex flex-col gap-[1rem] px-[2rem] items-center py-[2rem]'>
             {history.map(h => (
@@ -56,22 +54,15 @@ export default function HistoryCustomerChild({history, handleReshedule, handleDr
                                 <p>Rp {care.sub_total}</p>
                             </div>
                             <div className="flex flex-col justify-center items-center mb-[1rem]">
-                                {h.status_transaction === "WAITING" && (
-                                    <Button className="w-[12rem] mt-[1rem]" color="cyan" variant="solid" onClick={() => handleReshedule(care)}>Reshedule</Button>
-                                )}
-   
                             </div>
                         </div>
                     ))}
                 </div>
                 <Flex justify="center">
-                    {h.status_transaction === "WAITING" ? (
+                    {h.status_transaction === "WAITING" && (
                         <div className="flex flex-col">
-                            <Button className="w-[12rem] mt-[1rem]" color="danger" variant="solid" onClick={() => handleDrop(h.id)}>Cancel Transaction</Button>
-                        </div>
-                    ) : (
-                        <div className={`${h.status_transaction === 'FINISH' || 'DECLINE' ? 'hidden' : ''}`}>
-                            <Button onClick={() => handleFinish(h.id)} className="w-[12rem] mt-[1rem] hi" color="cyan" variant="solid">Finish Transaction</Button>
+                            <Button className="w-[12rem] mt-[1rem]" color="cyan" variant="solid" onClick={() => handleAccept(h.id, `${h.care_transaction.length > 0 ? "CARE" : "SENDING"}`)} >Accept Order</Button>
+                            <Button className="w-[12rem] mt-[1rem]" color="danger" variant="solid" onClick={() => handleDecline(h.id)} >Decline Order</Button>
                         </div>
                     )}
                 </Flex>

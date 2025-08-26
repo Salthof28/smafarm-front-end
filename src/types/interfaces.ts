@@ -325,3 +325,7 @@ export interface ReviewTransaction {
     rating: number,
     review?: string,
 }
+
+export interface UpdateStatusTransaction {
+    status_transaction: string,
+}

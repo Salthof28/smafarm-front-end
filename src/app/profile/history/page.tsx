@@ -127,10 +127,10 @@ export default function HistoryCustomer() {
 
               {showForm === true && ["Drop", "Finish"].includes(statusForm) && (
               <>
-                  <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" onClick={() => setShowForm(false)} />
-                  <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
-                      <ConfirmFormTransactionCustomer hiddenForm={() => setShowForm(false)} statusForm={statusForm} currentId={currentId} />
-                  </div>
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" onClick={() => setShowForm(false)} />
+                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+                    <ConfirmFormTransactionCustomer hiddenForm={() => setShowForm(false)} statusForm={statusForm} currentId={currentId} />
+                </div>
               </>
               )}
           </Layout>
