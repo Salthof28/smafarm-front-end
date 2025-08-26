@@ -1,5 +1,5 @@
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ShelterAllResponse, ShelterDetailResponse, TransactionResponse } from "@/types/interfaces";
+import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -115,7 +115,7 @@ export async function fetchAllCareTransaction(shelter_id: number): Promise<CareT
 }
 
 
-export async function fetchTransactionBuy (transactionBuy: CleanCartBuy, token: string): Promise<TransactionResponse | CustomApiError> {
+export async function fetchTransactionBuy (transactionBuy: CleanCartBuyCare, token: string): Promise<TransactionResponse | CustomApiError> {
     try {
         const response: Response = await fetch(`${API_SMAFARM}/transactions/transactionbuy`, {
             method: "POST",
@@ -136,7 +136,7 @@ export async function fetchTransactionBuy (transactionBuy: CleanCartBuy, token: 
     }
 }
 
-export async function fetchTransactionCare (transactionCare: CleanCartCare, token: string): Promise<TransactionResponse | CustomApiError> {
+export async function fetchTransactionCare (transactionCare: CleanCartBuyCare, token: string): Promise<TransactionResponse | CustomApiError> {
     try {
         const response: Response = await fetch(`${API_SMAFARM}/transactions/transactioncare`, {
             method: "POST",
@@ -489,6 +489,67 @@ export async function fetchDeleteLivestock(id: number, token: string) {
     } catch(error: unknown) {
         return errorNetworking(error);
     }  
+}
+
+export async function fetchReshedule(id: number, dataUpdate: UpdateCareTransaction, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/transactions/transactioncare/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(dataUpdate)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
+export async function fetchReviewTransaction(id: number, review: ReviewTransaction, token: string) {
+    try {
+        const res = await fetch(`${API_SMAFARM}/transactions/review/${id}`, {
+            method: "PATCH",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(review)
+        });
+        if (!res.ok) {
+            const errorData: CustomApiError = await res.json();
+            console.log(errorData)
+            return errorData;
+        }        
+        return res.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }  
+}
+
+export async function fetchDropTransaction(id: number, token: string) {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/transactions/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            }
+        });
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
 }
 
 export async function fetchLogout(access_token: string) {

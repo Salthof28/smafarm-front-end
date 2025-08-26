@@ -214,8 +214,8 @@ export interface CleanCartCare {
 }
 export interface CleanCartBuyCare {
     transaction: CleanTransaction;
-    care: CleanCare[];
-    buy: CleanBuy[];
+    care?: CleanCare[];
+    buy?: CleanBuy[];
 }
 
 export interface FormValues {
@@ -312,4 +312,16 @@ export interface AllUpdateLivestock {
     livestock?: UpdateLivestockDto;
     uploadImage?: string[];
     deleteImage?: number[];
+}
+
+export interface UpdateCareTransaction {
+    duration_care: number,
+    start_date: string,
+    finish_date: string,
+    sub_total: number
+}
+
+export interface ReviewTransaction {
+    rating: number,
+    review?: string,
 }

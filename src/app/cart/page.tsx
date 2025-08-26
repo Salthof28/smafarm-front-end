@@ -8,7 +8,7 @@ import CareList from "@/components/cart/care-list";
 import { useSession } from "next-auth/react";
 import { fetchTransactionBuy, fetchTransactionBuyCare, fetchTransactionCare } from "@/services/api";
 import { message } from "antd";
-import { CleanCartBuyCare } from "@/types/interfaces";
+import {  CleanCartBuyCare } from "@/types/interfaces";
 
 export default function Carts() {
     const activeIconNav: string = 'cart';
@@ -30,8 +30,6 @@ export default function Carts() {
     const filterPayload = (cart: Cart) => {
         const payload: CleanCartBuyCare = {
             transaction: { id_farm: Number(cart.transaction.id_farm) },
-            buy: [],
-            care: [],
         };
         if (cart.buy.length > 0) {
             payload.buy = cart.buy.map(b => ({

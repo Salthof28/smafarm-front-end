@@ -52,8 +52,8 @@ export default function EditProfile({hiddenForm}: FormEditProfileProp) {
                 className="w-full bg-amber-50"
                 // onValuesChange={calculateTotal}
             >
-                {/* onClick={hiddenForm} */}
-                <Button  type="text" icon={<ArrowLeft />} />
+                
+                <Button  type="text" icon={<ArrowLeft />} onClick={hiddenForm} />
                 <h4 className="text-center font-bold mb-4">Edit Profile</h4>
                 <Form.Item
                 label="Name"

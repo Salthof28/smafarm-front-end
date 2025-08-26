@@ -9,14 +9,20 @@ import { fetchHistoryTransaction, fetchLogout } from '@/services/api';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import HistoryCustomerChild from '@/components/customer/history-customer';
-import { Transaction } from '@/types/interfaces';
+import { CareTransaction, Shelter, Transaction } from '@/types/interfaces';
+import FormHistoryCustomer from '@/components/customer/form-history';
+import ConfirmFormTransactionCustomer from '@/components/customer/confirm-transaction';
 
 const { Content, Sider } = Layout;
 
 export default function HistoryCustomer() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [history, setHistory] = useState<Transaction[]>([])
+  const [history, setHistory] = useState<Transaction[]>([]);
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const [statusForm, setStatusForm] = useState<string>("");
+  const [currentId, setCurrentId] = useState<number>(0);
+  const [currentCare, setCurrentCareCare] = useState<CareTransaction>();
   
   const fetchHisotory = async () => {
     const token = session?.accessToken
@@ -32,8 +38,10 @@ export default function HistoryCustomer() {
     }
   }
   useEffect(() => {
-    fetchHisotory()
-  })
+    if(showForm === false){
+      fetchHisotory()
+    }
+  },[session, showForm])
 
   useEffect(() => {
       if (status === "unauthenticated") {
@@ -44,13 +52,32 @@ export default function HistoryCustomer() {
       router.replace("/dashboard");
       }
   }, [status, session, router]);
+
   const logOut = async (): Promise<void> => {
-      if (!session?.accessToken) {
-          console.error("No access token found");
-          return;
-      };
-      await fetchLogout(session?.accessToken);      
-      signOut({callbackUrl: "/login"});
+    if (!session?.accessToken) {
+        console.error("No access token found");
+        return;
+    };
+    await fetchLogout(session?.accessToken);      
+    signOut({callbackUrl: "/login"});
+  }
+
+  const handleReshedule = (care: CareTransaction) => {
+    setStatusForm("Reshedule");
+    setCurrentCareCare(care)
+    setShowForm(true)
+  }
+
+  const handleDrop = (id_transaction: number) => {
+    setStatusForm("Drop");
+    setCurrentId(id_transaction);
+    setShowForm(true);
+  }
+
+  const handleFinish = (id_transaction: number) => {
+    setStatusForm("Finish");
+    setCurrentId(id_transaction);
+    setShowForm(true)
   }
 
   const items2: MenuProps['items'] = [
@@ -85,11 +112,27 @@ export default function HistoryCustomer() {
                 style={{ height: '100%', background: '#fffbeb', overflowY: 'auto' }}
                 items={items2}
               />
-              
             </Sider>
             <Content style={{ padding: '0 24px', minHeight: 280, overflowY: 'auto' }}>
-                <HistoryCustomerChild history={history} />
+                <HistoryCustomerChild history={history} showForm={() => setShowForm(true)} handleReshedule={handleReshedule} handleDrop={handleDrop} handleFinish={handleFinish} />
             </Content>
+              {showForm === true && currentCare && statusForm === "Reshedule" && (
+              <>
+                  <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" onClick={() => setShowForm(false)} />
+                  <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+                      <FormHistoryCustomer hiddenForm={() => setShowForm(false)} care={currentCare}  />
+                  </div>
+              </>
+              )}
+
+              {showForm === true && ["Drop", "Finish"].includes(statusForm) && (
+              <>
+                  <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40" onClick={() => setShowForm(false)} />
+                  <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
+                      <ConfirmFormTransactionCustomer hiddenForm={() => setShowForm(false)} statusForm={statusForm} currentId={currentId} />
+                  </div>
+              </>
+              )}
           </Layout>
         </div>
       </div>
