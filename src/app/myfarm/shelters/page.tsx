@@ -58,7 +58,20 @@ export default function SheltersBreeder() {
             key: 'history',
             icon: React.createElement(LaptopOutlined),
             label: 'History Transaction',
-            onClick: () => router.push('/myfarm/history')
+            children: [
+                {
+                    key: 'order',
+                    icon: React.createElement(ShopOutlined),
+                    label: 'Order',
+                    onClick: () => router.push('/myfarm/historyOrder'),
+                },
+                {
+                    key: 'transaction',
+                    icon: React.createElement(ShopOutlined),
+                    label: 'Transaction',
+                    onClick: () => router.push('/myfarm/historyTransaction'),
+                },
+            ]
         },
         {
             key: 'signout',
@@ -86,7 +99,7 @@ export default function SheltersBreeder() {
                             <Menu
                                 mode="inline"
                                 defaultSelectedKeys={['shelters']}
-                                defaultOpenKeys={['myfarm']}
+                                defaultOpenKeys={['myfarm', 'history']}
                                 style={{ height: '100%', background: '#fffbeb', overflowY: 'auto' }}
                                 items={items2}
                             />
