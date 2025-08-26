@@ -18,11 +18,11 @@ export default function ProfileCustomer() {
     const [showForm, setShowForm] = useState<boolean>(false);
     
     const logOut = async (): Promise<void> => {
-        if (!session?.accessToken) {
+        if (!session?.refreshToken) {
             console.error("No access token found");
             return;
         };
-        await fetchLogout(session?.accessToken);      
+        await fetchLogout(session?.refreshToken);      
         signOut({callbackUrl: "/login"});
     }
 
