@@ -256,8 +256,10 @@ export async function fetchHistoryTransactionBreeder(token: string) {
         const res = await fetch(`${API_SMAFARM}/transactions/historyBreeder`, {
             method: "GET",
             headers: {
-            "Authorization": `Bearer ${token}`, 
-            }
+                "Authorization": `Bearer ${token}`,
+                // "Content-Type": "application/json", 
+            },
+            // body: JSON.stringify({id_farm})
         });
         if (!res.ok) {
             const errorData: CustomApiError = await res.json();

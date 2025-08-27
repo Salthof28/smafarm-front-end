@@ -24,16 +24,19 @@ export default function HistoryOrderBreeder() {
     // const [formFarm, setFormFarm] = useState<boolean>(false);
 
     const fetchHisotory = async () => {
-        const token = session?.accessToken
-        if(!token){
-            message.error("Token not found. Please login again.");
-            return;
-        }
-        const historyJson = await fetchHistoryTransactionBreeder(token);
-        if("data" in historyJson){
-            const historyData = historyJson.data;
-            setHistory(historyData);
-        return
+        if(session?.user.profile?.farmId){
+            const token = session?.accessToken
+            if(!token){
+                message.error("Token not found. Please login again.");
+                return;
+            }
+            const historyJson = await fetchHistoryTransactionBreeder(token);
+            if("data" in historyJson){
+                const historyData = historyJson.data;
+                setHistory(historyData);
+                console.log(history);
+            return
+            }
         }
     }
     useEffect(() => {

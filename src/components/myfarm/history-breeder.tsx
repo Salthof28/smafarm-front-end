@@ -68,7 +68,12 @@ export default function HistoryBreederChild({ history, handleAccept, handleDecli
                 </Flex>
             </div>
             ))}
-
+            {history.length < 1 && (
+                <div className="flex flex-col items-center justify-center">
+                    <img src='/cow-not-found.png' className=" w-[6rem] h-[6rem] " />
+                    <h4>Transaction Not Found</h4>
+                </div>
+            )}
         </div>
     )
 }
