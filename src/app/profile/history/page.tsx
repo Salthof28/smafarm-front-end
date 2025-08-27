@@ -9,7 +9,7 @@ import { fetchHistoryTransaction, fetchLogout } from '@/services/api';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import HistoryCustomerChild from '@/components/customer/history-customer';
-import { CareTransaction, Shelter, Transaction } from '@/types/interfaces';
+import { CareTransaction, Transaction } from '@/types/interfaces';
 import FormHistoryCustomer from '@/components/customer/form-history';
 import ConfirmFormTransactionCustomer from '@/components/customer/confirm-transaction';
 

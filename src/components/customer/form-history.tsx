@@ -221,11 +221,16 @@ export default function FormHistoryCustomer({ hiddenForm, care }: FormHistoryCus
                 <h5>Rp {totalPrice.toLocaleString()}</h5>
             </Form.Item>
             <Form.Item className="flex justify-end">
-                <Button color="cyan" variant="solid" htmlType="submit">
+                <Button color="cyan" variant="solid" htmlType="submit" loading={loadingSubmit}>
                     Care
                 </Button>
 
             </Form.Item>
+            {selectedDate && (
+                <p className="text-center text-sm text-gray-600">
+                    Selected start date: {selectedDate.format("DD/MM/YYYY")}
+                </p>
+            )}
         </Form>
     </div>
     )

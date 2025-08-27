@@ -1,44 +1,27 @@
-// 'use client'
-// import useAuth from "@/hooks/useAuth";
-// import { fetchLogout } from "@/services/api";
-// import { signOut } from "next-auth/react";
-
-
-// export default function Dashboard () {
-//     const { session } = useAuth()
-//     const logOut = async (): Promise<void> => {
-//         if (!session?.refreshToken) {
-//             console.error("No access token found");
-//             return;
-//         };
-//         await fetchLogout(session?.refreshToken);      
-//         signOut({callbackUrl: "/login"});
-//     }
-//     return(
-//         <div>
-//             <h1>hai {session?.user.name}: {session?.user.role}</h1>
-//             <button onClick={logOut} className="bg-emerald-500 p-[0.3rem] xl:p-[0.5rem] rounded-[0.4rem] text-[0.8rem] xl:text-[1rem]">Sign Out</button>
-//         </div>
-//     )
-// }
 'use client'
 import AdminPanel from "@/components/dashboard/adminPanel";
 import NavigationAdmin from "@/components/dashboard/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+// import { useState } from "react";
 
 
 export default function Dashboard () {
     const { data: session } = useSession();
     // const [products, setProducts] = useState<Product[]>([]);
     // const [category, setCategory] = useState<Category[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    // const [loading, setLoading] = useState<boolean>(false);
     // const [error, setError] = useState<string>('');
 
     // variabel paganation page
-    const [totalPoduct, setTotalProduct] = useState<number>(0);
+    // const [totalPoduct, setTotalProduct] = useState<number>(0);
     
-  
+    const data = [
+        { name: 'Jan', sales: 400, orders: 120 },
+        { name: 'Feb', sales: 300, orders: 90 },
+        { name: 'Mar', sales: 500, orders: 150 },
+        { name: 'Apr', sales: 200, orders: 60 },
+    ];
 
     // console.log(totalProductbyCat());
     return (
@@ -55,15 +38,31 @@ export default function Dashboard () {
                   {/* section persentase product */}
                   <section className="flex flex-row min-w-full gap-[1rem]">
                       {/* card 1 */}
-                      <section className="flex flex-col gap-[1rem] p-[1rem] overflow-hidden rounded-[0.4rem] border border-gray-500/40 w-full">    
-  
+                      <section className="flex flex-col gap-[1rem] p-[1rem] overflow-hidden rounded-[0.4rem] border border-gray-500/40 w-full h-64 md:h-80 lg:h-96">    
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={data}>
+                            <CartesianGrid strokeDasharray="3 3" /> {/* Grid background */}
+                            <XAxis dataKey="name" /> {/* Label bulan di X-axis */}
+                            <YAxis /> {/* Skala angka di Y-axis */}
+                            <Tooltip /> {/* Tooltip interaktif */}
+                            <Legend /> {/* Legend di atas chart */}
+                            <Line
+                                type="monotone" // bikin garis halus
+                                dataKey="sales"
+                                stroke="#8884d8"
+                                strokeWidth={2}
+                                dot={{ r: 5 }} // titik di setiap data
+                                activeDot={{ r: 8 }} // titik besar saat hover
+                            />
+                            </LineChart>
+                        </ResponsiveContainer>
                       </section>
                   </section>
-                  {loading && (
+                  {/* {loading && (
                   <section className="flex justify-center items-center w-full h-full">
                       <h1 className="text-lg lg:text-xl xl:text-2xl 2xl:text-4xl font-bold text-amber-50">Loading....</h1>
                   </section>
-                  )}
+                  )} */}
               </section>
           </main>
       </div>

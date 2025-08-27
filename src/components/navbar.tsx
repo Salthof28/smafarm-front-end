@@ -11,7 +11,7 @@ interface NavbarProp {
     activeIconNav: string;
 }
 export default function Navbar({ activeIconNav }: NavbarProp) {
-    const { data: session, status } = useSession();
+    const { data: session } = useSession();
     const router: AppRouterInstance = useRouter();
     const findParams: ReadonlyURLSearchParams = useSearchParams();
     const categoryParams = findParams.getAll('category') || 'All';

@@ -65,7 +65,7 @@ export default function AdminPanel ({ session }: AdminPanelProps) {
                         <p className="flex justify-center items-center bg-indigo-900 p-[0.2rem] rounded-[50%] w-[2rem] h-[2rem] xl:w-[2.5rem] xl:h-[2.5rem] text-[0.8rem] xl:text-[1rem]">{session?.user?.name?.charAt(0).toUpperCase()}</p>
                         <div className="flex flex-col">
                             <p className="text-[0.8rem] xl:text-[1rem]">{session?.user?.name}</p>
-                            <span className="text-[0.6rem] xl:text-[0.8rem]">{session?.user?.email}</span>
+                            <span className="text-[0.6rem] xl:text-[0.8rem]">{session?.user?.profile?.email}</span>
                         </div>
                     </div>
                     <button onClick={logOut} className="bg-emerald-500 p-[0.3rem] xl:p-[0.5rem] rounded-[0.4rem] text-[0.8rem] xl:text-[1rem]">Sign Out</button>

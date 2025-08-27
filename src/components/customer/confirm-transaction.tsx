@@ -1,5 +1,5 @@
 import { fetchDropTransaction, fetchReviewTransaction } from "@/services/api";
-import { Button, Card, Form, message, Modal, Rate, Typography } from "antd";
+import { Button, Card, Form, message, Rate, Typography } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -16,17 +16,15 @@ interface ConfirmFormTransactionCustomerProp {
 }
 export default function ConfirmFormTransactionCustomer({statusForm, currentId, hiddenForm}: ConfirmFormTransactionCustomerProp) {
     const [loadingSubmit, setLoadingSubmit] = useState(false);
-    const {data: session} = useSession()
+    const {data: session} = useSession();
+    const [form] = Form.useForm();
+    const [rating, setRating] = useState<number>(0);
     const token = session?.accessToken;
     if(!token){
         message.error('access token not found please login again')
         return;
     }
     if(statusForm === "Finish") {
-        const [form] = Form.useForm();
-        const [rating, setRating] = useState<number>(0);
-
-
         const handleFinish = async (values: ReviewTransaction) => {
 
             // const values = form.getFieldsValue();

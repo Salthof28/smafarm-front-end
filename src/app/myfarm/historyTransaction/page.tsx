@@ -5,11 +5,10 @@ import { BankOutlined, LaptopOutlined, LogoutOutlined, ShopOutlined, UserOutline
 import type { MenuProps } from 'antd';
 import { Layout, Menu, message, theme } from 'antd';
 import Navbar from '@/components/navbar';
-import { fetchHistoryTransaction, fetchHistoryTransactionBreeder, fetchLogout } from '@/services/api';
+import { fetchHistoryTransaction, fetchLogout } from '@/services/api';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { CareTransaction, Transaction } from '@/types/interfaces';
-import ConfirmOrderCustomer from '@/components/myfarm/confirm-order';
 import HistoryCustomerChild from '@/components/customer/history-customer';
 import ConfirmFormTransactionCustomer from '@/components/customer/confirm-transaction';
 import FormHistoryCustomer from '@/components/customer/form-history';

@@ -42,7 +42,7 @@ export default function HistoryCustomerChild({history, handleReshedule, handleDr
                         <p className="font-bold">Care</p>
                     )}
                     {h.care_transaction.map((care, index) => (
-                        <div className={`${index === 0 ? 'border-t' : ''} border-b flex flex-col`}>
+                        <div key={care.id} className={`${index === 0 ? 'border-t' : ''} border-b flex flex-col`}>
                             <div key={index} className={`flex flex-row justify-between items-center border-gray-400`} >
                                 <div className="flex flex-row gap-[1rem] p-[1rem] items-center">
                                     <img src={care.shelter?.img_shelter[0].url} className="w-[3rem] h-[2rem] md:w-[8rem] md:h-[5rem] 2xl:w-[12rem] 2xl:h-[9rem]" />
@@ -70,7 +70,7 @@ export default function HistoryCustomerChild({history, handleReshedule, handleDr
                             <Button className="w-[12rem] mt-[1rem]" color="danger" variant="solid" onClick={() => handleDrop(h.id)}>Cancel Transaction</Button>
                         </div>
                     ) : (
-                        <div className={`${h.status_transaction === 'FINISH' || 'DECLINE' ? 'hidden' : ''}`}>
+                        <div className={`${h.status_transaction === 'FINISH' ? 'hidden' : ''} ${h.status_transaction === 'DECLINE' ? 'hidden' : ''}`}>
                             <Button onClick={() => handleFinish(h.id)} className="w-[12rem] mt-[1rem] hi" color="cyan" variant="solid">Finish Transaction</Button>
                         </div>
                     )}

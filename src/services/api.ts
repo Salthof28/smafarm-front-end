@@ -1,5 +1,5 @@
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuy, CleanCartBuyCare, CleanCartCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusTransaction } from "@/types/interfaces";
+import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuyCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusTransaction } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
