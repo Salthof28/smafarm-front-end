@@ -17,16 +17,22 @@ export interface Animal {
     createdAt: string,
     updatedAt: string
 }
+export enum StatusFarm {
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+}
 export type Farm = {
-  id: number;
-  user_id: number;
-  name: string;
-  location: string;
-  img_farm: string;
-  rating: number;
-  created_at: string; 
-  updated_at: string;
-  shelters: Shelter[]; 
+  id: number,
+  user_id: number,
+  name: string,
+  status_farm: StatusFarm,
+  location: string,
+  img_farm: string,
+  rating: number,
+  created_at: string, 
+  updated_at: string,
+  shelters: Shelter[],
+  livestock: Livestock[], 
 };
 export interface ImageUrl {
     id: number;
@@ -166,6 +172,10 @@ export interface LivestockDetailResponse {
 export interface ShelterAllResponse {
     message: string;
     data: Shelter[];
+}
+export interface FarmAllResponse {
+    message: string;
+    data: Farm[];
 }
 export interface ShelterDetailResponse {
     message: string;
@@ -328,4 +338,8 @@ export interface ReviewTransaction {
 
 export interface UpdateStatusTransaction {
     status_transaction: string,
+}
+
+export interface UpdateStatusFarm {
+    status_farm: string,
 }

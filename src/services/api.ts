@@ -1,5 +1,5 @@
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuyCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusTransaction } from "@/types/interfaces";
+import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuyCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusFarm, UpdateStatusTransaction } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -582,6 +582,38 @@ export async function fetchDropTransaction(id: number, token: string) {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
             }
+        });
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchAllFarms(name?: string) {
+    try {
+        const params: string[] = []
+        if(name) params.push(`name=${encodeURIComponent(name)}`);
+        const queryString = params.length > 0 ? `?${params.join("&")}` : "";
+        const response: Response = await fetch(`${API_SMAFARM}/farms${queryString}`);
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchUpdateStatFarmAdmin(id: number, statusFarm: UpdateStatusFarm, token: string) {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/farms/${id}`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(statusFarm)
         });
         if(!response.ok){
             const errorData: CustomApiError = await response.json();

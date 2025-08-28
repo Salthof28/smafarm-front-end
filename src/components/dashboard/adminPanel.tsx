@@ -24,12 +24,12 @@ export default function AdminPanel ({ session }: AdminPanelProps) {
         {
             name: 'Users',
             href: '/dashboard/users',
-            icon: (<ShoppingBag className="w-[1.2rem] h-[1.2rem] xl:w-[1.5rem] xl:h-[1.5rem]" />)
+            icon: (<Users className="w-[1.2rem] h-[1.2rem] xl:w-[1.5rem] xl:h-[1.5rem]" />)
         },
         {
             name: 'Farms',
             href: '/dashboard/farms',
-            icon: (<Users className="w-[1.2rem] h-[1.2rem] xl:w-[1.5rem] xl:h-[1.5rem]" />)
+            icon: (<ShoppingBag className="w-[1.2rem] h-[1.2rem] xl:w-[1.5rem] xl:h-[1.5rem]" />)
         },
     ];
     const logOut = async (): Promise<void> => {

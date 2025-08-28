@@ -39,6 +39,7 @@ export default function Dashboard () {
                   <section className="flex flex-row min-w-full gap-[1rem]">
                       {/* card 1 */}
                       <section className="flex flex-col gap-[1rem] p-[1rem] overflow-hidden rounded-[0.4rem] border border-gray-500/40 w-full h-64 md:h-80 lg:h-96">    
+                        <h5 className="font-bold">Data Sell Livestock</h5>
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" /> {/* Grid background */}
@@ -51,8 +52,8 @@ export default function Dashboard () {
                                 dataKey="sales"
                                 stroke="#8884d8"
                                 strokeWidth={2}
-                                dot={{ r: 5 }} // titik di setiap data
-                                activeDot={{ r: 8 }} // titik besar saat hover
+                                dot={{ r: 3 }} // titik di setiap data
+                                activeDot={{ r: 6 }} // titik besar saat hover
                             />
                             </LineChart>
                         </ResponsiveContainer>
