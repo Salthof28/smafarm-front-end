@@ -662,6 +662,23 @@ export async function fetchUpdateUserByAdmin(id: number, updateUser: UpdateUser,
     }
 }
 
+export async function fetchAllTransactionByAdmin(token: string, name?: string) {
+    try {
+        const params: string[] = []
+        if(name) params.push(`name=${encodeURIComponent(name)}`);
+        const queryString = params.length > 0 ? `?${params.join("&")}` : "";
+        const response: Response = await fetch(`${API_SMAFARM}/transactions${queryString}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
 export async function fetchLogout(access_token: string) {
     try {
         const response: Response = await fetch(`${API_SMAFARM}/auth/logout`, {

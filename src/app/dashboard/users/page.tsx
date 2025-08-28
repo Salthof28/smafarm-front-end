@@ -6,7 +6,7 @@ import RegisterByAdmin from "@/components/dashboard/register-by-admin";
 import { fetchAllUsers } from "@/services/api";
 import { UserOut } from "@/types/interfaces";
 import { message } from "antd";
-import { Plus, SquarePen, Trash2 } from "lucide-react";
+import { Plus, SquarePen } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 // import { useState } from "react";
