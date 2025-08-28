@@ -20,10 +20,10 @@ export default function ShelterBreederList() {
     const [showModal, setShowModal] = useState(false);
     const [currentShelter, setCurrentShelter] = useState<Shelter | undefined>(undefined)
 
-    const fetchShelter = async () => {
+    const fetchShelter = async (name?: string) => {
         const farm_id = session?.user.profile?.farmId
         setLoading(true);
-        const res = await fetchAllShelter(undefined, undefined, farm_id); 
+        const res = await fetchAllShelter(undefined, name, farm_id); 
         if ('data' in res) {
             setShelters(res.data);
         } else {
@@ -126,7 +126,7 @@ export default function ShelterBreederList() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <Button type="primary">Search</Button>
+                    <Button onClick={() => fetchShelter(search)} type="primary">Search</Button>
                     </div>
 
                     {/* Table */}

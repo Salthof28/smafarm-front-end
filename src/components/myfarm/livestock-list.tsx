@@ -19,10 +19,10 @@ export default function LivestockBreederList() {
     const [showModal, setShowModal] = useState(false);
     const [currentLivestock, setCurrentLivestock] = useState<Livestock | undefined>(undefined)
 
-    const fetchLivestock = async () => {
+    const fetchLivestock = async (name?: string) => {
         const farm_id = session?.user.profile?.farmId
         setLoading(true);
-        const res = await fetchAllLivestock(undefined, undefined, farm_id); 
+        const res = await fetchAllLivestock(undefined, name, farm_id); 
         if ('data' in res) {
             setLivestocks(res.data);
         } else {
@@ -129,7 +129,7 @@ export default function LivestockBreederList() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
-                    <Button type="primary">Search</Button>
+                    <Button onClick={() => fetchLivestock(search)} type="primary">Search</Button>
                     </div>
 
                     {/* Table */}
