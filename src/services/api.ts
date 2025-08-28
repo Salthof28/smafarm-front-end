@@ -1,5 +1,5 @@
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
-import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuyCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusFarm, UpdateStatusTransaction } from "@/types/interfaces";
+import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuyCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusFarm, UpdateStatusTransaction, UpdateUser } from "@/types/interfaces";
 
 
 const API_SMAFARM = 'http://localhost:4000';
@@ -614,6 +614,43 @@ export async function fetchUpdateStatFarmAdmin(id: number, statusFarm: UpdateSta
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(statusFarm)
+        });
+        if(!response.ok){
+            const errorData: CustomApiError = await response.json();
+            return errorData;
+        }
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchAllUsers(token: string, name?: string) {
+    try {
+        const params: string[] = []
+        if(name) params.push(`name=${encodeURIComponent(name)}`);
+        const queryString = params.length > 0 ? `?${params.join("&")}` : "";
+        const response: Response = await fetch(`${API_SMAFARM}/users${queryString}`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.json();
+    } catch(error: unknown) {
+        return errorNetworking(error);
+    }
+}
+
+export async function fetchUpdateUserByAdmin(id: number, updateUser: UpdateUser, token: string) {
+    try {
+        const response: Response = await fetch(`${API_SMAFARM}/users/${id}`, {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updateUser)
         });
         if(!response.ok){
             const errorData: CustomApiError = await response.json();

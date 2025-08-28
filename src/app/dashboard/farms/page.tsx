@@ -5,11 +5,9 @@ import NavigationAdmin from "@/components/dashboard/navigation";
 import { fetchAllFarms } from "@/services/api";
 import { Farm } from "@/types/interfaces";
 import { message } from "antd";
-import { Plus, SquarePen, Trash2 } from "lucide-react";
+import { SquarePen, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-// import { useState } from "react";
 
 
 export default function DashboardFarms () {
@@ -17,15 +15,10 @@ export default function DashboardFarms () {
     const [farms, setFarms] = useState<Farm[]>([]);
     const [currentFarm, setCurrentFarm] = useState<Farm | undefined>(undefined);
     const [messageApi, contextHolder] = message.useMessage();
-    // const [category, setCategory] = useState<Category[]>([]);
-    // const [loading, setLoading] = useState<boolean>(false);
-    // const [error, setError] = useState<string>('');
     const [search, setSearch] = useState<string>()
     const [showForm, setShowForm] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
     const headerTable: string[] = ['Name', 'Location', 'Status', 'Action'];
-    // variabel paganation page
-    // const [totalPoduct, setTotalProduct] = useState<number>(0);
+    
     const fetchFarms = async (searchName?: string) => {
         const farmJson = await fetchAllFarms(searchName);
         if ('data' in farmJson) {
@@ -48,10 +41,10 @@ export default function DashboardFarms () {
     }
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
-
+        e.preventDefault();
+        fetchFarms(search);
     }
 
-    // console.log(totalProductbyCat());
     return (
       <div className="bg-[rgb(8,5,3)] min-h-screen overflow-x-hidden">
           <NavigationAdmin session={session} />
@@ -72,7 +65,7 @@ export default function DashboardFarms () {
                         <button type="submit" className="bg-emerald-500 p-[0.4rem] rounded-[0.4rem] hover:bg-emerald-700 hover:text-white active:scale-95 duration-200 max-md:w-[6rem] text-[0.6rem] md:text-[0.8rem]">Search</button>
                     </form>
                     {/* tabel section */}
-                    {(!showForm && !loading) && (
+                    {(!showForm) && (
                     <section className="overflow-hidden rounded-[0.4rem] border border-gray-500/40 w-full">    
                         <table className="min-w-full">
                             <thead className="bg-indigo-400/10 ">
@@ -91,7 +84,6 @@ export default function DashboardFarms () {
                                     <td className="text-[0.6rem] md:text-[0.8rem] xl:text-[1rem] items-center px-[0.3rem] md:px-[0.8rem] xl:px-[2rem] py-[0.5rem] text-left">
                                         <div className="flex flex-row gap-[1rem]">
                                             <button onClick={() => handleShowForm(farm)} className="flex flex-row items-center gap-[0.1rem] md:gap-[0.4rem] text-blue-500 font-bold"><SquarePen className="w-[0.6rem] h-[0.6rem] md:w-[1.2rem] md:h-[1.2rem]"/>Edit</button>
-                                            <button className="flex flex-row gap-[0.1rem] md:gap-[0.4rem] text-red-600 font-bold"><Trash2 className="w-[0.6rem] h-[0.6rem] md:w-[1.2rem] md:h-[1.2rem]" />Delete</button>
                                         </div>
                                     </td>
                                 </tr>

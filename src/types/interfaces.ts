@@ -343,3 +343,29 @@ export interface UpdateStatusTransaction {
 export interface UpdateStatusFarm {
     status_farm: string,
 }
+
+export interface UserOut {
+    id: number
+    name: string,
+    email: string,
+    phone: string,
+    status: string,
+    img_profile: string,
+    role: string,
+    created_at: Date,
+    updated_at: Date,
+}
+
+export interface UserResponse {
+  message: string;
+  data: UserOut[];
+}
+
+export interface UpdateUser {
+    name?: string,
+    email?: string,
+    phone?: string,
+    status?: string,
+    img_profile?: string,
+    role?: string,
+}
