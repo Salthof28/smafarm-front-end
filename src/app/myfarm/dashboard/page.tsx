@@ -9,8 +9,6 @@ import { fetchHistoryTransactionBreeder, fetchLogout } from '@/services/api';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Transaction } from '@/types/interfaces';
-import HistoryBreederChild from '@/components/myfarm/history-breeder';
-import ConfirmOrderCustomer from '@/components/myfarm/confirm-order';
 import ShowDashboardBreeder from '@/components/myfarm/dashboard-breeder';
 
 const { Content, Sider } = Layout;

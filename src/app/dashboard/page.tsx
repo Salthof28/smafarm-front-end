@@ -2,7 +2,7 @@
 import AdminPanel from "@/components/dashboard/adminPanel";
 import NavigationAdmin from "@/components/dashboard/navigation";
 import { fetchAllLivestock, fetchAllTransactionByAdmin, fetchAllUsers } from "@/services/api";
-import { Livestock, LivestockAllResponse, Transaction, UserOut } from "@/types/interfaces";
+import { Livestock, Transaction, UserOut } from "@/types/interfaces";
 import { message } from "antd";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -157,8 +157,8 @@ export default function Dashboard () {
                 {contextHolder}
                   <h3 className="text-[1rem] md:text-[1.5rem] xl:text-[2rem] font-bold">Dashboard</h3>
                     <section className="flex flex-col xl:flex-row min-w-full gap-[1rem]">
-                        {chartData.countUserByRole.map(countRole => (
-                            <section className="flex flex-col gap-[1rem] p-[1rem] overflow-hidden rounded-[0.4rem] border border-gray-500/40 w-full h-64 md:h-80 lg:h-96 justify-between">
+                        {chartData.countUserByRole.map((countRole, index) => (
+                            <section key={index} className="flex flex-col gap-[1rem] p-[1rem] overflow-hidden rounded-[0.4rem] border border-gray-500/40 w-full h-64 md:h-80 lg:h-96 justify-between">
                                 <h4>{countRole.name} User</h4> 
                                 <h2 className="text-center">{countRole.count}</h2>   
                                 <h4 className="text-end">Users</h4>

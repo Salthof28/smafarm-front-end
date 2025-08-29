@@ -42,21 +42,21 @@ export default function ClientDescriptionAnimal ({ livestock }: DescriptionAnima
                 <table className="min-w-full ">
                     <tbody className="bg-white/30">
                         {/* w-[88%] 2xl: */}
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[75%] md:w-[85%] lg:w-[90%] 2xl:w-[93%]">Age</td>
-                            <td>{livestock?.age} Years</td>
+                        <tr className="border-t border-gray-500/15">
+                            <td className="tds w-[75%] md:w-[85%] ">Age</td>
+                            <td className="tds">{livestock?.age} Years</td>
                         </tr>
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[75%] md:w-[85%] lg:w-[90%] 2xl:w-[93%]">Category</td>
-                            <td>{livestock?.category?.name}</td>
+                        <tr className="border-t border-gray-500/15">
+                            <td className="tds w-[75%] md:w-[85%] ">Category</td>
+                            <td className="tds">{livestock?.category?.name}</td>
                         </tr>
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[75%] md:w-[85%] lg:w-[90%] 2xl:w-[93%]">Type</td>
-                            <td>{livestock?.name}</td>
+                        <tr className="border-t border-gray-500/15">
+                            <td className="tds w-[75%] md:w-[85%] ">Type</td>
+                            <td className="tds">{livestock?.name}</td>
                         </tr>
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[75%] md:w-[85%] lg:w-[90%] 2xl:w-[93%]">Gender</td>
-                            <td>Male</td>
+                        <tr className="border-t border-gray-500/15">
+                            <td className="tds w-[75%] md:w-[85%] ">Gender</td>
+                            <td className="tds">Male</td>
                         </tr>
                     </tbody>
                 </table>

@@ -5,7 +5,7 @@ import NavigationAdmin from "@/components/dashboard/navigation";
 import { fetchAllFarms } from "@/services/api";
 import { Farm } from "@/types/interfaces";
 import { message } from "antd";
-import { SquarePen, Trash2 } from "lucide-react";
+import { SquarePen } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 

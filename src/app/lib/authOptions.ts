@@ -1,6 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
+// const API_SMAFARM = 'http://localhost:4000';
+const API_SMAFARM = 'https://3a9faba3-4e26-4988-b04a-1d21b7e8014e-00-nz4pnvue4orv.pike.replit.dev:3000';
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
@@ -15,7 +16,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
 
         try {
-          const loginRes = await fetch("http://localhost:4000/auth/login", {
+          const loginRes = await fetch(`${API_SMAFARM}/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -30,7 +31,7 @@ export const authOptions: NextAuthOptions = {
 
           const accessTokenExpiresAt = Math.floor(Date.now() / 1000) + 3500;
 
-          const profileRes = await fetch("http://localhost:4000/users/profile", {
+          const profileRes = await fetch(`${API_SMAFARM}/users/profile`, {
             headers: { Authorization: `Bearer ${loginData.access_token}` },
           });
           if (!profileRes.ok) return null;
@@ -78,7 +79,7 @@ export const authOptions: NextAuthOptions = {
       // refresh token if expired access token
       if (token.expiresAt && now >= token.expiresAt) {
         try {
-          const refreshRes = await fetch("http://localhost:4000/auth/refreshToken", {
+          const refreshRes = await fetch(`${API_SMAFARM}/auth/refreshToken`, {
             method: "POST",
             headers: { Authorization: `Bearer ${token.refreshToken}` },
           });
@@ -89,7 +90,7 @@ export const authOptions: NextAuthOptions = {
             token.refreshToken = newTokens.refresh_token;
 
             token.expiresAt = Math.floor(Date.now() / 1000) + 3600;
-            const profileRes = await fetch("http://localhost:4000/users/profile", {
+            const profileRes = await fetch(`${API_SMAFARM}/users/profile`, {
               headers: { Authorization: `Bearer ${token.accessToken}` },
             });
             if (profileRes.ok) {

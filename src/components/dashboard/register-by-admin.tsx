@@ -1,8 +1,6 @@
 'use client'
-import Link from "next/link";
 import { Form, Input, Button, Typography, Alert, Select, message, ConfigProvider, theme } from "antd";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { InptRegister } from "@/types/interfaces";
 import { fetchRegisterUser } from "@/services/api";
 import { RuleObject } from "antd/es/form";

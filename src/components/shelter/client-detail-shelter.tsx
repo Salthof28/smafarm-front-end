@@ -31,7 +31,7 @@ export default function ClientDescriptionShelter ({ shelter }: DescriptionAnimal
                     <h5>Farm: {shelter?.farm.name}</h5>
                     <h5>{shelter?.farm.location}</h5>
                     <hr className="border-[0.15rem] my-[0.5rem]"></hr>
-                    <h5>Accomodate: {shelter?.accomodate} Heads</h5>
+                    <h5>Ac comodate: {shelter?.accomodate} Heads</h5>
                     <div className="flex flex-row mt-[1rem] justify-center gap-[2rem]">
                         <button onClick={handleBtnBuy} className="font-bold btn w-[8rem] bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem text-[1.5rem] transition-opacity delay-200 active:scale-90">Rent</button>
                         <button className="bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem rounded-[0.5rem] transition-opacity delay-200 active:scale-90"><MessageSquareText className="w-[4rem]" /></button>
@@ -44,30 +44,34 @@ export default function ClientDescriptionShelter ({ shelter }: DescriptionAnimal
                 <table className="min-w-full ">
                     <tbody className="bg-white/30">
                         {/* w-[88%] 2xl: */}
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Accomodate</td>
-                            <td>{shelter?.accomodate} Heads</td>
+                        <tr className="border-t border-gray-500/15">
+                            <td className="tds w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Accomodate</td>
+                            <td className="tds">{shelter?.accomodate} Heads</td>
                         </tr>
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Category</td>
-                            <td>{shelter?.category?.name}</td>
+                        <tr className="border-t border-gray-500/15">
+                            <td className="tds w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Category</td>
+                            <td className="tds">{shelter?.category?.name}</td>
                         </tr>
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Care Required:</td>
-                        </tr>
+                        {requiredCares.length > 0 && (
+                            <tr className="border-t border-gray-500/15">
+                                <td className="tds w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Care Required:</td>
+                            </tr>
+                        )}
                         {requiredCares.map((required) => (                      
-                            <tr key={required.id} className="tds border-t border-gray-500/15">
-                                <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">{required.name}</td>
-                                <td>Rp {required.price} / {required.unit}</td>
+                            <tr key={required.id} className="border-t border-gray-500/15">
+                                <td className="tds w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">{required.name}</td>
+                                <td className="tds">Rp {required.price} / {required.unit}</td>
                             </tr>
                         ))}
-                        <tr className="tds border-t border-gray-500/15">
-                            <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Care Optional:</td>
-                        </tr>
+                        {optionalCares.length > 0 && (
+                            <tr className="border-t border-gray-500/15">
+                                <td className="tds w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">Care Optional:</td>
+                            </tr>
+                        )}
                         {optionalCares.map((optional) => (                      
-                            <tr key={optional.id} className="tds border-t border-gray-500/15">
-                                <td className="w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">{optional.name}</td>
-                                <td>Rp {optional.price} / {optional.unit}</td>
+                            <tr key={optional.id} className="border-t border-gray-500/15">
+                                <td className="tds w-[68%] md:w-[80%] lg:w-[85%] 2xl:w-[88%]">{optional.name}</td>
+                                <td className="tds">Rp {optional.price} / {optional.unit}</td>
                             </tr>
                         ))}
                     </tbody>
