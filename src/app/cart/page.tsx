@@ -14,6 +14,7 @@ export default function Carts() {
     const activeIconNav: string = 'cart';
     const { data: session, status } = useSession();
     const router = useRouter();
+    const [messageApi, contextHolder] = message.useMessage();
 
     const {cart, getTotal, addBuyItem, addCareItem, decreaseBuyItem, decreaseCareItem, removeBuyItem, removeCareItem, checkout } = useCart();
 
@@ -61,22 +62,42 @@ export default function Carts() {
             if (cart.buy.length > 0 && cart.care.length > 0) {
                 console.log(session?.accessToken);
                 result = await fetchTransactionBuyCare(cartClean, token);
+                messageApi.open({
+                    type: "success",
+                    content: 'Transaction Success',
+                });
             } 
             if (cart.buy.length > 0 && cart.care.length < 1) {
                 console.log(session?.accessToken);
                 result = await fetchTransactionBuy(cartClean, token);
+                messageApi.open({
+                    type: "success",
+                    content: 'Transaction Success',
+                });
             } 
             if (cart.care.length > 0 && cart.buy.length < 1) {
                 result = await fetchTransactionCare(cartClean, token);
+                messageApi.open({
+                    type: "success",
+                    content: 'Transaction Success',
+                });
             }
             if (result?.message) {
-                message.error(result.message);
-                console.log(result.message)
+                messageApi.open({
+                    type: "error",
+                    content: result.message,
+                });
             } 
             checkout();
         } catch (err) {
-            message.error("Something went wrong while processing checkout.");
-            message.error(`${err}`);
+            messageApi.open({
+                type: "error",
+                content: "Something went wrong while processing checkout.",
+            });
+            messageApi.open({
+                type: "error",
+                content: `${err}`,
+            });
         }
     }
 
@@ -85,6 +106,7 @@ export default function Carts() {
             <Suspense fallback={<div>Loading...</div>}>
                 <Navbar activeIconNav={activeIconNav} />
             </Suspense>
+            {contextHolder}
             <h2 className="pt-[8rem] text-2xl font-bold">Checkout</h2>
             <main className="flex flex-col items-center gap-6 text-black w-full px-6 py-4">
                 {/* empty cart */}

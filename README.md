@@ -122,4 +122,4 @@ password: john123
 ```
 
 ## Author
-🔧 Salman Altho
+🔧 Salman Althof
