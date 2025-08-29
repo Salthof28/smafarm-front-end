@@ -1,4 +1,5 @@
 'use client'
+import { useCart } from "@/app/context/Cart-context";
 import { AlignJustify, CircleUserRound, Home, Rabbit, ShoppingCart, Warehouse, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -13,6 +14,7 @@ interface NavbarProp {
 export default function Navbar({ activeIconNav }: NavbarProp) {
     const { data: session } = useSession();
     const router: AppRouterInstance = useRouter();
+    const { cart } = useCart();
     const findParams: ReadonlyURLSearchParams = useSearchParams();
     const categoryParams = findParams.getAll('category') || 'All';
     const [show, setShow] = useState<boolean>(true);
@@ -81,10 +83,12 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
                         <button onClick={() => setMenu(!menu)} className="lg:hidden w-auto">{menu ? <X /> : <AlignJustify />}</button>
                     </div>
                     <nav className={`lg:gap-[3rem] gap-[1rem] flex-col lg:flex-row flex`}>
-                        <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-green-400' : 'text-white'}`}><Home className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Home</Link>
+                        <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-green-400' : 'text-white'}`}><Home className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Home</Link>
                         <Link href='/livestock' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'animal' || activeIconNav === 'animaldetail') ? 'text-green-400' : 'text-white'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Livestocks</Link>
                         <Link href='/shelter' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'shelter' || activeIconNav === 'shelterdetail') ? 'text-green-400' : 'text-white'}`}><Warehouse className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Shelter</Link>
-                        <Link href='/cart' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-green-400' : 'text-white'}`}><ShoppingCart className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Cart</Link>
+                        <Link href='/cart' className={`relative flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-green-400' : 'text-white'}`}>{(cart.buy.length > 0 || cart.care.length > 0) && (
+                            <span className={`flex items-center justify-center absolute text-[0.8rem] -top-[0.5rem] lg:left-[0.8rem] bg-red-700 rounded-[100%] w-[1.2rem] h-[1.2rem] animate-bounce p-[0.7rem]`}>N</span>
+                        )}<ShoppingCart className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Cart</Link>
                     </nav>
                     <nav className={`flex  gap-[2rem] flex-col lg:flex-row lg:flex`}>
                         <Link href='/login' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'login' ? 'text-green-400' : 'text-white'}`}>

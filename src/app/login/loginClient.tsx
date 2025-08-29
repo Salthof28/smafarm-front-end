@@ -66,7 +66,8 @@ export default function LoginClient({ initialLoading }: LoginClientProps) {
         <div className="bg-amber-100 w-full flex flex-col items-center min-h-screen overflow-x-hidden">
             <Navbar activeIconNav={activeIconNav}/>
             <main className="flex items-center flex-col justify-center min-h-[100vh]">
-                <div className="p-8 shadow-lg rounded-lg bg-white w-[24rem]">
+                <img src='/Smafarm-logo.png' alt="smafarm-logo" />
+                <div className="p-8 shadow-lg rounded-lg bg-white md:w-[24rem]">
                     <Title level={2} className="text-center mb-6">Login</Title>
                     {error && <Alert type="error" message={error} className="mb-4" />}
                     <Form form={form} layout="vertical" onFinish={onFinish}>
