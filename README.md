@@ -50,7 +50,7 @@ Clone the repository:
 ```bash
 git clone https://github.com/revou-fsse-feb25/final-project-fe-Salthof28.git
 
-cd smafarm-frontend
+cd final-project-fe-salthof28
 ```
 
 Install dependencies:
@@ -60,11 +60,7 @@ pnpm install
 
 Create an .env.local file:
 
-NEXT_PUBLIC_API_URL=https://api.smafarn.com
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your_nextauth_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXTAUTH_SECRET=Your-Secret
 ```
 Run the development server:
 ```bash
@@ -87,6 +83,43 @@ Open http://localhost:3000
 ![](./public/ss/livestock.png)
 ### Profile User
 ![](./public/ss/profile.png)
+### History Transaction Customer
+![](./public/ss/historyTransaction.png)
+### Dashboard Breeder
+![](./public/ss/dashboard-breeder.png)
+### Handle Livestock
+![](./public/ss/handle-livestock.png)
+### Edit Livestock
+![](./public/ss/edit-livestock.png)
+### Edit Shelter
+![](./public/ss/edit-shelter.png)
+### Handle Shelter
+![](./public/ss/handle-shelter.png)
+### History Order
+![](./public/ss/historyOrder.png)
+### Dashboard Admin
+![](./public/ss/dashboardAdmin.png)
+
+## Link Demo
+
+**Live Demo:** [smafarm-fe](https://smafarm-5u9a445j4-salthof28s-projects.vercel.app/)
+
+## If You Want Test Login
+### Admin
+```bash
+email: jane@mail.com
+password: jane123
+```
+### Breeder
+```bash
+email: taiga@mail.com
+password: taiga123
+```
+### Customer
+```bash
+email: john@mail.com
+password: john123
+```
 
 ## Author
 🔧 Salman Althof
