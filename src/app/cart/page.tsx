@@ -62,11 +62,11 @@ export default function Carts() {
                 console.log(session?.accessToken);
                 result = await fetchTransactionBuyCare(cartClean, token);
             } 
-            if (cart.buy.length > 0) {
+            if (cart.buy.length > 0 && cart.care.length < 1) {
                 console.log(session?.accessToken);
                 result = await fetchTransactionBuy(cartClean, token);
             } 
-            if (cart.care.length > 0) {
+            if (cart.care.length > 0 && cart.buy.length < 1) {
                 result = await fetchTransactionCare(cartClean, token);
             }
             if (result?.message) {
