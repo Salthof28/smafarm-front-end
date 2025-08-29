@@ -38,6 +38,12 @@ export default function LivestocksBreeder() {
             label: 'My Farm',
             children: [
                 {
+                    key: 'dashboard',
+                    icon: React.createElement(ShopOutlined),
+                    label: 'Dashboard',
+                    onClick: () => router.push('/myfarm/dashboard'),
+                },
+                {
                     key: 'shelters',
                     icon: React.createElement(ShopOutlined),
                     label: 'Shelters',
