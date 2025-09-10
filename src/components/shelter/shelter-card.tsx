@@ -49,15 +49,17 @@ export default function ShelterCardList ({ shelters }: AnimalCardListProp) {
                 <div key={shelter.id} className="flex flex-col bg-amber-50 rounded-[1rem] w-[9rem] md:w-[14rem] xl:w-[20rem] shadow-lg/30 ring-[0.1rem] ring-black/5">
                     <img src={shelter?.img_shelter[0]?.url} className="object-cover w-full rounded-t-[1rem] h-[8rem] md:h-[10rem] xl:h-[15rem]" alt={shelter?.name} />
                     <div className="flex flex-col text-center px-[1rem]">
-                        <h4 className="font-extralight">{shelter?.name?.slice(0,14)}{shelter?.name?.length > 15 ? '...' : ''}</h4>
-                        <p className="pb-[0rem] md:pb-[1rem]">Category: {shelter?.category?.name}</p>
-                        <p className="text-justify hidden md:block">{shelter?.description.slice(0,78)}{shelter?.description?.length > 78 ? '...' : ''}</p>
+                        <h4 className="font-bold text-[#3F3916]">{shelter?.name?.slice(0,14)}{shelter?.name?.length > 15 ? '...' : ''}</h4>
+                        <p className="pb-[0rem] md:pb-[1rem] text-[#3F3916]/60">Category: {shelter?.category?.name}</p>
+                        <div className="min-h-[4.5rem]">
+                            <p className="text-justify hidden md:block text-[#3F3916]/60">{shelter?.description.slice(0,78)}{shelter?.description?.length > 78 ? '...' : ''}</p>
+                        </div>
                     </div>
-                    <div className="flex flex-col items-center gap-[1rem] px-[0.5rem] md:px-[1rem] xl:px-[2rem] py-[0.5rem] md:py-[1rem]">
-                        <p className="font-bold">Rp {shelter?.price_daily}/day</p>
+                    <div className="flex flex-col items-center gap-[1rem] px-[0.5rem] md:px-[1rem] py-[0.5rem] md:pb-[1.5rem]">
+                        <h5 className="font-bold text-[#3F3916]">Rp {shelter?.price_daily}/day</h5>
                         <div className="flex flex-row gap-[0.3rem] md:gap-[2rem] md:justify-between w-[100%]">
-                            <button onClick={() => handleRouter(shelter?.id)} className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white xl:1rem transition-opacity delay-200 active:scale-90">See Detail</button>
-                            <button onClick={() => handleBuy(shelter)}  className="btn bg-emerald-500 hover:bg-emerald-700 hover:text-white transition-opacity delay-200 active:scale-90">Buy</button>
+                            <button onClick={() => handleRouter(shelter?.id)} className="btn bg-[#A09218] hover:bg-[#918300] hover:text-white xl:1rem transition-opacity delay-200 active:scale-90 font-bold shadow-lg/20 ring-[0.1rem] ring-black/5 text-[#F2FEDC]">See Detail</button>
+                            <button onClick={() => handleBuy(shelter)}  className="btn bg-[#976F52] hover:bg-[#a24d0f] hover:text-white transition-opacity delay-200 active:scale-90 font-bold shadow-lg/20 ring-[0.1rem] ring-black/5 text-[#F2FEDC]">Buy</button>
                         </div>
                     </div>
                 </div>

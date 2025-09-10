@@ -38,8 +38,8 @@ export default function FilterCard ({ category, activeIconNav }: FilterCardProp)
     
 
     return (
-        <button onClick={handleChecklist} className="flex flex-row gap-[0.2rem] items-center">
-            {checklist === true ? (<SquareCheckBig className="stroke-green-600" />) : (<Square />)}
+        <button onClick={handleChecklist} className="flex flex-row gap-[0.2rem] items-center text-[#3F3916]">
+            {checklist === true ? (<SquareCheckBig className="stroke-[#a09200]" />) : (<Square />)}
             <p key={category.id}>{category.name}</p>
         </button>
     )

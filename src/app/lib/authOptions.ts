@@ -1,7 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-// const API_SMAFARM = 'http://localhost:4000';
-const API_SMAFARM = 'https://3a9faba3-4e26-4988-b04a-1d21b7e8014e-00-nz4pnvue4orv.pike.replit.dev:3000';
+const API_SMAFARM = 'http://localhost:4000';
+// const API_SMAFARM = 'https://3a9faba3-4e26-4988-b04a-1d21b7e8014e-00-nz4pnvue4orv.pike.replit.dev:3000';
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,

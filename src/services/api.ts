@@ -1,7 +1,7 @@
 import { FormCreateFarm } from "@/components/myfarm/form-create-farm";
 import { AllUpdateLivestock, AllUpdateShelter, CareTransactionResponse, CategoryDetailResponse, CleanCartBuyCare, CreateLivestockDto, CreateShelter, CustomApiError, DeleteUrlDto, FarmDetailResponse, FormValues, InptRegister, LivestockAllResponse, LivestockDetailResponse, ReviewTransaction, ShelterAllResponse, ShelterDetailResponse, TransactionResponse, UpdateCareTransaction, UpdateStatusFarm, UpdateStatusTransaction, UpdateUser } from "@/types/interfaces";
-// const API_SMAFARM = 'http://localhost:4000';
-const API_SMAFARM = 'https://3a9faba3-4e26-4988-b04a-1d21b7e8014e-00-nz4pnvue4orv.pike.replit.dev:3000';
+const API_SMAFARM = 'http://localhost:4000';
+// const API_SMAFARM = 'https://3a9faba3-4e26-4988-b04a-1d21b7e8014e-00-nz4pnvue4orv.pike.replit.dev:3000';
 
 export async function fetchAllCategory (): Promise<CategoryDetailResponse | CustomApiError> {
     try {
