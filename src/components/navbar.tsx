@@ -70,7 +70,7 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
     }, [])
     return(
         <div className="flex justify-center">
-            <header className={`w-[98vw] flex flex-col lg:h-fit bg-black/80 text-white mt-[1rem] p-[0.5rem] items-center rounded-[1rem] duration-500 fixed overflow-hidden ${show ? "translate-y-0" : "-translate-y-full"} transition-all duration-300 ease-in-out ${menu ? 'h-[23rem]' : 'h-[2.5rem]'}`}>
+            <header className={`w-[98vw] flex flex-col lg:h-fit bg-[#312f27]/80 text-white mt-[1rem] p-[0.5rem] items-center rounded-[1rem] duration-500 fixed overflow-hidden ${show ? "translate-y-0" : "-translate-y-full"} transition-all duration-300 ease-in-out ${menu ? 'h-[23rem]' : 'h-[2.5rem]'}`}>
                 <div className="w-full flex flex-col lg:flex-row justify-between lg:h-fit lg:gap-[2rem] gap-[1rem] ">
                     <div className="w-full flex justify-between items-center lg:w-auto">
                         <img src='/smafarm-logo.png' className="w-[2rem] lg:w-[4rem]" />
@@ -83,15 +83,15 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
                         <button onClick={() => setMenu(!menu)} className="lg:hidden w-auto">{menu ? <X /> : <AlignJustify />}</button>
                     </div>
                     <nav className={`lg:gap-[3rem] gap-[1rem] flex-col lg:flex-row flex`}>
-                        <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-green-400' : 'text-white'}`}><Home className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Home</Link>
-                        <Link href='/livestock' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'animal' || activeIconNav === 'animaldetail') ? 'text-green-400' : 'text-white'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Livestocks</Link>
-                        <Link href='/shelter' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'shelter' || activeIconNav === 'shelterdetail') ? 'text-green-400' : 'text-white'}`}><Warehouse className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Shelter</Link>
-                        <Link href='/cart' className={`relative flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-green-400' : 'text-white'}`}>{(cart.buy.length > 0 || cart.care.length > 0) && (
+                        <Link href='/' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'home' ? 'text-[#CEFA7E]' : 'text-[#F2FEDC]'}`}><Home className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Home</Link>
+                        <Link href='/livestock' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'animal' || activeIconNav === 'animaldetail') ? 'text-[#CEFA7E]' : 'text-[#F2FEDC]'}`}><Rabbit className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Livestocks</Link>
+                        <Link href='/shelter' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${(activeIconNav === 'shelter' || activeIconNav === 'shelterdetail') ? 'text-[#CEFA7E]' : 'text-[#F2FEDC]'}`}><Warehouse className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/> Shelter</Link>
+                        <Link href='/cart' className={`relative flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'cart' ? 'text-[#CEFA7E]' : 'text-[#F2FEDC]'}`}>{(cart.buy.length > 0 || cart.care.length > 0) && (
                             <span className={`flex items-center justify-center absolute text-[0.8rem] -top-[0.5rem] lg:left-[0.8rem] bg-red-700 rounded-[100%] w-[1.2rem] h-[1.2rem] animate-bounce p-[0.7rem]`}>N</span>
                         )}<ShoppingCart className="w-[2rem] h-[2rem] lg:w-[2.5rem] lg:h-[2.5rem] 2xl:w-[3rem] 2xl:h-[3rem]"/>Cart</Link>
                     </nav>
                     <nav className={`flex  gap-[2rem] flex-col lg:flex-row lg:flex`}>
-                        <Link href='/login' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'login' ? 'text-green-400' : 'text-white'}`}>
+                        <Link href='/login' className={`flex flex-col items-center text-[0.6rem] lg:text-[0.8rem] ${activeIconNav === 'login' ? 'text-[#CEFA7E]' : 'text-[#F2FEDC]'}`}>
                         {session ? (
                         <img
                             src={session.user.profile?.img_profile || '/cow-not-found.png'}
@@ -108,8 +108,8 @@ export default function Navbar({ activeIconNav }: NavbarProp) {
                 </div>
                 {(activeIconNav === 'animal' || activeIconNav === 'shelter') && (
                     <form className="max-lg:hidden" onSubmit={handleInptSearch}>
-                        <input data-testid='inptSearch' onChange={getInputSearch} className="mt-[1rem] text-center bg-white/40 rounded-md hover:bg-emerald-500 p-1 text-[0.8rem] 2xl:text-[1rem] text-white" placeholder="Search" ></input>
-                        <button type="submit" data-testid="btnSearch" className="font-bold ml-2 bg-emerald-500 p-1 rounded-md hover:bg-emerald-700 hover:text-amber-50 transition-opacity active:scale-90 duration-200 text-[0.8rem] 2xl:text-[1rem]">Search</button>   
+                        <input data-testid='inptSearch' onChange={getInputSearch} className="mt-[1rem] text-center bg-white/40 rounded-md hover:bg-[#63773e] p-1 text-[0.8rem] 2xl:text-[1rem] text-[#3F3916] hover:text-[#f5d521]" placeholder="Search" ></input>
+                        <button type="submit" data-testid="btnSearch" className="font-bold ml-2 bg-[#A09218] hover:bg-[#918300] p-1 rounded-md hover:text-amber-50 transition-opacity active:scale-90 duration-200 text-[0.8rem] 2xl:text-[1rem]">Search</button>   
                     </form>
                 )}
 

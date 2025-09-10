@@ -19,12 +19,12 @@ export default function SlideImagesHome({ imageCategory }: SlideImagesHomeProp) 
         }
     }, [])
     return (
-        <section className="flex flex-col w-screen h-screen bg-cover bg-center justify-center items-start px-[2rem] sm:px-[0rem] md:px-[6rem] xl:px-[15rem] 2xl:px-[35rem]" style={{backgroundImage: `linear-gradient(rgba(0,0,0,0.6) 80%, rgb(109,121,0)), url(${imageCategory[currentImage]})`}}>
-        <p className="text-white leading-none font-medium">You need</p>
-        <h1 className="leading-none text-amber-600 font-bold">Livestock <span className="text-[0.8rem] md:text-[1.5rem] lg:text-[3rem] text-emerald-500 font-medium">or care service?</span></h1>
+        <section className="flex flex-col w-screen h-screen bg-cover bg-center justify-center items-start px-[2rem] sm:px-[0rem] md:px-[6rem] xl:px-[15rem] 2xl:px-[35rem]" style={{backgroundImage: `linear-gradient(rgba(0,0,0,0.6) 80%, rgb(0, 0, 0)), url(${imageCategory[currentImage]})`}}>
+        <p className="text-[#F2FEDC] leading-none font-medium">You need</p>
+        <h1 className="leading-none text-[#f2944b] font-bold">Livestock <span className="text-[0.8rem] md:text-[1.5rem] lg:text-[3rem] text-[#00c9ac] font-medium">or care service?</span></h1>
             <div className="flex gap-[2rem]">
-                <button onClick={() => router.push('/animal')} className="btn bg-emerald-500 text-black shadow-lg font-bold hover:bg-emerald-700 hover:text-white duration-200 transition-opacity delay-200 active:scale-90">Livestock</button>
-                <button onClick={() => router.push('/shelter')} className="btn bg-emerald-500 text-black shadow-lg font-bold hover:bg-emerald-700 hover:text-white duration-200 transition-opacity delay-200 active:scale-90">Shelter</button>
+                <button onClick={() => router.push('/livestock')} className="btn text-[#F2FEDC] shadow-lg font-bold bg-[#A09218] hover:bg-[#918300] hover:text-white duration-200 transition-opacity delay-200 active:scale-90">Livestock</button>
+                <button onClick={() => router.push('/shelter')} className="btn text-[#F2FEDC] shadow-lg font-bold bg-[#976F52] hover:bg-[#a24d0f] hover:text-white duration-200 transition-opacity delay-200 active:scale-90">Shelter</button>
             </div>
         </section>
     )
